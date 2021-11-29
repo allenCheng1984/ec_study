@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  review_id: MyString
+  order_id: MyString
+  review_score: MyString
+  review_comment_title: MyString
+  review_comment_message: MyString
+  review_creation_date: 2021-11-30 01:26:30
+  review_answer_timestamp: 2021-11-30 01:26:30
+
+two:
+  review_id: MyString
+  order_id: MyString
+  review_score: MyString
+  review_comment_title: MyString
+  review_comment_message: MyString
+  review_creation_date: 2021-11-30 01:26:30
+  review_answer_timestamp: 2021-11-30 01:26:30

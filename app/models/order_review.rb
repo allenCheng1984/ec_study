@@ -1,0 +1,2 @@
+class OrderReview < ApplicationRecord
+end

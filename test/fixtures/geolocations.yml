@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  geolocation_zip_code_prefix: MyString
+  geolocation_lat: 1.5
+  geolocation_lng: 1.5
+  geolocation_city: MyString
+  geolocation_state: MyString
+
+two:
+  geolocation_zip_code_prefix: MyString
+  geolocation_lat: 1.5
+  geolocation_lng: 1.5
+  geolocation_city: MyString
+  geolocation_state: MyString

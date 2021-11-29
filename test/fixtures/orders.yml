@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  order_id: MyString
+  customer_id: MyString
+  order_status: MyString
+  order_purchase_timestamp: 2021-11-30 01:26:16
+  order_approved_at: 2021-11-30 01:26:16
+  order_delivered_carrier_date: 2021-11-30 01:26:16
+  order_delivered_customer_date: 2021-11-30 01:26:16
+  order_estimated_delivery_date: 2021-11-30 01:26:16
+
+two:
+  order_id: MyString
+  customer_id: MyString
+  order_status: MyString
+  order_purchase_timestamp: 2021-11-30 01:26:16
+  order_approved_at: 2021-11-30 01:26:16
+  order_delivered_carrier_date: 2021-11-30 01:26:16
+  order_delivered_customer_date: 2021-11-30 01:26:16
+  order_estimated_delivery_date: 2021-11-30 01:26:16
