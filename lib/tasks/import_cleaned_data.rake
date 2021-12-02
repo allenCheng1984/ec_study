@@ -157,7 +157,7 @@ namespace :import_data do
         product_length_cm: row[6],
         product_height_cm: row[7],
         product_width_cm: row[8],
-        product_category_name_english: row[8]
+        product_category_name_english: row[9]
       )
     end
 

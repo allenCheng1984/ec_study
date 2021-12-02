@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_29_172634) do
+ActiveRecord::Schema.define(version: 2021_12_01_073822) do
 
   create_table "customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "customer_id"
@@ -20,6 +20,17 @@ ActiveRecord::Schema.define(version: 2021_11_29_172634) do
     t.string "customer_state"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "customer_geolocation_lat"
+    t.float "customer_geolocation_lng"
+    t.integer "order_count", default: 0
+    t.float "order_sum_price", default: 0.0
+    t.float "order_sum_freight_value", default: 0.0
+    t.float "order_avg_price", default: 0.0
+    t.float "order_avg_freight_value", default: 0.0
+    t.float "order_max_price", default: 0.0
+    t.float "order_max_freight_value", default: 0.0
+    t.float "order_min_price", default: 0.0
+    t.float "order_min_freight_value", default: 0.0
   end
 
   create_table "geolocations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -42,6 +53,7 @@ ActiveRecord::Schema.define(version: 2021_11_29_172634) do
     t.float "freight_value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "product_category_name"
   end
 
   create_table "order_payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -77,6 +89,28 @@ ActiveRecord::Schema.define(version: 2021_11_29_172634) do
     t.datetime "order_estimated_delivery_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "item_count", default: 0
+    t.float "total_item_price", default: 0.0
+    t.integer "payment_count", default: 0
+    t.float "total_payment_value", default: 0.0
+    t.float "total_freight_value", default: 0.0
+    t.integer "review_score", default: 0
+    t.string "review_comment_title", default: ""
+    t.string "review_comment_message", default: ""
+    t.datetime "review_creation_date"
+    t.datetime "review_answer_timestamp"
+    t.integer "review_answer_waiting_hours", default: 0
+    t.string "customer_city"
+    t.string "customer_state"
+    t.string "customer_zip_code_prefix"
+    t.float "customer_geolocation_lat"
+    t.float "customer_geolocation_lng"
+    t.string "seller_city"
+    t.string "seller_state"
+    t.string "seller_zip_code_prefix"
+    t.float "seller_geolocation_lat"
+    t.float "seller_geolocation_lng"
+    t.string "seller_id"
   end
 
   create_table "products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -92,6 +126,15 @@ ActiveRecord::Schema.define(version: 2021_11_29_172634) do
     t.float "product_width_cm"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "sold_count", default: 0
+    t.float "sold_sum_price", default: 0.0
+    t.float "sold_sum_freight_value", default: 0.0
+    t.float "sold_avg_price", default: 0.0
+    t.float "sold_avg_freight_value", default: 0.0
+    t.float "sold_max_price", default: 0.0
+    t.float "sold_max_freight_value", default: 0.0
+    t.float "sold_min_price", default: 0.0
+    t.float "sold_min_freight_value", default: 0.0
   end
 
   create_table "sellers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -101,6 +144,17 @@ ActiveRecord::Schema.define(version: 2021_11_29_172634) do
     t.string "seller_state"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "seller_geolocation_lat"
+    t.float "seller_geolocation_lng"
+    t.integer "order_count", default: 0
+    t.float "order_sum_price", default: 0.0
+    t.float "order_sum_freight_value", default: 0.0
+    t.float "order_avg_price", default: 0.0
+    t.float "order_avg_freight_value", default: 0.0
+    t.float "order_max_price", default: 0.0
+    t.float "order_max_freight_value", default: 0.0
+    t.float "order_min_price", default: 0.0
+    t.float "order_min_freight_value", default: 0.0
   end
 
 end
