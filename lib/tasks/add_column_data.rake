@@ -139,18 +139,6 @@ namespace :add_column do
     puts "#{Time.now} - 匯入結束"
   end
 
-  # 存入 seller_id to orders
-  task :seller_id_to_orders => [ :environment ] do
-    puts "#{Time.now} - 存入 seller_id to orders"
-
-    Order.all.each do |order|
-      item = OrderItem.find_by(order_id: order.order_id)
-      order.update_columns(seller_id: item && item.seller_id)
-    end
-
-    puts "#{Time.now} - 匯入結束"
-  end
-
   # 將各總資訊存入 sellers
   task :more_info_to_sellers => [ :environment ] do
     puts "#{Time.now} - 將各總資訊存入 sellers"
@@ -222,4 +210,106 @@ namespace :add_column do
     puts "#{Time.now} - 匯入結束"
   end
 
+  # 將 package_volume & package_weight_g 存入 order_items
+  task :package_info_to_order_items => [ :environment ] do
+    puts "#{Time.now} - 將 package_volume 存入 order_items"
+
+    OrderItem.all.each do |order_item|
+      product = Product.find_by(product_id: order_item.product_id)
+      next if product.blank?
+
+      length = product.product_length_cm
+      height = product.product_height_cm
+      width = product.product_width_cm
+      next if !(length && height && width)
+
+      package_volume = length * width * length
+      package_weight_g = product.product_weight_g
+
+      order_item.update_columns(
+        package_volume: package_volume,
+        package_weight_g: package_weight_g
+      )
+    end
+
+    puts "#{Time.now} - 匯入結束"
+  end
+
+  # 將更多欄位存入 orders 裡面
+  task :more_info_to_orders2 => [ :environment ] do
+    puts "#{Time.now} - 將更多欄位存入 orders 裡面"
+
+    Order.all.each do |order|
+      items = OrderItem.where(order_id: order.order_id).order(shipping_limit_date: :desc)
+      customer = Customer.find_by(customer_id: order.customer_id)
+      payments = OrderPayment.where(order_id: order.order_id)
+      review = OrderReview.find_by(order_id: order.order_id)
+
+      purchase_at = order.order_purchase_timestamp
+      approved_at = order.order_approved_at
+      shipped_at = order.order_delivered_carrier_date
+      delivered_at = order.order_delivered_customer_date
+      estimated_at = order.order_estimated_delivery_date
+      estimated_hour = (estimated_at.present? && purchase_at.present?) && ((estimated_at - purchase_at) / 1.hour).round
+
+      # 將需要的欄位存入進去
+      seller_id                     = items[0] && items[0].seller_id
+      customer_unique_id            = customer && customer.customer_unique_id
+      payment_type                  = payments && payments.map{|p| p.payment_type }.uniq.join(',')
+      payment_sequential            = payments && payments.map{|p| p.payment_sequential }.sort.join(',')
+      shipping_limit_date           = items[0] && items[0].shipping_limit_date
+      order_purchase_year           = purchase_at.year # 2017
+      order_purchase_month          = purchase_at.month # 1 ~ 12
+      order_purchase_year_month     = purchase_at.strftime("%Y%m").to_i # (201701~201712)
+      order_purchase_yearweek       = purchase_at.strftime("%Y%W").to_i # (201700 ~201752)
+      order_purchase_date           = purchase_at.strftime("%Y%m%d").to_i # (20170101)
+      order_purchase_day            = purchase_at.strftime("%d").to_i # (0~31)
+      order_purchase_dayofweek      = purchase_at.strftime("%w").to_i # (0 ~ 6)
+      order_purchase_hour           = purchase_at.strftime("%H").to_i # (0 ~ 24)
+      order_purchase_time_day       = case order_purchase_hour # (dawn, morning, afternoon, night)
+                                      when 0..5
+                                        'dawn'
+                                      when 6..11
+                                        'morning'
+                                      when 12..18
+                                        'afternoon'
+                                      when 19..23
+                                        'night'
+                                      end
+
+      until_shipped_waiting_hours   = (approved_at.present? && shipped_at.present?) && ((shipped_at - approved_at) / 1.hour).round
+      until_delivered_waiting_hours = (shipped_at.present? && delivered_at.present?) && ((delivered_at - shipped_at) / 1.hour).round
+      delivery_efficiency           = (until_shipped_waiting_hours && until_delivered_waiting_hours && estimated_hour) && (1 - ( (until_shipped_waiting_hours + until_delivered_waiting_hours) / estimated_hour.to_f).round(2))
+      total_package_volume          = items && items.map{|item| item.package_volume }.sum
+      total_package_weight_g        = items && items.map{|item| item.package_weight_g }.sum
+      item_category_name            = items && items.map{|item| item.product_category_name }.uniq.join(',')
+      item_category_count           = items && items.map{|item| item.product_category_name }.uniq.size
+
+      order.update_columns(
+        seller_id: seller_id,
+        customer_unique_id: customer_unique_id,
+        payment_type: payment_type,
+        payment_sequential: payment_sequential,
+        shipping_limit_date: shipping_limit_date,
+        order_purchase_year: order_purchase_year,
+        order_purchase_month: order_purchase_month,
+        order_purchase_year_month: order_purchase_year_month,
+        order_purchase_yearweek: order_purchase_yearweek,
+        order_purchase_date: order_purchase_date,
+        order_purchase_day: order_purchase_day,
+        order_purchase_dayofweek: order_purchase_dayofweek,
+        order_purchase_hour: order_purchase_hour,
+        order_purchase_time_day: order_purchase_time_day,
+        until_shipped_waiting_hours: until_shipped_waiting_hours,
+        until_delivered_waiting_hours: until_delivered_waiting_hours,
+        total_package_volume: total_package_volume,
+        total_package_weight_g: total_package_weight_g,
+        delivery_efficiency: delivery_efficiency,
+        item_category_name: item_category_name,
+        item_category_count: item_category_count
+      )
+    end
+
+    puts "#{Time.now} - 匯入結束"
+  end
 end

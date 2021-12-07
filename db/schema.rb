@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_01_073822) do
+ActiveRecord::Schema.define(version: 2021_12_02_210528) do
 
   create_table "customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "customer_id"
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 2021_12_01_073822) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "product_category_name"
+    t.float "package_volume", default: 0.0
+    t.float "package_weight_g", default: 0.0
   end
 
   create_table "order_payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -111,6 +113,26 @@ ActiveRecord::Schema.define(version: 2021_12_01_073822) do
     t.float "seller_geolocation_lat"
     t.float "seller_geolocation_lng"
     t.string "seller_id"
+    t.string "customer_unique_id"
+    t.string "payment_type"
+    t.string "payment_sequential"
+    t.datetime "shipping_limit_date"
+    t.integer "order_purchase_year"
+    t.integer "order_purchase_month"
+    t.integer "order_purchase_year_month"
+    t.integer "order_purchase_yearweek"
+    t.integer "order_purchase_date"
+    t.integer "order_purchase_day"
+    t.integer "order_purchase_dayofweek"
+    t.integer "order_purchase_hour"
+    t.string "order_purchase_time_day"
+    t.integer "until_shipped_waiting_hours", default: 0
+    t.integer "until_delivered_waiting_hours", default: 0
+    t.float "total_package_volume", default: 0.0
+    t.float "total_package_weight_g", default: 0.0
+    t.float "delivery_efficiency"
+    t.string "item_category_name", default: ""
+    t.integer "item_category_count", default: 0
   end
 
   create_table "products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
