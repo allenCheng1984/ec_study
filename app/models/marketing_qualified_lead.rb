@@ -1,0 +1,2 @@
+class MarketingQualifiedLead < ApplicationRecord
+end

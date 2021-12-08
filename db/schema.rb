@@ -10,7 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_02_210528) do
+ActiveRecord::Schema.define(version: 2021_12_08_024327) do
+
+  create_table "closed_deals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "mql_id"
+    t.string "seller_id"
+    t.string "sdr_id"
+    t.string "sr_id"
+    t.date "won_date"
+    t.string "business_segment"
+    t.string "lead_type"
+    t.string "lead_behaviour_profile"
+    t.boolean "has_company"
+    t.boolean "has_gtin"
+    t.string "average_stock"
+    t.string "business_type"
+    t.float "declared_product_catalog_size"
+    t.float "declared_monthly_revenue", default: 0.0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "customer_id"
@@ -39,6 +58,15 @@ ActiveRecord::Schema.define(version: 2021_12_02_210528) do
     t.float "geolocation_lng"
     t.string "geolocation_city"
     t.string "geolocation_state"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "marketing_qualified_leads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "mql_id"
+    t.date "first_contact_date"
+    t.string "landing_page_id"
+    t.string "origin"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -163,4 +163,50 @@ namespace :import_data do
 
     puts "#{Time.now} - 匯入結束"
   end
+
+  # 從 csv 檔將 marketing_qualified_leads (有效潛在客戶) 資料匯入至 DB
+  task :marketing_qualified_leads => [ :environment ] do
+    puts "#{Time.now} - 開始從 olist_marketing_qualified_leads_dataset.csv 匯入消費者資料"
+    dataset_text = File.read("#{Rails.root}/lib/cleaned_data/olist_marketing_qualified_leads_dataset.csv")
+    rows = CSV.parse(dataset_text)
+
+    rows.drop(1).each do |row|
+      MarketingQualifiedLead.create(
+        mql_id: row[0],
+        first_contact_date: row[1],
+        landing_page_id: row[2],
+        origin: row[3]
+      )
+    end
+
+    puts "#{Time.now} - 匯入結束"
+  end
+
+    # 從 csv 檔將 closed_deals (有效潛在客戶) 資料匯入至 DB
+    task :closed_deals => [ :environment ] do
+      puts "#{Time.now} - 開始從 olist_closed_deals_dataset.csv 匯入消費者資料"
+      dataset_text = File.read("#{Rails.root}/lib/cleaned_data/olist_closed_deals_dataset.csv")
+      rows = CSV.parse(dataset_text)
+
+      rows.drop(1).each do |row|
+        ClosedDeal.create(
+          mql_id: row[0],
+          seller_id: row[1],
+          sdr_id: row[2],
+          sr_id: row[3],
+          won_date: row[4],
+          business_segment: row[5],
+          lead_type: row[6],
+          lead_behaviour_profile: row[7],
+          has_company: ActiveModel::Type::Boolean.new.cast(row[8]),
+          has_gtin: ActiveModel::Type::Boolean.new.cast(row[9]),
+          average_stock: row[10],
+          business_type: row[11],
+          declared_product_catalog_size: row[12],
+          declared_monthly_revenue: row[13]
+        )
+      end
+
+      puts "#{Time.now} - 匯入結束"
+    end
 end

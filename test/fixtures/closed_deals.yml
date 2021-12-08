@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mql_id: MyString
+  first_contact_date: 2021-12-08
+  landing_page_id: MyString
+  origin: MyString
+
+two:
+  mql_id: MyString
+  first_contact_date: 2021-12-08
+  landing_page_id: MyString
+  origin: MyString

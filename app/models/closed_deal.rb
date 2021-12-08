@@ -1,0 +1,2 @@
+class ClosedDeal < ApplicationRecord
+end
