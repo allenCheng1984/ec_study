@@ -312,4 +312,38 @@ namespace :add_column do
 
     puts "#{Time.now} - 匯入結束"
   end
+
+  # 將更多欄位存入 orders 裡面
+  task :more_info_to_orders3 => [ :environment ] do
+    puts "#{Time.now} - 將更多欄位存入 orders 裡面"
+
+    Order.all.each do |order|
+      # 訂單確認時間
+      approved_at = order.order_approved_at
+      # 預估送達時間
+      estimated_at = order.order_estimated_delivery_date
+      # 訂單送達時間
+      delivered_at = order.order_delivered_customer_date
+
+      # 出貨期限
+      shipping_limit_at = order.shipping_limit_date
+      # 出貨時間
+      shipped_at = order.order_delivered_carrier_date
+
+      # 從訂單確認到送達花費幾天
+      total_delivered_waiting_day = (delivered_at && approved_at) &&  ((delivered_at - approved_at) / 1.day).round(4)
+      # 是否延遲出貨
+      is_shipping_delayed = (shipped_at && shipping_limit_at) && (shipped_at > shipping_limit_at)
+      # 是否延遲送達
+      is_delivered_delayed = (delivered_at && estimated_at) && (delivered_at > estimated_at)
+
+      order.update_columns(
+        total_delivered_waiting_day: total_delivered_waiting_day,
+        is_shipping_delayed: is_shipping_delayed,
+        is_delivered_delayed: is_delivered_delayed
+      )
+    end
+
+    puts "#{Time.now} - 匯入結束"
+  end
 end
