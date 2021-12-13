@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_10_152934) do
+ActiveRecord::Schema.define(version: 2021_12_12_222530) do
 
   create_table "closed_deals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "mql_id"
@@ -164,6 +164,7 @@ ActiveRecord::Schema.define(version: 2021_12_10_152934) do
     t.float "total_delivered_waiting_day"
     t.boolean "is_shipping_delayed"
     t.boolean "is_delivered_delayed"
+    t.float "geo_distance"
   end
 
   create_table "products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

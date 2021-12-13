@@ -346,4 +346,19 @@ namespace :add_column do
 
     puts "#{Time.now} - 匯入結束"
   end
+
+  # 將訂單買賣雙方的地理直線距離資料存入
+  task :add_geo_distance_to_orders => [ :environment ] do
+    puts "#{Time.now} - 將訂單買賣雙方的地理直線距離資料存入 orders 裡面"
+
+    Order.all.each do |order|
+      seller_coordinate = [order.seller_geolocation_lat, order.seller_geolocation_lng]
+      customer_coordinate = [order.customer_geolocation_lat, order.seller_geolocation_lng]
+      geo_distance = Geocoder::Calculations.distance_between(seller_coordinate, customer_coordinate, units: :km)
+
+      order.update_columns(geo_distance: geo_distance) if !geo_distance.nan?
+    end
+
+    puts "#{Time.now} - 匯入結束"
+  end
 end
