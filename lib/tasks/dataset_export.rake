@@ -1568,4 +1568,58 @@ namespace :dataset_export do
 
     puts "#{Time.now} - 匯出結束"
   end
+
+  # 匯出物流組需要的 dataset 內容
+  task :logistics_team => [ :environment ] do
+    puts "#{Time.now} - 匯出物流組需要的 dataset 內容」"
+
+    # orders 的篩選條件：
+    # 1. 全部的物流戳記都要有資料
+    # 2. 只留單一類別商品的訂單
+
+    orders = Order.where(item_category_count: 1,).where.not(
+              order_id: duplicate_order_ids,
+              order_purchase_timestamp: nil,
+              order_approved_at: nil,
+              order_delivered_carrier_date: nil,
+              order_delivered_customer_date: nil,
+              order_estimated_delivery_date: nil)
+
+    dataset = []
+
+    orders.each do |order|
+      # 只取需要的欄位值進去
+      row = {}
+      row[:total_item_price] = order.total_item_price
+      row[:total_freight_value] = order.total_freight_value
+      row[:total_payment_value] = order.total_payment_value
+      row[:total_package_volume] = order.total_package_volume
+      row[:total_package_weight_g] = order.total_package_weight_g
+      row[:item_count] = order.item_count
+      row[:category_name] = order.item_category_name
+      row[:category_type] = category_type_label[order.item_category_name.to_sym]
+      row[:seller_state_region_type] = order.seller_state_region_type
+      row[:customer_state_region_type] = order.customer_state_region_type
+      row[:geo_distance] = order.geo_distance
+      row[:until_approved_waiting_hours] = order.until_approved_waiting_hours
+      row[:until_shipped_waiting_hours] = order.until_shipped_waiting_hours
+      row[:until_delivered_waiting_hours] = order.until_delivered_waiting_hours
+      row[:total_logistics_using_hours] = order.total_logistics_using_hours
+      row[:estimated_logistics_using_hours] = order.estimated_logistics_using_hours
+      row[:order_purchase_year_month] = order.order_purchase_year_month
+      row[:order_purchase_yearweek] = order.order_purchase_yearweek
+      row[:order_purchase_time_day] = order.order_purchase_time_day
+      row[:order_purchase_dayofweek] = order.order_purchase_dayofweek
+      dataset << row
+    end
+
+    # 將整理好的 dataset 轉成 csv
+    CSV.open("./tmp/logistics_dataset.csv", "w", headers: dataset.first.keys, write_headers: true) do |csv|
+      dataset.each do |h|
+        csv << h.values
+      end
+    end
+
+    puts "#{Time.now} - 匯出結束"
+  end
 end
