@@ -1505,4 +1505,67 @@ namespace :dataset_export do
 
     puts "#{Time.now} - 匯出結束"
   end
+
+  # 匯出銷售組需要的 dataset 內容
+  task :sales_team => [ :environment ] do
+    puts "#{Time.now} - 匯出銷售組需要的 dataset 內容」"
+
+    # orders 的篩選條件：
+    # 1. 全部的物流戳記都要有資料
+    # 2. 只有一個類別的訂單
+
+    orders = Order.where(item_category_count: 1,).where.not(
+              order_id: duplicate_order_ids,
+              order_purchase_timestamp: nil)
+
+    orders.find_in_batches(batch_size: 500) do |group|
+      dataset = []
+
+      group.each do |order|
+        # 只取需要的欄位值進去
+        row = {}
+
+        row[:item_count] = order.item_count
+        row[:total_item_price] = order.total_item_price
+        row[:total_freight_value] = order.total_freight_value
+        row[:total_payment_value] = order.total_payment_value
+        row[:review_score] = order.review_score
+        row[:category_name] = order.item_category_name
+        row[:category_type] = category_type_label[order.item_category_name.to_sym]
+        row[:payment_type] = order.payment_type
+        row[:order_purchase_timestamp] = order.order_purchase_timestamp
+
+        row[:order_purchase_year_month] = order.order_purchase_year_month
+        row[:order_purchase_yearweek] = order.order_purchase_yearweek
+        row[:order_purchase_dayofweek] = order.order_purchase_dayofweek
+        row[:order_purchase_hour] = order.order_purchase_hour
+        row[:order_purchase_time_day] = order.order_purchase_time_day
+        row[:seller_city] = order.seller_city
+        row[:seller_state] = order.seller_state
+        row[:seller_state_region_type] = order.seller_state_region_type
+        row[:customer_city] = order.customer_city
+        row[:customer_state] = order.customer_state
+        row[:customer_state_region_type] = order.customer_state_region_type
+        row[:geo_distance] = order.geo_distance
+        row[:order_estimated_delivery_date] = order.order_estimated_delivery_date
+        row[:order_approved_at] = order.order_approved_at
+        row[:order_delivered_carrier_date] = order.order_delivered_carrier_date
+        row[:order_delivered_customer_date] = order.order_delivered_customer_date
+        row[:logistics_delay_hours] = order.logistics_delay_hours
+        row[:stocking_time] = order.until_shipped_waiting_hours
+        row[:commodity_type] = category_commodity_type[order.item_category_name.to_sym]
+
+        dataset << row
+      end
+
+      # 將整理好的 dataset 轉成 csv
+      CSV.open("./tmp/sales_dataset.csv", "ab", headers: dataset.first.keys) do |csv|
+        dataset.each do |h|
+          csv << h.values
+        end
+      end
+    end
+
+    puts "#{Time.now} - 匯出結束"
+  end
 end
