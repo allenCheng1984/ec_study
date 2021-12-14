@@ -356,7 +356,67 @@ namespace :add_column do
       customer_coordinate = [order.customer_geolocation_lat, order.seller_geolocation_lng]
       geo_distance = Geocoder::Calculations.distance_between(seller_coordinate, customer_coordinate, units: :km)
 
-      order.update_columns(geo_distance: geo_distance) if !geo_distance.nan?
+      order.update_columns(geo_distance: geo_distance.round(2)) if !geo_distance.nan?
+    end
+
+    puts "#{Time.now} - 匯入結束"
+  end
+
+  # 將更多欄位存入 orders 裡面
+  task :more_info_to_orders5 => [ :environment ] do
+    puts "#{Time.now} - 將更多欄位存入 orders 裡面"
+
+    Order.all.each do |order|
+      # 訂單建立時間
+      purchase_at = order.order_purchase_timestamp
+      # 訂單確認時間
+      approved_at = order.order_approved_at
+      # 預估送達時間
+      estimated_at = order.order_estimated_delivery_date
+      # 訂單送達時間
+      delivered_at = order.order_delivered_customer_date
+
+      # 將巴西各州分四大區塊: NE, SE, CE, NE
+      state_region = {
+        SP: 'SE', RN: 'NE', AC: 'NW', RJ: 'CE', ES: 'CE', MG: 'CE',
+        BA: 'CE', SE: 'NE', PE: 'NE', AL: 'NE', PB: 'NE', CE: 'NE',
+        PI: 'CE', MA: 'NE', PA: 'NW', AP: 'NW', AM: 'NW', RR: 'NW',
+        DF: 'CE', GO: 'NE', RO: 'NW', TO: 'NW', MT: 'NW', MS: 'NW',
+        RS: 'SE', PR: 'SE', SC: 'SE',
+      }
+
+      # 評價標籤化: 1,2 (False), 4,5 (True), 3 / nil => Null
+      review_type = case order.review_score
+                    when 1,2
+                      false
+                    when 4,5
+                      true
+                    else
+                      nil
+                    end
+
+      # 買家所在地標籤化： NE, SE, CE, NE
+      customer_state_region_type   = order.customer_state && state_region[order.customer_state.to_sym]
+      # 買家所在地標籤化： NE, SE, CE, NE
+      seller_state_region_type     = order.seller_state && state_region[order.seller_state.to_sym]
+      # 賣家審核時間 (訂單成立 -> 賣家確認準備出貨的時間)
+      until_approved_waiting_hours = (approved_at.present? && purchase_at.present?) && ((approved_at - purchase_at) / 1.hour).round
+      # 整體處理時間 (訂單成立 -> 送達消費者的時間) 單位： `h`
+      total_logistics_using_hours  = (delivered_at.present? && purchase_at.present?) && ((delivered_at - purchase_at) / 1.hour).round
+      # 預估完成時間 (訂單成立 -> 預估抵達時間)
+      estimated_logistics_using_hours = (estimated_at.present? && purchase_at.present?) && ((estimated_at - purchase_at) / 1.hour).round
+      # 物流延遲時間
+      logistics_delay_hours = (estimated_at.present? && delivered_at.present?) && ((estimated_at - delivered_at) / 1.hour).round
+
+      order.update_columns(
+        review_type: review_type,
+        customer_state_region_type: customer_state_region_type,
+        seller_state_region_type: seller_state_region_type,
+        until_approved_waiting_hours: until_approved_waiting_hours,
+        total_logistics_using_hours: total_logistics_using_hours,
+        estimated_logistics_using_hours: estimated_logistics_using_hours,
+        logistics_delay_hours: logistics_delay_hours
+      )
     end
 
     puts "#{Time.now} - 匯入結束"
