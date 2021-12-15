@@ -1485,7 +1485,7 @@ namespace :dataset_export do
         row[:product_weight_g] = product.product_weight_g
         row[:product_volume] = item.package_volume
         row[:approved_waiting_hrs] = order.until_approved_waiting_hours
-        row[:seller_to_logistics_hrs] = order.until_approved_waiting_hours
+        row[:seller_to_logistics_hrs] = order.until_shipped_waiting_hours
         row[:total_shipping_hrs] = order.total_logistics_using_hours
         row[:seller_lat] = order.seller_geolocation_lat
         row[:seller_lng] = order.seller_geolocation_lng
