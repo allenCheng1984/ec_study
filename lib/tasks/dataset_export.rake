@@ -1452,55 +1452,47 @@ namespace :dataset_export do
     # 1. 只有一個品項的訂單
     # 2. 有寫評價的訂單
     # 3. 評價分數 3 的排除掉
-    orders = Order.where(item_count: 1).where.not(
-              order_id: duplicate_order_ids,
-              review_score: nil
-             ).where.not(review_score: 3)
+    # note: 已將 review_team 所需的欄位存入到 table 裡，直接 query 印出來就好
+    orders = Order.where.not(review_product_id: nil)
 
-    orders.find_in_batches(batch_size: 500) do |group|
-      dataset = []
+    dataset = []
+    orders.each do |order|
+      next if !order.item_category_name
 
-      group.each do |order|
-        item  = OrderItem.find_by(order_id: order.order_id)
-        product = Product.find_by(product_id: item.product_id)
-        # 如果找不到 product / item 資料就排除
-        next if !product || !item
+      # 只取需要的欄位值進去
+      row = {}
+      row[:review_type] = order.review_type
+      row[:review_score] = order.review_score
+      row[:self_defined_review_score] = order.review_type
+      row[:seller_state] = order.seller_state
+      row[:seller_state_region_type] = order.seller_state_region_type
+      row[:delivered_at] = order.order_delivered_customer_date
+      row[:approved_at] = order.order_approved_at
+      row[:total_shipping_day] = order.total_delivered_waiting_day
+      row[:product_id] = order.review_product_id
+      row[:product_category_name_english] = order.review_product_category_name_engliah
+      row[:self_defined_product_category] = category_type_label[order.item_category_name.to_sym]
+      row[:item_price] = order.review_item_price
+      row[:product_length_cm] = order.review_product_length_cm
+      row[:product_height_cm] = order.review_product_height_cm
+      row[:product_width_cm] = order.review_product_width_cm
+      row[:product_weight_g] = order.review_product_weight_g
+      row[:product_volume] = order.review_product_volume
+      row[:approved_waiting_hrs] = order.until_approved_waiting_hours
+      row[:seller_to_logistics_hrs] = order.until_shipped_waiting_hours
+      row[:total_shipping_hrs] = order.total_logistics_using_hours
+      row[:seller_lat] = order.seller_geolocation_lat
+      row[:seller_lng] = order.seller_geolocation_lng
+      row[:geo_distance] = order.geo_distance
 
-        # 只取需要的欄位值進去
-        row = {}
-        row[:review_type] = order.review_type
-        row[:review_score] = order.review_score
-        row[:self_defined_review_score] = order.review_type
-        row[:seller_state] = order.seller_state
-        row[:seller_state_region_type] = order.seller_state_region_type
-        row[:delivered_at] = order.order_delivered_customer_date
-        row[:approved_at] = order.order_approved_at
-        row[:total_shipping_day] = order.total_delivered_waiting_day
-        row[:product_id] = product.product_id
-        row[:product_category_name_engliah] = product.product_category_name_english
-        row[:self_defined_product_category] = category_type_label[order.item_category_name.to_sym]
-        row[:item_price] = item.price
-        row[:product_length_cm] = product.product_length_cm
-        row[:product_height_cm] = product.product_height_cm
-        row[:product_width_cm] = product.product_width_cm
-        row[:product_weight_g] = product.product_weight_g
-        row[:product_volume] = item.package_volume
-        row[:approved_waiting_hrs] = order.until_approved_waiting_hours
-        row[:seller_to_logistics_hrs] = order.until_shipped_waiting_hours
-        row[:total_shipping_hrs] = order.total_logistics_using_hours
-        row[:seller_lat] = order.seller_geolocation_lat
-        row[:seller_lng] = order.seller_geolocation_lng
-        row[:geo_distance] = order.geo_distance
+      # 存入 dataset
+      dataset << row
+    end
 
-        # 存入 dataset
-        dataset << row
-      end
-
-      # 將整理好的 dataset 轉成 csv
-      CSV.open("./tmp/review_dataset.csv", "ab", headers: dataset.first.keys) do |csv|
-        dataset.each do |h|
-          csv << h.values
-        end
+    # 將整理好的 dataset 轉成 csv
+    CSV.open("./tmp/review_dataset.csv", "w", headers: dataset.first.keys, write_headers: true) do |csv|
+      dataset.each do |h|
+        csv << h.values
       end
     end
 
