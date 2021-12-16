@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_13_234812) do
+ActiveRecord::Schema.define(version: 2021_12_16_114639) do
 
   create_table "closed_deals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "mql_id"
@@ -172,6 +172,14 @@ ActiveRecord::Schema.define(version: 2021_12_13_234812) do
     t.integer "total_logistics_using_hours"
     t.integer "estimated_logistics_using_hours"
     t.integer "logistics_delay_hours"
+    t.string "review_product_id"
+    t.string "review_product_category_name_engliah"
+    t.float "review_item_price"
+    t.float "review_product_length_cm"
+    t.float "review_product_height_cm"
+    t.float "review_product_width_cm"
+    t.float "review_product_weight_g"
+    t.float "review_product_volume"
   end
 
   create_table "products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
