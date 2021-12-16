@@ -1468,6 +1468,7 @@ namespace :dataset_export do
 
         # 只取需要的欄位值進去
         row = {}
+        row[:review_type] = order.review_type
         row[:review_score] = order.review_score
         row[:self_defined_review_score] = order.review_type
         row[:seller_state] = order.seller_state
@@ -1571,7 +1572,7 @@ namespace :dataset_export do
 
   # 匯出物流組需要的 dataset 內容
   task :logistics_team => [ :environment ] do
-    puts "#{Time.now} - 匯出物流組需要的 dataset 內容」"
+    puts "#{Time.now} - 匯出物流組需要的 dataset 內容"
 
     # orders 的篩選條件：
     # 1. 全部的物流戳記都要有資料
@@ -1590,6 +1591,8 @@ namespace :dataset_export do
     orders.each do |order|
       # 只取需要的欄位值進去
       row = {}
+      row[:is_shipping_delayed] = order.is_shipping_delayed
+      row[:is_delivered_delayed] = order.is_delivered_delayed
       row[:total_item_price] = order.total_item_price
       row[:total_freight_value] = order.total_freight_value
       row[:total_payment_value] = order.total_payment_value
