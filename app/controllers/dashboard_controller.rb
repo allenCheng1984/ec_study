@@ -3,4 +3,7 @@ class DashboardController < ApplicationController
 
   def index
   end
+
+  def team_members
+  end
 end
