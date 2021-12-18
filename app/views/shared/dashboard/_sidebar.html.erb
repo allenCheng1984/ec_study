@@ -4,7 +4,7 @@
   <ul class="sidebar-nav" id="sidebar-nav">
 
     <li class="nav-item">
-      <a class="nav-link " href="<%= root_path %>">
+      <a class="nav-link <%= 'collapsed' if !current_page?(root_path) %>" href="<%= root_path %>">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </a>
@@ -18,7 +18,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="<%= team_members_path %>">
+      <a class="nav-link <%= 'collapsed' if !current_page?(team_members_path) %>" href="<%= team_members_path %>">
         <i class="bi bi-person"></i>
         <span>成員介紹</span>
       </a>
