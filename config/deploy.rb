@@ -2,7 +2,7 @@
 lock "~> 3.16.0"
 
 set :application, "olist"
-set :repo_url, "git@github.com:allenCheng1984/olist.git"
+set :repo_url, "git@github.com:allenCheng1984/ec_study.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
