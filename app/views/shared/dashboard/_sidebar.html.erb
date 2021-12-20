@@ -11,7 +11,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
+      <a class="nav-link collapsed" href="<%= about_path %>">
         <i class="bi bi-exclamation-square"></i>
         <span>關於專題</span>
       </a>
@@ -25,7 +25,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
+      <a class="nav-link collapsed" href="<%= dataset_info_path %>">
         <i class="bi bi-server"></i>
         <span>資料背景概述</span>
       </a>
@@ -99,6 +99,13 @@
         </li>
       </ul>
     </li><!-- End Icons Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="<%= predict_path %>">
+        <i class="bi bi-code-square"></i>
+        <span>模型預測模擬器</span>
+      </a>
+    </li>
 
     <li class="nav-item">
       <a class="nav-link collapsed" href="https://github.com/allenCheng1984/ec_study" target="_blank">
