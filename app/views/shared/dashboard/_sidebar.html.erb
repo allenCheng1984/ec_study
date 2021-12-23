@@ -78,23 +78,28 @@
     </li><!-- End Charts Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+      <a class="nav-link  <%= 'collapsed' if !(current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training')) %>" data-bs-target="#logistics" data-bs-toggle="collapse" href="#">
         <i class="bi bi-pin-map-fill"></i><span>專題: 物流小組</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <ul id="logistics" class="nav-content collapse <%= 'show' if current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training') %>" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="#">
-            <i class="bi bi-file-earmark-font"></i><span>主題: 物流延誤分析</span>
+          <a href="/logistics_intro" class="<%= 'active' if current_page?('/logistics_intro') %>">
+            <i class="bi bi-file-earmark-font"></i><span>研究摘要(目的與動機)</span>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class="bi bi-file-slides"></i><span>投影片</span>
+          <a href="/logistics_core_model" class="<%= 'active' if current_page?('/logistics_core_model') %>">
+            <i class="bi bi-lightning"></i><span>主力模型介紹</span>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class="bi bi-bar-chart"></i><span>圖表數據</span>
+          <a href="/logistics_model_training" class="<%= 'active' if current_page?('/logistics_model_training') %>">
+            <i class="bi bi-stars"></i><span>模型調教歷程</span>
+          </a>
+        </li>
+        <li>
+          <a target="_blank" href="https://colab.research.google.com/drive/1mcvzDyLyHcBF7JRchYYGM6ChMWKBueY0?usp=sharing">
+            <i class="bi bi-code-slash"></i><span>模型程式碼 &nbsp;&nbsp;<i class="bi bi-arrow-up-right-square" style="font-size: 10px;"></i></span>
           </a>
         </li>
       </ul>
@@ -110,7 +115,7 @@
     <li class="nav-item">
       <a class="nav-link collapsed" href="https://github.com/allenCheng1984/ec_study" target="_blank">
         <i class="bi bi-github"></i>
-        <span>專案程式碼 &nbsp;&nbsp;<i class="bi bi-arrow-up-right-square" style="font-size: 10px;" ></i></span>
+        <span>專案程式碼 &nbsp;&nbsp;<i class="bi bi-arrow-up-right-square" style="font-size: 10px;"></i></span>
       </a>
     </li>
   </ul>
