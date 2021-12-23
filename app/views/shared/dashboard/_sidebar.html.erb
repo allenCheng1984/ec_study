@@ -81,7 +81,7 @@
       <a class="nav-link  <%= 'collapsed' if !(current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training')) %>" data-bs-target="#logistics" data-bs-toggle="collapse" href="#">
         <i class="bi bi-pin-map-fill"></i><span>專題: 物流小組</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul id="logistics" class="nav-content collapse <%= 'show' if current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training') %>" data-bs-parent="#sidebar-nav">
+      <ul id="logistics" class="nav-content collapse <%= 'show' if current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training') || current_page?('/logistics_conclusion') %>" data-bs-parent="#sidebar-nav">
         <li>
           <a href="/logistics_intro" class="<%= 'active' if current_page?('/logistics_intro') %>">
             <i class="bi bi-file-earmark-font"></i><span>研究摘要(目的與動機)</span>
