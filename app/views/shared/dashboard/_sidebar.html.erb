@@ -32,56 +32,76 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-bag-check-fill"></i><span>專題: 銷售小組</span><i class="bi bi-chevron-down ms-auto"></i>
+      <a class="nav-link <%= 'collapsed' if !(current_page?('/sales_intro') || current_page?('/sales_core_model') || current_page?('/sales_model_training') || current_page?('/sales_conclusion')) %>" data-bs-target="#review" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-emoji-heart-eyes"></i><span>專題: 銷售小組</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <ul id="review" class="nav-content collapse <%= 'show' if current_page?('/sales_intro') || current_page?('/sales_core_model') || current_page?('/sales_model_training') || current_page?('/sales_conclusion') %>" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="#">
-            <i class="bi bi-file-earmark-font"></i><span>主題: 銷售的 OOXXX</span>
+          <a href="/sales_intro" class="<%= 'active' if current_page?('/sales_intro') %>">
+            <i class="bi bi-file-earmark-font"></i><span>研究摘要(目的與動機)</span>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class="bi bi-file-slides"></i><span>投影片</span>
+          <a href="/sales_core_model" class="<%= 'active' if current_page?('/sales_core_model') %>">
+            <i class="bi bi-stars"></i><span>主力模型介紹</span>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class="bi bi-bar-chart"></i><span>圖表數據</span>
+          <a href="/sales_model_training" class="<%= 'active' if current_page?('/sales_model_training') %>">
+            <i class="bi bi-lightning"></i><span>模型調教歷程</span>
+          </a>
+        </li>
+        <li>
+          <a href="/sales_conclusion" class="<%= 'active' if current_page?('/sales_conclusion') %>">
+            <i class="bi bi-check2-square"></i><span>管理意涵與營運策略</span>
+          </a>
+        </li>
+        <li>
+          <a target="_blank" href="https://colab.research.google.com/drive/1mcvzDyLyHcBF7JRchYYGM6ChMWKBueY0?usp=sharing">
+            <i class="bi bi-code-slash"></i><span>模型程式碼 &nbsp;&nbsp;<i class="bi bi-arrow-up-right-square" style="font-size: 10px;"></i></span>
           </a>
         </li>
       </ul>
     </li><!-- End Tables Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+      <a class="nav-link <%= 'collapsed' if !(current_page?('/review_intro') || current_page?('/review_core_model') || current_page?('/review_model_training') || current_page?('/review_conclusion')) %>" data-bs-target="#review" data-bs-toggle="collapse" href="#">
         <i class="bi bi-emoji-heart-eyes"></i><span>專題: 評價小組</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <ul id="review" class="nav-content collapse <%= 'show' if current_page?('/review_intro') || current_page?('/review_core_model') || current_page?('/review_model_training') || current_page?('/review_conclusion') %>" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="#">
-            <i class="bi bi-file-earmark-font"></i><span>主題: 銷售的 OOXXX</span>
+          <a href="/review_intro" class="<%= 'active' if current_page?('/review_intro') %>">
+            <i class="bi bi-file-earmark-font"></i><span>研究摘要(目的與動機)</span>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class="bi bi-file-slides"></i><span>投影片</span>
+          <a href="/review_core_model" class="<%= 'active' if current_page?('/review_core_model') %>">
+            <i class="bi bi-stars"></i><span>主力模型介紹</span>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class="bi bi-bar-chart"></i><span>圖表數據</span>
+          <a href="/review_model_training" class="<%= 'active' if current_page?('/review_model_training') %>">
+            <i class="bi bi-lightning"></i><span>模型調教歷程</span>
+          </a>
+        </li>
+        <li>
+          <a href="/review_conclusion" class="<%= 'active' if current_page?('/review_conclusion') %>">
+            <i class="bi bi-check2-square"></i><span>管理意涵與營運策略</span>
+          </a>
+        </li>
+        <li>
+          <a target="_blank" href="https://colab.research.google.com/drive/1mcvzDyLyHcBF7JRchYYGM6ChMWKBueY0?usp=sharing">
+            <i class="bi bi-code-slash"></i><span>模型程式碼 &nbsp;&nbsp;<i class="bi bi-arrow-up-right-square" style="font-size: 10px;"></i></span>
           </a>
         </li>
       </ul>
     </li><!-- End Charts Nav -->
 
     <li class="nav-item">
-      <a class="nav-link  <%= 'collapsed' if !(current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training')) %>" data-bs-target="#logistics" data-bs-toggle="collapse" href="#">
+      <a class="nav-link  <%= 'collapsed' if !(current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training') || current_page?('/logistics_conclusion')) %>" data-bs-target="#logistics" data-bs-toggle="collapse" href="#">
         <i class="bi bi-pin-map-fill"></i><span>專題: 物流小組</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul id="logistics" class="nav-content collapse <%= 'show' if current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training') || current_page?('/logistics_conclusion') %>" data-bs-parent="#sidebar-nav">
+      <ul id="logistics" class="nav-content collapse <%= 'show' if current_page?('/logistics_intro') || current_page?('/logistics_core_model') || current_page?('/logistics_model_training') || current_page?('/logistics_conclusion') %>" >
         <li>
           <a href="/logistics_intro" class="<%= 'active' if current_page?('/logistics_intro') %>">
             <i class="bi bi-file-earmark-font"></i><span>研究摘要(目的與動機)</span>

@@ -21,6 +21,33 @@ class DashboardController < ApplicationController
   def dataset_info
   end
 
+  # 銷售小組頁
+  def sales_intro
+  end
+
+  def sales_core_model
+  end
+
+  def sales_model_training
+  end
+
+  def sales_conclusion
+  end
+
+  # 評價小組頁
+  def review_intro
+  end
+
+  def review_core_model
+  end
+
+  def review_model_training
+  end
+
+  def review_conclusion
+  end
+
+  # 物流小組頁
   def logistics_intro
   end
 
