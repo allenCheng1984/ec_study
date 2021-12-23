@@ -167,6 +167,7 @@
     </div>
   </div>
 
+  <%# heatMap %>
   <div class="row">
     <div class="col-sm-12">
 
@@ -181,6 +182,7 @@
     </div>
   </div>
 
+  <%# columnLineChart %>
   <div class="row">
     <div class="col-sm-12">
 
@@ -189,6 +191,36 @@
           <h5 class="card-title">Column Line Chart(待命名)</h5>
           <p>description(待補充)</p>
           <div id="columnLineChart" style="width: 100%;height: 500px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <%# columnLineChart %>
+  <div class="row">
+    <div class="col-sm-12">
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Pie Chart(待命名)</h5>
+          <p>description(待補充)</p>
+          <div id="pieChart" style="width: 100%;height: 500px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <%# columnLineMedian %>
+  <div class="row">
+    <div class="col-sm-12">
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">columnLineMedian(待命名)</h5>
+          <p>description(待補充)</p>
+          <div id="columnLineMedian" style="width: 100%;height: 500px;"></div>
         </div>
       </div>
 
@@ -569,5 +601,42 @@
       series1.appear();
 
     }); // end am5.ready()
+  </script>
+
+  <!-- pieChart -->
+  <script>
+    am4core.ready(function() {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("pieChart", am4charts.PieChart3D);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+    chart.data = [
+      {
+        country: "Delay",
+        litres: 7614
+      },
+      {
+        country: "Ontime",
+        litres: 85981
+      }
+    ];
+
+    chart.innerRadius = am4core.percent(40);
+    chart.depth = 120;
+
+    chart.legend = new am4charts.Legend();
+
+    var series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "litres";
+    series.dataFields.depthValue = "litres";
+    series.dataFields.category = "country";
+    series.slices.template.cornerRadius = 5;
+    series.colors.step = 3;
+
+    }); // end am4core.ready()
   </script>
 <% end %>
