@@ -1,193 +1,194 @@
-<div class="row">
-  <div class="col-sm-3">
-    <div class="pagetitle">
-      <h1>Dashboard</h1>
-    </div>
-  </div>
-  <div class="col-sm-9" style="margin-bottom: 15px;">
-    <div class="float-end">
-      <div class="dropdown" style="display:inline">
-        <button class="btn dropdown-toggle" type="button" id="date-dimension" data-bs-toggle="dropdown">
-          <%= '選擇日期區間' if !@date_range %>
-          <%= "#{@date_range} 年" if @date_range && @dimension == 'year' %>
-          <%=  @date_range.to_s.insert(4, ' 年 ').insert(-1, ' 月') if @date_range && @dimension == 'month' %>
-          <%=  @date_range.to_s.insert(4, ' 年第 ').insert(-1, ' 週') if @date_range && @dimension == 'week' %>
-        </button>
-
-        <ul class="dropdown-menu" aria-labelledby="date-dimension" style="max-height: 400px;overflow-y: auto;">
-          <%= render 'date_dimension_selects', dimension: @dimension %>
-        </ul>
-      </div>
-      <div class="btn-group">
-        <%= link_to '週', root_path(dimension: 'week'), class: "btn btn-outline-primary #{'active' if @dimension == 'week'}"  %>
-        <%= link_to '月', root_path(dimension: 'month'), class: "btn btn-outline-primary #{'active' if @dimension == 'month'}"  %>
-        <%= link_to '年', root_path(dimension: 'year'), class: "btn btn-outline-primary #{'active' if @dimension == 'year'}"  %>
-      </div>
-    </div>
-  </div>
-</div>
-
-<section class="section dashboard">
+<% cache [@orders] do %>
   <div class="row">
-
-    <!-- Left side columns -->
-    <div class="col-lg-8">
-      <div class="row">
-
-        <!-- 訂單 -->
-        <div class="col-xxl-4 col-md-6">
-          <div class="card info-card sales-card">
-
-            <div class="card-body">
-              <h5 class="card-title">訂單數</h5>
-
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="width:10px;height:20px;margin-left:10px;">
-                  <i class="bi bi-cart"></i>
-                </div>
-                <div class="ps-3">
-                  <h6 style="font-size:24px;"><%= @orders.count %></h6>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div><!-- End 訂單 --->
-
-        <!-- 銷售額 -->
-        <div class="col-xxl-4 col-md-6">
-          <div class="card info-card revenue-card">
-
-            <div class="card-body">
-              <h5 class="card-title">銷售額</h5>
-
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="width:10px;height:20px;">
-                  <i class="bi bi-currency-dollar"></i>
-                </div>
-                <div class="ps-3">
-                  <h6 style="font-size:24px;"><%= number_to_currency(@orders_payments_sum, precision: 2) %></h6>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div><!-- End 銷售額 -->
-
-        <!-- 客單價 -->
-        <div class="col-xxl-4 col-xl-12">
-
-          <div class="card info-card customers-card">
-
-            <div class="card-body">
-              <h5 class="card-title">客單價</h5>
-
-              <div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="width:10px;height:20px;margin-left:10px;">
-                  <i class="bi bi-people"></i>
-                </div>
-                <div class="ps-3">
-                  <h6 style="font-size:24px;"><%= @orders.count > 0 ? number_to_currency(@orders_payments_sum / @orders.count, precision: 2) : 0 %></h6>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div><!-- End 客單價 -->
-
-        <!-- 銷售趨勢 -->
-        <%= render "sales_trend_chart" %>
-
-        <!-- 銷售額(依類別) -->
-        <%= render "sale_by_categories_chart" %>
-
-        <!-- 購買頻率(依時間) -->
-        <%= render "heat_map_chart" %>
-
+    <div class="col-sm-3">
+      <div class="pagetitle">
+        <h1>Dashboard</h1>
       </div>
-    </div><!-- End Left side columns -->
+    </div>
+    <div class="col-sm-9" style="margin-bottom: 15px;">
+      <div class="float-end">
+        <div class="dropdown" style="display:inline">
+          <button class="btn dropdown-toggle" type="button" id="date-dimension" data-bs-toggle="dropdown">
+            <%= '選擇日期區間' if !@date_range %>
+            <%= "#{@date_range} 年" if @date_range && @dimension == 'year' %>
+            <%=  @date_range.to_s.insert(4, ' 年 ').insert(-1, ' 月') if @date_range && @dimension == 'month' %>
+            <%=  @date_range.to_s.insert(4, ' 年第 ').insert(-1, ' 週') if @date_range && @dimension == 'week' %>
+          </button>
 
-    <!-- Right side columns -->
-    <div class="col-lg-4">
+          <ul class="dropdown-menu" aria-labelledby="date-dimension" style="max-height: 400px;overflow-y: auto;">
+            <%= render 'date_dimension_selects', dimension: @dimension %>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <%= link_to '週', root_path(dimension: 'week'), class: "btn btn-outline-primary #{'active' if @dimension == 'week'}"  %>
+          <%= link_to '月', root_path(dimension: 'month'), class: "btn btn-outline-primary #{'active' if @dimension == 'month'}"  %>
+          <%= link_to '年', root_path(dimension: 'year'), class: "btn btn-outline-primary #{'active' if @dimension == 'year'}"  %>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- 開發進度 -->
-      <div class="card">
+  <section class="section dashboard">
+    <div class="row">
 
-        <div class="card-body">
-          <h5 class="card-title">開發進度</h5>
+      <!-- Left side columns -->
+      <div class="col-lg-8">
+        <div class="row">
 
-          <div class="activity">
+          <!-- 訂單 -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card sales-card">
 
-            <div class="activity-item d-flex">
-              <div class="activite-label">12/18</div>
-              <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-              <div class="activity-content">
-                專題網站成立
+              <div class="card-body">
+                <h5 class="card-title">訂單數</h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="width:10px;height:20px;margin-left:10px;">
+                    <i class="bi bi-cart"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 style="font-size:24px;"><%= @orders.count %></h6>
+                  </div>
+                </div>
               </div>
-            </div><!-- End activity item-->
 
-            <div class="activity-item d-flex">
-              <div class="activite-label">12/16</div>
-              <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-              <div class="activity-content">
-                計畫：專題網站的內容定案
+            </div>
+          </div><!-- End 訂單 --->
+
+          <!-- 銷售額 -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card revenue-card">
+
+              <div class="card-body">
+                <h5 class="card-title">銷售額</h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="width:10px;height:20px;">
+                    <i class="bi bi-currency-dollar"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 style="font-size:24px;"><%= number_to_currency(@orders_payments_sum, precision: 2) %></h6>
+                  </div>
+                </div>
               </div>
-            </div><!-- End activity item-->
 
-            <div class="activity-item d-flex">
-              <div class="activite-label">12/13</div>
-              <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-              <div class="activity-content">
-                三個小組的研究議題定案
+            </div>
+          </div><!-- End 銷售額 -->
+
+          <!-- 客單價 -->
+          <div class="col-xxl-4 col-xl-12">
+
+            <div class="card info-card customers-card">
+
+              <div class="card-body">
+                <h5 class="card-title">客單價</h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="width:10px;height:20px;margin-left:10px;">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 style="font-size:24px;"><%= @orders.count > 0 ? number_to_currency(@orders_payments_sum / @orders.count, precision: 2) : 0 %></h6>
+                  </div>
+                </div>
+
               </div>
-            </div><!-- End activity item-->
+            </div>
 
-            <div class="activity-item d-flex">
-              <div class="activite-label">12/8</div>
-              <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-              <div class="activity-content">
-                各組員提案的探討、整合與分組
-              </div>
-            </div><!-- End activity item-->
+          </div><!-- End 客單價 -->
 
-            <div class="activity-item d-flex">
-              <div class="activite-label">12/4</div>
-              <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
-              <div class="activity-content">
-                所有組員各自尋找想研究的主題與方向
-              </div>
-            </div><!-- End activity item-->
+          <!-- 銷售趨勢 -->
+          <%= render "sales_trend_chart" %>
 
+          <!-- 銷售額(依類別) -->
+          <%= render "sale_by_categories_chart" %>
 
-            <div class="activity-item d-flex">
-              <div class="activite-label">11/26</div>
-              <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-              <div class="activity-content">
-                畢業專題團隊：電商組成立
-              </div>
-            </div><!-- End activity item-->
-
-
-
-          </div>
+          <!-- 購買頻率(依時間) -->
+          <%= render "heat_map_chart" %>
 
         </div>
-      </div><!-- End 開發進度 -->
+      </div><!-- End Left side columns -->
 
-      <!-- 銷售比例 -->
-      <%= render "dount_chart" %>
-      <!-- End 銷售比例 -->
+      <!-- Right side columns -->
+      <div class="col-lg-4">
 
-      <!-- 賣家排行 -->
-      <%= render 'seller_rank' %>
-      <!-- End 賣家排行 -->
+        <!-- 開發進度 -->
+        <div class="card">
 
-    </div><!-- End Right side columns -->
+          <div class="card-body">
+            <h5 class="card-title">開發進度</h5>
 
-  </div>
-</section>
+            <div class="activity">
 
+              <div class="activity-item d-flex">
+                <div class="activite-label">12/18</div>
+                <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                <div class="activity-content">
+                  專題網站成立
+                </div>
+              </div><!-- End activity item-->
+
+              <div class="activity-item d-flex">
+                <div class="activite-label">12/16</div>
+                <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                <div class="activity-content">
+                  計畫：專題網站的內容定案
+                </div>
+              </div><!-- End activity item-->
+
+              <div class="activity-item d-flex">
+                <div class="activite-label">12/13</div>
+                <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                <div class="activity-content">
+                  三個小組的研究議題定案
+                </div>
+              </div><!-- End activity item-->
+
+              <div class="activity-item d-flex">
+                <div class="activite-label">12/8</div>
+                <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                <div class="activity-content">
+                  各組員提案的探討、整合與分組
+                </div>
+              </div><!-- End activity item-->
+
+              <div class="activity-item d-flex">
+                <div class="activite-label">12/4</div>
+                <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
+                <div class="activity-content">
+                  所有組員各自尋找想研究的主題與方向
+                </div>
+              </div><!-- End activity item-->
+
+
+              <div class="activity-item d-flex">
+                <div class="activite-label">11/26</div>
+                <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                <div class="activity-content">
+                  畢業專題團隊：電商組成立
+                </div>
+              </div><!-- End activity item-->
+
+
+
+            </div>
+
+          </div>
+        </div><!-- End 開發進度 -->
+
+        <!-- 銷售比例 -->
+        <%= render "dount_chart" %>
+        <!-- End 銷售比例 -->
+
+        <!-- 賣家排行 -->
+        <%= render 'seller_rank' %>
+        <!-- End 賣家排行 -->
+
+      </div><!-- End Right side columns -->
+
+    </div>
+  </section>
+<% end %>
 
 <%= content_for :javascript do %>
   <script>
