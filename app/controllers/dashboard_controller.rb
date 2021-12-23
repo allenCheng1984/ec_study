@@ -30,6 +30,9 @@ class DashboardController < ApplicationController
   def logistics_model_training
   end
 
+  def logistics_conclusion
+  end
+
   private
 
     def set_index_orders(dimension, date_range)

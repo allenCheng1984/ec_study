@@ -9,5 +9,6 @@ Rails.application.routes.draw do
   get '/logistics_intro', to: 'dashboard#logistics_intro'
   get '/logistics_core_model', to: 'dashboard#logistics_core_model'
   get '/logistics_model_training', to: 'dashboard#logistics_model_training'
+  get '/logistics_conclusion', to: 'dashboard#logistics_conclusion'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

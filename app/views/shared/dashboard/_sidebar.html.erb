@@ -11,7 +11,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="<%= about_path %>">
+      <a class="nav-link <%= 'collapsed' if !current_page?(about_path) %>" href="<%= about_path %>">
         <i class="bi bi-exclamation-square"></i>
         <span>關於專題</span>
       </a>
@@ -25,7 +25,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="<%= dataset_info_path %>">
+      <a class="nav-link <%= 'collapsed' if !current_page?(dataset_info_path) %>" href="<%= dataset_info_path %>">
         <i class="bi bi-server"></i>
         <span>資料背景概述</span>
       </a>
@@ -89,12 +89,17 @@
         </li>
         <li>
           <a href="/logistics_core_model" class="<%= 'active' if current_page?('/logistics_core_model') %>">
-            <i class="bi bi-lightning"></i><span>主力模型介紹</span>
+            <i class="bi bi-stars"></i><span>主力模型介紹</span>
           </a>
         </li>
         <li>
           <a href="/logistics_model_training" class="<%= 'active' if current_page?('/logistics_model_training') %>">
-            <i class="bi bi-stars"></i><span>模型調教歷程</span>
+            <i class="bi bi-lightning"></i><span>模型調教歷程</span>
+          </a>
+        </li>
+        <li>
+          <a href="/logistics_conclusion" class="<%= 'active' if current_page?('/logistics_conclusion') %>">
+            <i class="bi bi-check2-square"></i><span>管理意涵與營運策略</span>
           </a>
         </li>
         <li>
@@ -106,7 +111,7 @@
     </li><!-- End Icons Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="<%= predict_path %>">
+      <a class="nav-link <%= 'collapsed' if !current_page?(predict_path) %>" href="<%= predict_path %>">
         <i class="bi bi-code-square"></i>
         <span>模型預測模擬器</span>
       </a>
