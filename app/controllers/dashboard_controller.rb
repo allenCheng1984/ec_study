@@ -2,6 +2,8 @@ class DashboardController < ApplicationController
   layout 'dashboard'
 
   def index
+    @dimension = params[:dimension] || 'year'
+    @date_range = params[:date_range]
   end
 
   def team_members
