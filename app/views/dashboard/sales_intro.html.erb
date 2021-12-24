@@ -44,35 +44,1790 @@
     </div>
   </div>
 
+  <%# paretoChart1, paretoChart2 %>
   <div class="row">
     <div class="col-sm-12">
 
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Heat Map(待命名)</h5>
-          <p>description(待補充)</p>
-          <div id="heatMap" style="width: 100%;height: 500px;"></div>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="home2-tab" data-bs-toggle="tab" data-bs-target="#paretoChart1-tab" type="button" role="tab" aria-controls="paretoChart1-tab" aria-selected="true">產品銷售量(月)</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="profile2-tab" data-bs-toggle="tab" data-bs-target="#paretoChart2-tab" type="button" role="tab" aria-controls="paretoChart2-tab" aria-selected="false">產品銷售量(週)</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent1">
+        <div class="tab-pane fade show active" id="paretoChart1-tab" role="tabpanel" aria-labelledby="home2-tab">
+
+          <div class="card">
+            <div class="card-body">
+              <div id="paretoChart1" style="width: 100%;height: 500px;"></div>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-pane fade" id="paretoChart2-tab" role="tabpanel" aria-labelledby="profile2-tab">
+
+          <div class="card">
+            <div class="card-body">
+              <div id="paretoChart2" style="width: 100%;height: 500px;"></div>
+            </div>
+          </div>
+
         </div>
       </div>
 
     </div>
   </div>
 
+  <%# heatMap1 %>
   <div class="row">
     <div class="col-sm-12">
 
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Column Line Chart(待命名)</h5>
-          <p>description(待補充)</p>
-          <div id="columnLineChart" style="width: 100%;height: 500px;"></div>
+          <h5 class="card-title">用戶下單時段</h5>
+          <div id="heatMap1" style="width: 100%;height: 500px;"></div>
         </div>
       </div>
+
     </div>
   </div>
+
+  <%# dountChart2, radarChart1 %>
+  <div class="row">
+    <div class="col-sm-12">
+
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">產品分類銷售量</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">產品分類銷售量 by 地區</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+          <div class="card">
+            <div class="card-body">
+              <div id="dountChart2" style="width: 100%;height: 500px;"></div>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">產品分類銷售量 by 地區</h5>
+              <div id="radarChart1" style="width: 100%;height: 500px;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+
 </section>
 
 
 <%= content_for :javascript do %>
+  <!-- paretoChart1 -->
+  <script>
+    am4core.ready(function () {
 
+      // Themes begin
+      am4core.useTheme(am4themes_animated);
+      // Themes end
+
+      // Create chart instance
+      var chart = am4core.create("paretoChart1", am4charts.XYChart);
+      chart.scrollbarX = new am4core.Scrollbar();
+
+      // Add data
+      chart.data = [
+        {
+          "country": "January",
+          "visits": 913
+        },
+        {
+          "country": "February",
+          "visits": 1858
+        },
+        {
+          "country": "March",
+          "visits": 2897
+        },
+        {
+          "country": "April",
+          "visits": 2569
+        },
+        {
+          "country": "May",
+          "visits": 4004
+        },
+        {
+          "country": "June",
+          "visits": 3489
+        },
+        {
+          "country": "July",
+          "visits": 4416
+        },
+        {
+          "country": "August",
+          "visits": 4797
+        },
+        {
+          "country": "September",
+          "visits": 4737
+        },
+        {
+          "country": "October",
+          "visits": 5214
+        },
+        {
+          "country": "November",
+          "visits": 8475
+        },
+        {
+          "country": "December",
+          "visits": 6187
+        }
+      ];
+
+      prepareParetoData();
+
+      function prepareParetoData() {
+        var total = 0;
+
+        for (var i = 0; i < chart.data.length; i++) {
+          var value = chart.data[i].visits;
+          total += value;
+        }
+
+        var sum = 0;
+        for (var i = 0; i < chart.data.length; i++) {
+          var value = chart.data[i].visits;
+          sum += value;
+          chart.data[i].pareto = sum / total * 100;
+        }
+      }
+
+      // Create axes
+      var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = "country";
+      categoryAxis.renderer.grid.template.location = 0;
+      categoryAxis.renderer.minGridDistance = 60;
+      categoryAxis.tooltip.disabled = true;
+
+      var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      valueAxis.renderer.minWidth = 50;
+      valueAxis.min = 0;
+      valueAxis.cursorTooltipEnabled = false;
+
+      // Create series
+      var series = chart.series.push(new am4charts.ColumnSeries());
+      series.sequencedInterpolation = true;
+      series.dataFields.valueY = "visits";
+      series.dataFields.categoryX = "country";
+      series.tooltipText = "[{categoryX}: bold]{valueY}[/]";
+      series.columns.template.strokeWidth = 0;
+
+      series.tooltip.pointerOrientation = "vertical";
+
+      series.columns.template.column.cornerRadiusTopLeft = 10;
+      series.columns.template.column.cornerRadiusTopRight = 10;
+      series.columns.template.column.fillOpacity = 0.8;
+
+      // on hover, make corner radiuses bigger
+      var hoverState = series.columns.template.column.states.create("hover");
+      hoverState.properties.cornerRadiusTopLeft = 0;
+      hoverState.properties.cornerRadiusTopRight = 0;
+      hoverState.properties.fillOpacity = 1;
+
+      series.columns.template.adapter.add("fill", function (fill, target) {
+        return chart.colors.getIndex(target.dataItem.index);
+      })
+
+
+      var paretoValueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      paretoValueAxis.renderer.opposite = true;
+      paretoValueAxis.min = 0;
+      paretoValueAxis.max = 100;
+      paretoValueAxis.strictMinMax = true;
+      paretoValueAxis.renderer.grid.template.disabled = true;
+      paretoValueAxis.numberFormatter = new am4core.NumberFormatter();
+      paretoValueAxis.numberFormatter.numberFormat = "#'%'"
+      paretoValueAxis.cursorTooltipEnabled = false;
+
+      var paretoSeries = chart.series.push(new am4charts.LineSeries())
+      paretoSeries.dataFields.valueY = "pareto";
+      paretoSeries.dataFields.categoryX = "country";
+      paretoSeries.yAxis = paretoValueAxis;
+      paretoSeries.tooltipText = "pareto: {valueY.formatNumber('#.0')}%[/]";
+      paretoSeries.bullets.push(new am4charts.CircleBullet());
+      paretoSeries.strokeWidth = 2;
+      paretoSeries.stroke = new am4core.InterfaceColorSet().getFor("alternativeBackground");
+      paretoSeries.strokeOpacity = 0.5;
+
+      // Cursor
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.behavior = "panX";
+
+    }); // end am4core.ready()
+  </script>
+
+  <!-- paretoChart2 -->
+  <script>
+    am4core.ready(function () {
+
+      // Themes begin
+      am4core.useTheme(am4themes_animated);
+      // Themes end
+
+      // Create chart instance
+      var chart = am4core.create("paretoChart2", am4charts.XYChart);
+      chart.scrollbarX = new am4core.Scrollbar();
+
+      // Add data
+      chart.data = [
+        {
+          "country": "Week01",
+          "visits": 41
+        },
+        {
+          "country": "Week02",
+          "visits": 66
+        },
+        {
+          "country": "Week03",
+          "visits": 221
+        },
+        {
+          "country": "Week04",
+          "visits": 389
+        },
+        {
+          "country": "Week05",
+          "visits": 462
+        },
+        {
+          "country": "Week06",
+          "visits": 580
+        },
+        {
+          "country": "Week07",
+          "visits": 457
+        },
+        {
+          "country": "Week08",
+          "visits": 390
+        },
+        {
+          "country": "Week09",
+          "visits": 506
+        },
+        {
+          "country": "Week10",
+          "visits": 644
+        },
+        {
+          "country": "Week11",
+          "visits": 680
+        },
+        {
+          "country": "Week12",
+          "visits": 700
+        },
+        {
+          "country": "Week13",
+          "visits": 600
+        },
+        {
+          "country": "Week14",
+          "visits": 624
+        },
+        {
+          "country": "Week15",
+          "visits": 479
+        },
+        {
+          "country": "Week16",
+          "visits": 578
+        },
+        {
+          "country": "Week17",
+          "visits": 751
+        },
+        {
+          "country": "Week18",
+          "visits": 799
+        },
+        {
+          "country": "Week19",
+          "visits": 840
+        },
+        {
+          "country": "Week20",
+          "visits": 996
+        },
+        {
+          "country": "Week21",
+          "visits": 913
+        },
+        {
+          "country": "Week22",
+          "visits": 892
+        },
+        {
+          "country": "Week23",
+          "visits": 892
+        },
+        {
+          "country": "Week24",
+          "visits": 850
+        },
+        {
+          "country": "Week25",
+          "visits": 700
+        },
+        {
+          "country": "Week26",
+          "visits": 771
+        },
+        {
+          "country": "Week27",
+          "visits": 906
+        },
+        {
+          "country": "Week28",
+          "visits": 1021
+        },
+        {
+          "country": "Week29",
+          "visits": 1117
+        },
+        {
+          "country": "Week30",
+          "visits": 992
+        },
+        {
+          "country": "Week31",
+          "visits": 1082
+        },
+        {
+          "country": "Week32",
+          "visits": 1054
+        },
+        {
+          "country": "Week33",
+          "visits": 1125
+        },
+        {
+          "country": "Week34",
+          "visits": 1007
+        },
+        {
+          "country": "Week35",
+          "visits": 1112
+        },
+        {
+          "country": "Week36",
+          "visits": 982
+        },
+        {
+          "country": "Week37",
+          "visits": 1293
+        },
+        {
+          "country": "Week38",
+          "visits": 1123
+        },
+        {
+          "country": "Week39",
+          "visits": 1045
+        },
+        {
+          "country": "Week40",
+          "visits": 1122
+        },
+        {
+          "country": "Week41",
+          "visits": 1170
+        },
+        {
+          "country": "Week42",
+          "visits": 1266
+        },
+        {
+          "country": "Week43",
+          "visits": 1143
+        },
+        {
+          "country": "Week44",
+          "visits": 1078
+        },
+        {
+          "country": "Week45",
+          "visits": 1294
+        },
+        {
+          "country": "Week46",
+          "visits": 1467
+        },
+        {
+          "country": "Week47",
+          "visits": 3153
+        },
+        {
+          "country": "Week48",
+          "visits": 2534
+        },
+        {
+          "country": "Week49",
+          "visits": 1899
+        },
+        {
+          "country": "Week50",
+          "visits": 1591
+        },
+        {
+          "country": "Week51",
+          "visits": 1157
+        },
+        {
+          "country": "Week52",
+          "visits": 927
+        },
+        {
+          "country": "Week53",
+          "visits": 75
+        }
+      ];
+
+      prepareParetoData();
+
+      function prepareParetoData() {
+        var total = 0;
+
+        for (var i = 0; i < chart.data.length; i++) {
+          var value = chart.data[i].visits;
+          total += value;
+        }
+
+        var sum = 0;
+        for (var i = 0; i < chart.data.length; i++) {
+          var value = chart.data[i].visits;
+          sum += value;
+          chart.data[i].pareto = sum / total * 100;
+        }
+      }
+
+      // Create axes
+      var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = "country";
+      categoryAxis.renderer.grid.template.location = 0;
+      categoryAxis.renderer.minGridDistance = 60;
+      categoryAxis.tooltip.disabled = true;
+
+      var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      valueAxis.renderer.minWidth = 50;
+      valueAxis.min = 0;
+      valueAxis.cursorTooltipEnabled = false;
+
+      // Create series
+      var series = chart.series.push(new am4charts.ColumnSeries());
+      series.sequencedInterpolation = true;
+      series.dataFields.valueY = "visits";
+      series.dataFields.categoryX = "country";
+      series.tooltipText = "[{categoryX}: bold]{valueY}[/]";
+      series.columns.template.strokeWidth = 0;
+
+      series.tooltip.pointerOrientation = "vertical";
+
+      series.columns.template.column.cornerRadiusTopLeft = 10;
+      series.columns.template.column.cornerRadiusTopRight = 10;
+      series.columns.template.column.fillOpacity = 0.8;
+
+      // on hover, make corner radiuses bigger
+      var hoverState = series.columns.template.column.states.create("hover");
+      hoverState.properties.cornerRadiusTopLeft = 0;
+      hoverState.properties.cornerRadiusTopRight = 0;
+      hoverState.properties.fillOpacity = 1;
+
+      series.columns.template.adapter.add("fill", function (fill, target) {
+        return chart.colors.getIndex(target.dataItem.index);
+      })
+
+
+      var paretoValueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      paretoValueAxis.renderer.opposite = true;
+      paretoValueAxis.min = 0;
+      paretoValueAxis.max = 100;
+      paretoValueAxis.strictMinMax = true;
+      paretoValueAxis.renderer.grid.template.disabled = true;
+      paretoValueAxis.numberFormatter = new am4core.NumberFormatter();
+      paretoValueAxis.numberFormatter.numberFormat = "#'%'"
+      paretoValueAxis.cursorTooltipEnabled = false;
+
+      var paretoSeries = chart.series.push(new am4charts.LineSeries())
+      paretoSeries.dataFields.valueY = "pareto";
+      paretoSeries.dataFields.categoryX = "country";
+      paretoSeries.yAxis = paretoValueAxis;
+      paretoSeries.tooltipText = "pareto: {valueY.formatNumber('#.0')}%[/]";
+      paretoSeries.bullets.push(new am4charts.CircleBullet());
+      paretoSeries.strokeWidth = 2;
+      paretoSeries.stroke = new am4core.InterfaceColorSet().getFor("alternativeBackground");
+      paretoSeries.strokeOpacity = 0.5;
+
+      // Cursor
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.behavior = "panX";
+
+    }); // end am4core.ready()
+  </script>
+
+  <!-- heatMap1 -->
+  <script>
+    am4core.ready(function () {
+
+      // Themes begin
+      am4core.useTheme(am4themes_animated);
+      // Themes end
+
+      var chart = am4core.create("heatMap1", am4charts.XYChart);
+      chart.maskBullets = false;
+
+      var xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      var yAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+
+      xAxis.dataFields.category = "weekday";
+      yAxis.dataFields.category = "hour";
+
+      xAxis.renderer.grid.template.disabled = true;
+      xAxis.renderer.minGridDistance = 40;
+
+      yAxis.renderer.grid.template.disabled = true;
+      yAxis.renderer.inversed = true;
+      yAxis.renderer.minGridDistance = 30;
+
+      var series = chart.series.push(new am4charts.ColumnSeries());
+      series.dataFields.categoryX = "weekday";
+      series.dataFields.categoryY = "hour";
+      series.dataFields.value = "value";
+      series.sequencedInterpolation = true;
+      series.defaultState.transitionDuration = 3000;
+
+      var bgColor = new am4core.InterfaceColorSet().getFor("background");
+
+      var columnTemplate = series.columns.template;
+      columnTemplate.strokeWidth = 1;
+      columnTemplate.strokeOpacity = 0.2;
+      columnTemplate.stroke = bgColor;
+      columnTemplate.tooltipText = "{weekday}, {hour}: {value.workingValue.formatNumber('#.')}";
+      columnTemplate.width = am4core.percent(100);
+      columnTemplate.height = am4core.percent(100);
+
+      series.heatRules.push({
+        target: columnTemplate,
+        property: "fill",
+        min: am4core.color(bgColor),
+        max: chart.colors.getIndex(0)
+      });
+
+      // heat legend
+      var heatLegend = chart.bottomAxesContainer.createChild(am4charts.HeatLegend);
+      heatLegend.width = am4core.percent(100);
+      heatLegend.series = series;
+      heatLegend.valueAxis.renderer.labels.template.fontSize = 9;
+      heatLegend.valueAxis.renderer.minGridDistance = 30;
+
+      // heat legend behavior
+      series.columns.template.events.on("over", function (event) {
+        handleHover(event.target);
+      })
+
+      series.columns.template.events.on("hit", function (event) {
+        handleHover(event.target);
+      })
+
+      function handleHover(column) {
+        if (!isNaN(column.dataItem.value)) {
+          heatLegend.valueAxis.showTooltipAt(column.dataItem.value)
+        }
+        else {
+          heatLegend.valueAxis.hideTooltip();
+        }
+      }
+
+      series.columns.template.events.on("out", function (event) {
+        heatLegend.valueAxis.hideTooltip();
+      })
+
+      chart.data = [
+        {
+          "weekday": "Sunday",
+          "hour": 0,
+          "value": 147
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 1,
+          "value": 89
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 2,
+          "value": 43
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 3,
+          "value": 21
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 4,
+          "value": 17
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 5,
+          "value": 24
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 6,
+          "value": 18
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 7,
+          "value": 38
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 8,
+          "value": 111
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 9,
+          "value": 179
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 10,
+          "value": 270
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 11,
+          "value": 337
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 12,
+          "value": 362
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 13,
+          "value": 358
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 14,
+          "value": 359
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 15,
+          "value": 365
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 16,
+          "value": 389
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 17,
+          "value": 423
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 18,
+          "value": 462
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 19,
+          "value": 463
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 20,
+          "value": 466
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 21,
+          "value": 419
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 22,
+          "value": 440
+        },
+        {
+          "weekday": "Sunday",
+          "hour": 23,
+          "value": 317
+        },
+        {
+          "weekday": "Monday",
+          "hour": 0,
+          "value": 176
+        },
+        {
+          "weekday": "Monday",
+          "hour": 1,
+          "value": 67
+        },
+        {
+          "weekday": "Monday",
+          "hour": 2,
+          "value": 34
+        },
+        {
+          "weekday": "Monday",
+          "hour": 3,
+          "value": 18
+        },
+        {
+          "weekday": "Monday",
+          "hour": 4,
+          "value": 10
+        },
+        {
+          "weekday": "Monday",
+          "hour": 5,
+          "value": 6
+        },
+        {
+          "weekday": "Monday",
+          "hour": 6,
+          "value": 37
+        },
+        {
+          "weekday": "Monday",
+          "hour": 7,
+          "value": 89
+        },
+        {
+          "weekday": "Monday",
+          "hour": 8,
+          "value": 226
+        },
+        {
+          "weekday": "Monday",
+          "hour": 9,
+          "value": 353
+        },
+        {
+          "weekday": "Monday",
+          "hour": 10,
+          "value": 521
+        },
+        {
+          "weekday": "Monday",
+          "hour": 11,
+          "value": 527
+        },
+        {
+          "weekday": "Monday",
+          "hour": 12,
+          "value": 467
+        },
+        {
+          "weekday": "Monday",
+          "hour": 13,
+          "value": 513
+        },
+        {
+          "weekday": "Monday",
+          "hour": 14,
+          "value": 553
+        },
+        {
+          "weekday": "Monday",
+          "hour": 15,
+          "value": 571
+        },
+        {
+          "weekday": "Monday",
+          "hour": 16,
+          "value": 541
+        },
+        {
+          "weekday": "Monday",
+          "hour": 17,
+          "value": 483
+        },
+        {
+          "weekday": "Monday",
+          "hour": 18,
+          "value": 447
+        },
+        {
+          "weekday": "Monday",
+          "hour": 19,
+          "value": 471
+        },
+        {
+          "weekday": "Monday",
+          "hour": 20,
+          "value": 503
+        },
+        {
+          "weekday": "Monday",
+          "hour": 21,
+          "value": 574
+        },
+        {
+          "weekday": "Monday",
+          "hour": 22,
+          "value": 535
+        },
+        {
+          "weekday": "Monday",
+          "hour": 23,
+          "value": 413
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 0,
+          "value": 152
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 1,
+          "value": 75
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 2,
+          "value": 55
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 3,
+          "value": 18
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 4,
+          "value": 15
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 5,
+          "value": 11
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 6,
+          "value": 31
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 7,
+          "value": 99
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 8,
+          "value": 255
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 9,
+          "value": 399
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 10,
+          "value": 476
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 11,
+          "value": 555
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 12,
+          "value": 484
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 13,
+          "value": 566
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 14,
+          "value": 533
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 15,
+          "value": 545
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 16,
+          "value": 561
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 17,
+          "value": 514
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 18,
+          "value": 448
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 19,
+          "value": 461
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 20,
+          "value": 463
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 21,
+          "value": 530
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 22,
+          "value": 521
+        },
+        {
+          "weekday": "Tuesday",
+          "hour": 23,
+          "value": 379
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 0,
+          "value": 200
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 1,
+          "value": 99
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 2,
+          "value": 42
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 3,
+          "value": 15
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 4,
+          "value": 17
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 5,
+          "value": 19
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 6,
+          "value": 35
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 7,
+          "value": 98
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 8,
+          "value": 243
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 9,
+          "value": 451
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 10,
+          "value": 476
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 11,
+          "value": 514
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 12,
+          "value": 457
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 13,
+          "value": 511
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 14,
+          "value": 524
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 15,
+          "value": 516
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 16,
+          "value": 508
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 17,
+          "value": 462
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 18,
+          "value": 418
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 19,
+          "value": 394
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 20,
+          "value": 459
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 21,
+          "value": 462
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 22,
+          "value": 404
+        },
+        {
+          "weekday": "Wednesday",
+          "hour": 23,
+          "value": 315
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 0,
+          "value": 172
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 1,
+          "value": 98
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 2,
+          "value": 44
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 3,
+          "value": 13
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 4,
+          "value": 19
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 5,
+          "value": 15
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 6,
+          "value": 32
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 7,
+          "value": 103
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 8,
+          "value": 241
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 9,
+          "value": 375
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 10,
+          "value": 474
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 11,
+          "value": 494
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 12,
+          "value": 463
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 13,
+          "value": 555
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 14,
+          "value": 492
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 15,
+          "value": 461
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 16,
+          "value": 474
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 17,
+          "value": 469
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 18,
+          "value": 376
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 19,
+          "value": 402
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 20,
+          "value": 437
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 21,
+          "value": 431
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 22,
+          "value": 436
+        },
+        {
+          "weekday": "Thursday",
+          "hour": 23,
+          "value": 303
+        },
+        {
+          "weekday": "Friday",
+          "hour": 0,
+          "value": 257
+        },
+        {
+          "weekday": "Friday",
+          "hour": 1,
+          "value": 139
+        },
+        {
+          "weekday": "Friday",
+          "hour": 2,
+          "value": 41
+        },
+        {
+          "weekday": "Friday",
+          "hour": 3,
+          "value": 29
+        },
+        {
+          "weekday": "Friday",
+          "hour": 4,
+          "value": 28
+        },
+        {
+          "weekday": "Friday",
+          "hour": 5,
+          "value": 17
+        },
+        {
+          "weekday": "Friday",
+          "hour": 6,
+          "value": 45
+        },
+        {
+          "weekday": "Friday",
+          "hour": 7,
+          "value": 94
+        },
+        {
+          "weekday": "Friday",
+          "hour": 8,
+          "value": 263
+        },
+        {
+          "weekday": "Friday",
+          "hour": 9,
+          "value": 404
+        },
+        {
+          "weekday": "Friday",
+          "hour": 10,
+          "value": 552
+        },
+        {
+          "weekday": "Friday",
+          "hour": 11,
+          "value": 524
+        },
+        {
+          "weekday": "Friday",
+          "hour": 12,
+          "value": 458
+        },
+        {
+          "weekday": "Friday",
+          "hour": 13,
+          "value": 564
+        },
+        {
+          "weekday": "Friday",
+          "hour": 14,
+          "value": 542
+        },
+        {
+          "weekday": "Friday",
+          "hour": 15,
+          "value": 507
+        },
+        {
+          "weekday": "Friday",
+          "hour": 16,
+          "value": 498
+        },
+        {
+          "weekday": "Friday",
+          "hour": 17,
+          "value": 423
+        },
+        {
+          "weekday": "Friday",
+          "hour": 18,
+          "value": 411
+        },
+        {
+          "weekday": "Friday",
+          "hour": 19,
+          "value": 470
+        },
+        {
+          "weekday": "Friday",
+          "hour": 20,
+          "value": 372
+        },
+        {
+          "weekday": "Friday",
+          "hour": 21,
+          "value": 426
+        },
+        {
+          "weekday": "Friday",
+          "hour": 22,
+          "value": 407
+        },
+        {
+          "weekday": "Friday",
+          "hour": 23,
+          "value": 338
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 0,
+          "value": 189
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 1,
+          "value": 87
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 2,
+          "value": 40
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 3,
+          "value": 32
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 4,
+          "value": 16
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 5,
+          "value": 20
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 6,
+          "value": 36
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 7,
+          "value": 52
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 8,
+          "value": 116
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 9,
+          "value": 215
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 10,
+          "value": 328
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 11,
+          "value": 391
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 12,
+          "value": 358
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 13,
+          "value": 325
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 14,
+          "value": 370
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 15,
+          "value": 368
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 16,
+          "value": 369
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 17,
+          "value": 387
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 18,
+          "value": 318
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 19,
+          "value": 401
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 20,
+          "value": 380
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 21,
+          "value": 328
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 22,
+          "value": 288
+        },
+        {
+          "weekday": "Saturday",
+          "hour": 23,
+          "value": 225
+        }
+      ]
+
+    }); // end am4core.ready()
+  </script>
+
+  <!-- dountChart2 -->
+  <script>
+    am5.ready(function () {
+
+      // Create root element
+      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+      var root = am5.Root.new("dountChart2");
+
+
+      // Set themes
+      // https://www.amcharts.com/docs/v5/concepts/themes/
+      root.setThemes([
+        am5themes_Animated.new(root)
+      ]);
+
+
+      // Create chart
+      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+      var chart = root.container.children.push(am5percent.PieChart.new(root, {
+        layout: root.verticalLayout,
+        innerRadius: am5.percent(50)
+      }));
+
+
+      // Create series
+      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+      var series = chart.series.push(am5percent.PieSeries.new(root, {
+        valueField: "value",
+        categoryField: "category",
+        alignLabels: false
+      }));
+
+      series.labels.template.setAll({
+        textType: "circular",
+        centerX: 0,
+        centerY: 0
+      });
+
+
+      // Set data
+      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+      series.data.setAll([
+        {
+          category: "Home and office ware",
+          value: 31
+        },
+        {
+          category: "Infant products, leisure,  health care, supplement ",
+          value: 24
+        },
+        {
+          category: "3C, home appliances",
+          value: 17
+        },
+        {
+          category: "Accessories",
+          value: 15
+        },
+        {
+          category: "Hardware tools, others",
+          value: 10
+        },
+        {
+          category: "Books, Music",
+          value: 2
+        },
+        {
+          category: "Null",
+          value: 2
+        }
+      ]);
+
+      // Create legend
+      // https://www.amcharts.com/docs/v5/charts/percent-charts/legend-percent-series/
+      var legend = chart.children.push(am5.Legend.new(root, {
+        centerX: am5.percent(50),
+        x: am5.percent(50),
+        marginTop: 15,
+        marginBottom: 15,
+      }));
+
+      legend.data.setAll(series.dataItems);
+
+
+      // Play initial series animation
+      // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
+      series.appear(1000, 100);
+
+    }); // end am5.ready()
+  </script>
+
+  <!-- Chart code -->
+  <script>
+    am5.ready(function () {
+
+
+      const data = [
+        {
+          category: "Area CE: 3C, home appliances",
+          value: 2867
+        },
+        {
+          category: "Area CE: Null",
+          value: 372
+        },
+        {
+          category: "Area CE: Home and office ware",
+          value: 6556
+        },
+        {
+          category: "Area CE: Accessories",
+          value: 3103
+        },
+        {
+          category: "Area CE: Books, Music",
+          value: 296
+        },
+        {
+          category: "Area CE: Infant products, leisure, health care, supplement ",
+          value: 4347
+        },
+        {
+          category: "Area CE: Hardware tools, others",
+          value: 2290
+        },
+        {
+          category: "Area SE: 3C, home appliances",
+          value: 5072
+        },
+        {
+          category: "Area SE: Null",
+          value: 701
+        },
+        {
+          category: "Area SE: Home and office ware",
+          value: 11741
+        },
+        {
+          category: "Area SE: Accessories",
+          value: 4960
+        },
+        {
+          category: "Area SE: Books, Music",
+          value: 486
+        },
+        {
+          category: "Area SE: Infant products, leisure, health care, supplement ",
+          value: 7517
+        },
+        {
+          category: "Area SE: Hardware tools, others",
+          value: 3068
+        },
+        {
+          category: "Area NE: 3C, home appliances",
+          value: 1127
+        },
+        {
+          category: "Area NE: Null",
+          value: 118
+        },
+        {
+          category: "Area NE: Home and office ware",
+          value: 1421
+        },
+        {
+          category: "Area NE: Accessories",
+          value: 1002
+        },
+        {
+          category: "Area NE: Books, Music",
+          value: 127
+        },
+        {
+          category: "Area NE: Infant products, leisure, health care, supplement ",
+          value: 1402
+        },
+        {
+          category: "Area NE: Hardware tools, others",
+          value: 615
+        },
+        {
+          category: "Area NW: 3C, home appliances",
+          value: 354
+        },
+        {
+          category: "Area NW: Null",
+          value: 23
+        },
+        {
+          category: "Area NW: Home and office ware",
+          value: 399
+        },
+        {
+          category: "Area NW: Accessories",
+          value: 283
+        },
+        {
+          category: "Area NW: Books, Music",
+          value: 19
+        },
+        {
+          category: "Area NW: Infant products, leisure, health care, supplement ",
+          value: 369
+        },
+        {
+          category: "Area NW: Hardware tools, others",
+          value: 194
+        }
+      ]
+
+
+      // Create root element
+      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+      var root = am5.Root.new("radarChart1");
+
+      // Set themes
+      // https://www.amcharts.com/docs/v5/concepts/themes/
+      root.setThemes([
+        am5themes_Animated.new(root)
+      ]);
+
+      // Generate and set data
+      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Setting_data
+      var cat = -1;
+      var value = 10;
+
+      function generateData() {
+        value = Math.round(Math.random() * 10);
+        cat++;
+        return {
+          category: "cat" + cat,
+          value: value
+        };
+      }
+
+      function generateDatas(count) {
+        cat = -1;
+        var data = [];
+        for (var i = 0; i < count; ++i) {
+          data.push(generateData());
+        }
+        return data;
+      }
+
+      // Create chart
+      // https://www.amcharts.com/docs/v5/charts/radar-chart/
+      var chart = root.container.children.push(am5radar.RadarChart.new(root, {
+        panX: false,
+        panY: false,
+        wheelX: "panX",
+        wheelY: "zoomX"
+      }));
+
+      // Add cursor
+      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Cursor
+      var cursor = chart.set("cursor", am5radar.RadarCursor.new(root, {
+        behavior: "zoomX"
+      }));
+
+      cursor.lineY.set("visible", false);
+
+      // Create axes and their renderers
+      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Adding_axes
+      var xRenderer = am5radar.AxisRendererCircular.new(root, {});
+      xRenderer.labels.template.setAll({
+        radius: 10
+      });
+
+      var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+        maxDeviation: 0,
+        categoryField: "category",
+        renderer: xRenderer,
+        tooltip: am5.Tooltip.new(root, {})
+      }));
+
+      var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        renderer: am5radar.AxisRendererRadial.new(root, {})
+      }));
+
+      // Create series
+      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Adding_series
+      for (var i = 0; i < 4; i++) {
+        var series = chart.series.push(am5radar.RadarColumnSeries.new(root, {
+          stacked: true,
+          name: "Series " + i,
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "value",
+          categoryXField: "category"
+        }));
+
+        series.columns.template.setAll({
+          tooltipText: "{name}: {valueY}"
+        });
+
+        series.data.setAll(data);
+
+        series.appear(1000);
+      }
+
+      // Add scrollbars
+      chart.set("scrollbarX", am5.Scrollbar.new(root, { orientation: "horizontal" }));
+      chart.set("scrollbarY", am5.Scrollbar.new(root, { orientation: "vertical" }));
+
+      console.log({data})
+      xAxis.data.setAll(data);
+
+      // Animate chart
+      // https://www.amcharts.com/docs/v5/concepts/animations/#Initial_animation
+      chart.appear(1000, 100);
+
+    }); // end am5.ready()
+  </script>
 <% end %>
