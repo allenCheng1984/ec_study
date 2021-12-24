@@ -635,4 +635,2578 @@
 
     }); // end am4core.ready()
   </script>
+
+  <!-- columnLineMedian -->
+  <script>
+    am5.ready(function () {
+
+      // Create root element
+      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+      var root = am5.Root.new("columnLineMedian");
+
+      // Set themes
+      // https://www.amcharts.com/docs/v5/concepts/themes/
+      root.setThemes([am5themes_Animated.new(root)]);
+
+      // Create chart
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/
+      var chart = root.container.children.push(
+        am5xy.XYChart.new(root, {
+          panX: false,
+          panY: false,
+          wheelX: "panX",
+          wheelY: "zoomX",
+          layout: root.verticalLayout
+        })
+      );
+
+      // Add scrollbar
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+      chart.set(
+        "scrollbarX",
+        am5.Scrollbar.new(root, {
+          orientation: "horizontal"
+        })
+      );
+
+      var data = [
+        {
+          "order_purchase_date": '20161004',
+          "delivered_delayed_orders": 1,
+          "delayhour": 39.0
+        },
+        {
+          "order_purchase_date": '20161010',
+          "delivered_delayed_orders": 1,
+          "delayhour": 8.0
+        },
+        {
+          "order_purchase_date": '20170109',
+          "delivered_delayed_orders": 1,
+          "delayhour": 9.0
+        },
+        {
+          "order_purchase_date": '20170112',
+          "delivered_delayed_orders": 1,
+          "delayhour": 64.0
+        },
+        {
+          "order_purchase_date": '20170123',
+          "delivered_delayed_orders": 1,
+          "delayhour": 55.0
+        },
+        {
+          "order_purchase_date": '20170131',
+          "delivered_delayed_orders": 1,
+          "delayhour": 88.0
+        },
+        {
+          "order_purchase_date": '20170202',
+          "delivered_delayed_orders": 1,
+          "delayhour": 9.0
+        },
+        {
+          "order_purchase_date": '20170206',
+          "delivered_delayed_orders": 2,
+          "delayhour": 36.5
+        },
+        {
+          "order_purchase_date": '20170207',
+          "delivered_delayed_orders": 1,
+          "delayhour": 8.0
+        },
+        {
+          "order_purchase_date": '20170211',
+          "delivered_delayed_orders": 1,
+          "delayhour": 84.0
+        },
+        {
+          "order_purchase_date": '20170218',
+          "delivered_delayed_orders": 1,
+          "delayhour": 8.0
+        },
+        {
+          "order_purchase_date": '20170222',
+          "delivered_delayed_orders": 1,
+          "delayhour": 60.0
+        },
+        {
+          "order_purchase_date": '20170224',
+          "delivered_delayed_orders": 1,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20170226',
+          "delivered_delayed_orders": 1,
+          "delayhour": 93.0
+        },
+        {
+          "order_purchase_date": '20170227',
+          "delivered_delayed_orders": 1,
+          "delayhour": 29.0
+        },
+        {
+          "order_purchase_date": '20170228',
+          "delivered_delayed_orders": 1,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20170301',
+          "delivered_delayed_orders": 1,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20170302',
+          "delivered_delayed_orders": 3,
+          "delayhour": 15.0
+        },
+        {
+          "order_purchase_date": '20170303',
+          "delivered_delayed_orders": 1,
+          "delayhour": 19.0
+        },
+        {
+          "order_purchase_date": '20170304',
+          "delivered_delayed_orders": 1,
+          "delayhour": 13.0
+        },
+        {
+          "order_purchase_date": '20170305',
+          "delivered_delayed_orders": 1,
+          "delayhour": 39.0
+        },
+        {
+          "order_purchase_date": '20170306',
+          "delivered_delayed_orders": 1,
+          "delayhour": 85.0
+        },
+        {
+          "order_purchase_date": '20170307',
+          "delivered_delayed_orders": 3,
+          "delayhour": 15.0
+        },
+        {
+          "order_purchase_date": '20170309',
+          "delivered_delayed_orders": 1,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20170310',
+          "delivered_delayed_orders": 1,
+          "delayhour": 14.0
+        },
+        {
+          "order_purchase_date": '20170312',
+          "delivered_delayed_orders": 2,
+          "delayhour": 12.5
+        },
+        {
+          "order_purchase_date": '20170313',
+          "delivered_delayed_orders": 2,
+          "delayhour": 49.5
+        },
+        {
+          "order_purchase_date": '20170314',
+          "delivered_delayed_orders": 1,
+          "delayhour": 83.0
+        },
+        {
+          "order_purchase_date": '20170315',
+          "delivered_delayed_orders": 5,
+          "delayhour": 15.0
+        },
+        {
+          "order_purchase_date": '20170316',
+          "delivered_delayed_orders": 1,
+          "delayhour": 13.0
+        },
+        {
+          "order_purchase_date": '20170317',
+          "delivered_delayed_orders": 3,
+          "delayhour": 14.0
+        },
+        {
+          "order_purchase_date": '20170320',
+          "delivered_delayed_orders": 3,
+          "delayhour": 36.0
+        },
+        {
+          "order_purchase_date": '20170321',
+          "delivered_delayed_orders": 3,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20170322',
+          "delivered_delayed_orders": 1,
+          "delayhour": 36.0
+        },
+        {
+          "order_purchase_date": '20170323',
+          "delivered_delayed_orders": 1,
+          "delayhour": 12.0
+        },
+        {
+          "order_purchase_date": '20170324',
+          "delivered_delayed_orders": 2,
+          "delayhour": 27.0
+        },
+        {
+          "order_purchase_date": '20170325',
+          "delivered_delayed_orders": 2,
+          "delayhour": 60.0
+        },
+        {
+          "order_purchase_date": '20170326',
+          "delivered_delayed_orders": 3,
+          "delayhour": 34.0
+        },
+        {
+          "order_purchase_date": '20170327',
+          "delivered_delayed_orders": 4,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20170328',
+          "delivered_delayed_orders": 2,
+          "delayhour": 44.5
+        },
+        {
+          "order_purchase_date": '20170329',
+          "delivered_delayed_orders": 2,
+          "delayhour": 22.5
+        },
+        {
+          "order_purchase_date": '20170330',
+          "delivered_delayed_orders": 2,
+          "delayhour": 48.5
+        },
+        {
+          "order_purchase_date": '20170401',
+          "delivered_delayed_orders": 2,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20170402',
+          "delivered_delayed_orders": 1,
+          "delayhour": 85.0
+        },
+        {
+          "order_purchase_date": '20170403',
+          "delivered_delayed_orders": 1,
+          "delayhour": 6.0
+        },
+        {
+          "order_purchase_date": '20170407',
+          "delivered_delayed_orders": 3,
+          "delayhour": 64.0
+        },
+        {
+          "order_purchase_date": '20170409',
+          "delivered_delayed_orders": 3,
+          "delayhour": 36.0
+        },
+        {
+          "order_purchase_date": '20170410',
+          "delivered_delayed_orders": 3,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20170412',
+          "delivered_delayed_orders": 3,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20170413',
+          "delivered_delayed_orders": 2,
+          "delayhour": 22.5
+        },
+        {
+          "order_purchase_date": '20170414',
+          "delivered_delayed_orders": 4,
+          "delayhour": 9.5
+        },
+        {
+          "order_purchase_date": '20170415',
+          "delivered_delayed_orders": 2,
+          "delayhour": 35.5
+        },
+        {
+          "order_purchase_date": '20170416',
+          "delivered_delayed_orders": 3,
+          "delayhour": 17.0
+        },
+        {
+          "order_purchase_date": '20170417',
+          "delivered_delayed_orders": 3,
+          "delayhour": 34.0
+        },
+        {
+          "order_purchase_date": '20170418',
+          "delivered_delayed_orders": 3,
+          "delayhour": 33.0
+        },
+        {
+          "order_purchase_date": '20170419',
+          "delivered_delayed_orders": 4,
+          "delayhour": 47.5
+        },
+        {
+          "order_purchase_date": '20170420',
+          "delivered_delayed_orders": 3,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20170421',
+          "delivered_delayed_orders": 1,
+          "delayhour": 9.0
+        },
+        {
+          "order_purchase_date": '20170422',
+          "delivered_delayed_orders": 3,
+          "delayhour": 57.0
+        },
+        {
+          "order_purchase_date": '20170423',
+          "delivered_delayed_orders": 9,
+          "delayhour": 13.0
+        },
+        {
+          "order_purchase_date": '20170424',
+          "delivered_delayed_orders": 9,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20170425',
+          "delivered_delayed_orders": 6,
+          "delayhour": 34.0
+        },
+        {
+          "order_purchase_date": '20170426',
+          "delivered_delayed_orders": 6,
+          "delayhour": 24.0
+        },
+        {
+          "order_purchase_date": '20170428',
+          "delivered_delayed_orders": 2,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20170429',
+          "delivered_delayed_orders": 1,
+          "delayhour": 31.0
+        },
+        {
+          "order_purchase_date": '20170430',
+          "delivered_delayed_orders": 1,
+          "delayhour": 69.0
+        },
+        {
+          "order_purchase_date": '20170501',
+          "delivered_delayed_orders": 2,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20170502',
+          "delivered_delayed_orders": 4,
+          "delayhour": 40.5
+        },
+        {
+          "order_purchase_date": '20170503',
+          "delivered_delayed_orders": 3,
+          "delayhour": 57.0
+        },
+        {
+          "order_purchase_date": '20170505',
+          "delivered_delayed_orders": 1,
+          "delayhour": 88.0
+        },
+        {
+          "order_purchase_date": '20170507',
+          "delivered_delayed_orders": 1,
+          "delayhour": 93.0
+        },
+        {
+          "order_purchase_date": '20170508',
+          "delivered_delayed_orders": 2,
+          "delayhour": 35.0
+        },
+        {
+          "order_purchase_date": '20170509',
+          "delivered_delayed_orders": 3,
+          "delayhour": 32.0
+        },
+        {
+          "order_purchase_date": '20170510',
+          "delivered_delayed_orders": 2,
+          "delayhour": 15.0
+        },
+        {
+          "order_purchase_date": '20170511',
+          "delivered_delayed_orders": 4,
+          "delayhour": 59.0
+        },
+        {
+          "order_purchase_date": '20170512',
+          "delivered_delayed_orders": 2,
+          "delayhour": 23.5
+        },
+        {
+          "order_purchase_date": '20170513',
+          "delivered_delayed_orders": 2,
+          "delayhour": 12.0
+        },
+        {
+          "order_purchase_date": '20170514',
+          "delivered_delayed_orders": 4,
+          "delayhour": 35.5
+        },
+        {
+          "order_purchase_date": '20170515',
+          "delivered_delayed_orders": 2,
+          "delayhour": 47.5
+        },
+        {
+          "order_purchase_date": '20170516',
+          "delivered_delayed_orders": 2,
+          "delayhour": 39.0
+        },
+        {
+          "order_purchase_date": '20170517',
+          "delivered_delayed_orders": 1,
+          "delayhour": 84.0
+        },
+        {
+          "order_purchase_date": '20170518',
+          "delivered_delayed_orders": 1,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20170519',
+          "delivered_delayed_orders": 1,
+          "delayhour": 58.0
+        },
+        {
+          "order_purchase_date": '20170520',
+          "delivered_delayed_orders": 1,
+          "delayhour": 10.0
+        },
+        {
+          "order_purchase_date": '20170521',
+          "delivered_delayed_orders": 1,
+          "delayhour": 54.0
+        },
+        {
+          "order_purchase_date": '20170523',
+          "delivered_delayed_orders": 2,
+          "delayhour": 73.5
+        },
+        {
+          "order_purchase_date": '20170524',
+          "delivered_delayed_orders": 3,
+          "delayhour": 34.0
+        },
+        {
+          "order_purchase_date": '20170525',
+          "delivered_delayed_orders": 2,
+          "delayhour": 11.5
+        },
+        {
+          "order_purchase_date": '20170526',
+          "delivered_delayed_orders": 1,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20170527',
+          "delivered_delayed_orders": 1,
+          "delayhour": 59.0
+        },
+        {
+          "order_purchase_date": '20170528',
+          "delivered_delayed_orders": 1,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20170531',
+          "delivered_delayed_orders": 1,
+          "delayhour": 84.0
+        },
+        {
+          "order_purchase_date": '20170601',
+          "delivered_delayed_orders": 1,
+          "delayhour": 17.0
+        },
+        {
+          "order_purchase_date": '20170602',
+          "delivered_delayed_orders": 4,
+          "delayhour": 14.5
+        },
+        {
+          "order_purchase_date": '20170603',
+          "delivered_delayed_orders": 1,
+          "delayhour": 62.0
+        },
+        {
+          "order_purchase_date": '20170605',
+          "delivered_delayed_orders": 4,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20170606',
+          "delivered_delayed_orders": 1,
+          "delayhour": 13.0
+        },
+        {
+          "order_purchase_date": '20170607',
+          "delivered_delayed_orders": 2,
+          "delayhour": 54.0
+        },
+        {
+          "order_purchase_date": '20170608',
+          "delivered_delayed_orders": 1,
+          "delayhour": 84.0
+        },
+        {
+          "order_purchase_date": '20170609',
+          "delivered_delayed_orders": 1,
+          "delayhour": 10.0
+        },
+        {
+          "order_purchase_date": '20170611',
+          "delivered_delayed_orders": 1,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20170612',
+          "delivered_delayed_orders": 3,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20170613',
+          "delivered_delayed_orders": 1,
+          "delayhour": 19.0
+        },
+        {
+          "order_purchase_date": '20170614',
+          "delivered_delayed_orders": 4,
+          "delayhour": 29.0
+        },
+        {
+          "order_purchase_date": '20170615',
+          "delivered_delayed_orders": 3,
+          "delayhour": 19.0
+        },
+        {
+          "order_purchase_date": '20170616',
+          "delivered_delayed_orders": 4,
+          "delayhour": 30.0
+        },
+        {
+          "order_purchase_date": '20170619',
+          "delivered_delayed_orders": 4,
+          "delayhour": 31.5
+        },
+        {
+          "order_purchase_date": '20170620',
+          "delivered_delayed_orders": 2,
+          "delayhour": 25.5
+        },
+        {
+          "order_purchase_date": '20170622',
+          "delivered_delayed_orders": 1,
+          "delayhour": 69.0
+        },
+        {
+          "order_purchase_date": '20170624',
+          "delivered_delayed_orders": 2,
+          "delayhour": 51.0
+        },
+        {
+          "order_purchase_date": '20170625',
+          "delivered_delayed_orders": 1,
+          "delayhour": 13.0
+        },
+        {
+          "order_purchase_date": '20170626',
+          "delivered_delayed_orders": 2,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20170627',
+          "delivered_delayed_orders": 2,
+          "delayhour": 51.0
+        },
+        {
+          "order_purchase_date": '20170628',
+          "delivered_delayed_orders": 3,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20170629',
+          "delivered_delayed_orders": 1,
+          "delayhour": 64.0
+        },
+        {
+          "order_purchase_date": '20170630',
+          "delivered_delayed_orders": 1,
+          "delayhour": 0.0
+        },
+        {
+          "order_purchase_date": '20170702',
+          "delivered_delayed_orders": 1,
+          "delayhour": 12.0
+        },
+        {
+          "order_purchase_date": '20170703',
+          "delivered_delayed_orders": 2,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20170704',
+          "delivered_delayed_orders": 5,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20170705',
+          "delivered_delayed_orders": 1,
+          "delayhour": 86.0
+        },
+        {
+          "order_purchase_date": '20170706',
+          "delivered_delayed_orders": 3,
+          "delayhour": 67.0
+        },
+        {
+          "order_purchase_date": '20170707',
+          "delivered_delayed_orders": 2,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20170709',
+          "delivered_delayed_orders": 1,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20170711',
+          "delivered_delayed_orders": 3,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20170712',
+          "delivered_delayed_orders": 3,
+          "delayhour": 39.0
+        },
+        {
+          "order_purchase_date": '20170713',
+          "delivered_delayed_orders": 2,
+          "delayhour": 87.0
+        },
+        {
+          "order_purchase_date": '20170715',
+          "delivered_delayed_orders": 2,
+          "delayhour": 40.5
+        },
+        {
+          "order_purchase_date": '20170716',
+          "delivered_delayed_orders": 4,
+          "delayhour": 78.5
+        },
+        {
+          "order_purchase_date": '20170717',
+          "delivered_delayed_orders": 3,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20170718',
+          "delivered_delayed_orders": 4,
+          "delayhour": 20.5
+        },
+        {
+          "order_purchase_date": '20170719',
+          "delivered_delayed_orders": 1,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20170720',
+          "delivered_delayed_orders": 1,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20170721',
+          "delivered_delayed_orders": 3,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20170723',
+          "delivered_delayed_orders": 1,
+          "delayhour": 92.0
+        },
+        {
+          "order_purchase_date": '20170724',
+          "delivered_delayed_orders": 1,
+          "delayhour": 88.0
+        },
+        {
+          "order_purchase_date": '20170725',
+          "delivered_delayed_orders": 3,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20170727',
+          "delivered_delayed_orders": 1,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20170728',
+          "delivered_delayed_orders": 1,
+          "delayhour": 69.0
+        },
+        {
+          "order_purchase_date": '20170729',
+          "delivered_delayed_orders": 2,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20170731',
+          "delivered_delayed_orders": 4,
+          "delayhour": 31.0
+        },
+        {
+          "order_purchase_date": '20170801',
+          "delivered_delayed_orders": 3,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20170803',
+          "delivered_delayed_orders": 2,
+          "delayhour": 29.5
+        },
+        {
+          "order_purchase_date": '20170805',
+          "delivered_delayed_orders": 1,
+          "delayhour": 94.0
+        },
+        {
+          "order_purchase_date": '20170806',
+          "delivered_delayed_orders": 2,
+          "delayhour": 34.5
+        },
+        {
+          "order_purchase_date": '20170807',
+          "delivered_delayed_orders": 3,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20170808',
+          "delivered_delayed_orders": 3,
+          "delayhour": 70.0
+        },
+        {
+          "order_purchase_date": '20170809',
+          "delivered_delayed_orders": 1,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20170810',
+          "delivered_delayed_orders": 1,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20170812',
+          "delivered_delayed_orders": 2,
+          "delayhour": 76.0
+        },
+        {
+          "order_purchase_date": '20170814',
+          "delivered_delayed_orders": 1,
+          "delayhour": 12.0
+        },
+        {
+          "order_purchase_date": '20170815',
+          "delivered_delayed_orders": 1,
+          "delayhour": 64.0
+        },
+        {
+          "order_purchase_date": '20170816',
+          "delivered_delayed_orders": 7,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20170817',
+          "delivered_delayed_orders": 4,
+          "delayhour": 54.0
+        },
+        {
+          "order_purchase_date": '20170821',
+          "delivered_delayed_orders": 1,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20170822',
+          "delivered_delayed_orders": 1,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20170824',
+          "delivered_delayed_orders": 4,
+          "delayhour": 53.0
+        },
+        {
+          "order_purchase_date": '20170825',
+          "delivered_delayed_orders": 3,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20170826',
+          "delivered_delayed_orders": 1,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20170827',
+          "delivered_delayed_orders": 1,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20170828',
+          "delivered_delayed_orders": 5,
+          "delayhour": 84.0
+        },
+        {
+          "order_purchase_date": '20170829',
+          "delivered_delayed_orders": 4,
+          "delayhour": 56.0
+        },
+        {
+          "order_purchase_date": '20170830',
+          "delivered_delayed_orders": 3,
+          "delayhour": 65.0
+        },
+        {
+          "order_purchase_date": '20170831',
+          "delivered_delayed_orders": 4,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20170901',
+          "delivered_delayed_orders": 2,
+          "delayhour": 55.5
+        },
+        {
+          "order_purchase_date": '20170902',
+          "delivered_delayed_orders": 1,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20170903',
+          "delivered_delayed_orders": 1,
+          "delayhour": 17.0
+        },
+        {
+          "order_purchase_date": '20170904',
+          "delivered_delayed_orders": 1,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20170905',
+          "delivered_delayed_orders": 1,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20170906',
+          "delivered_delayed_orders": 3,
+          "delayhour": 66.0
+        },
+        {
+          "order_purchase_date": '20170907',
+          "delivered_delayed_orders": 3,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20170908',
+          "delivered_delayed_orders": 2,
+          "delayhour": 31.5
+        },
+        {
+          "order_purchase_date": '20170909',
+          "delivered_delayed_orders": 1,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20170910',
+          "delivered_delayed_orders": 4,
+          "delayhour": 56.0
+        },
+        {
+          "order_purchase_date": '20170911',
+          "delivered_delayed_orders": 3,
+          "delayhour": 17.0
+        },
+        {
+          "order_purchase_date": '20170912',
+          "delivered_delayed_orders": 7,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20170913',
+          "delivered_delayed_orders": 7,
+          "delayhour": 35.0
+        },
+        {
+          "order_purchase_date": '20170914',
+          "delivered_delayed_orders": 3,
+          "delayhour": 69.0
+        },
+        {
+          "order_purchase_date": '20170915',
+          "delivered_delayed_orders": 3,
+          "delayhour": 35.0
+        },
+        {
+          "order_purchase_date": '20170916',
+          "delivered_delayed_orders": 6,
+          "delayhour": 53.0
+        },
+        {
+          "order_purchase_date": '20170917',
+          "delivered_delayed_orders": 6,
+          "delayhour": 40.5
+        },
+        {
+          "order_purchase_date": '20170918',
+          "delivered_delayed_orders": 7,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20170919',
+          "delivered_delayed_orders": 8,
+          "delayhour": 30.5
+        },
+        {
+          "order_purchase_date": '20170920',
+          "delivered_delayed_orders": 5,
+          "delayhour": 64.0
+        },
+        {
+          "order_purchase_date": '20170921',
+          "delivered_delayed_orders": 1,
+          "delayhour": 36.0
+        },
+        {
+          "order_purchase_date": '20170922',
+          "delivered_delayed_orders": 2,
+          "delayhour": 54.0
+        },
+        {
+          "order_purchase_date": '20170926',
+          "delivered_delayed_orders": 1,
+          "delayhour": 87.0
+        },
+        {
+          "order_purchase_date": '20170927',
+          "delivered_delayed_orders": 1,
+          "delayhour": 91.0
+        },
+        {
+          "order_purchase_date": '20170928',
+          "delivered_delayed_orders": 1,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20170929',
+          "delivered_delayed_orders": 1,
+          "delayhour": 69.0
+        },
+        {
+          "order_purchase_date": '20170930',
+          "delivered_delayed_orders": 3,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20171001',
+          "delivered_delayed_orders": 1,
+          "delayhour": 89.0
+        },
+        {
+          "order_purchase_date": '20171002',
+          "delivered_delayed_orders": 2,
+          "delayhour": 66.5
+        },
+        {
+          "order_purchase_date": '20171003',
+          "delivered_delayed_orders": 3,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20171005',
+          "delivered_delayed_orders": 4,
+          "delayhour": 56.0
+        },
+        {
+          "order_purchase_date": '20171006',
+          "delivered_delayed_orders": 6,
+          "delayhour": 19.5
+        },
+        {
+          "order_purchase_date": '20171007',
+          "delivered_delayed_orders": 4,
+          "delayhour": 44.5
+        },
+        {
+          "order_purchase_date": '20171008',
+          "delivered_delayed_orders": 2,
+          "delayhour": 15.0
+        },
+        {
+          "order_purchase_date": '20171009',
+          "delivered_delayed_orders": 7,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20171010',
+          "delivered_delayed_orders": 4,
+          "delayhour": 33.0
+        },
+        {
+          "order_purchase_date": '20171011',
+          "delivered_delayed_orders": 4,
+          "delayhour": 42.5
+        },
+        {
+          "order_purchase_date": '20171012',
+          "delivered_delayed_orders": 1,
+          "delayhour": 19.0
+        },
+        {
+          "order_purchase_date": '20171013',
+          "delivered_delayed_orders": 6,
+          "delayhour": 28.5
+        },
+        {
+          "order_purchase_date": '20171014',
+          "delivered_delayed_orders": 2,
+          "delayhour": 54.0
+        },
+        {
+          "order_purchase_date": '20171015',
+          "delivered_delayed_orders": 2,
+          "delayhour": 26.5
+        },
+        {
+          "order_purchase_date": '20171016',
+          "delivered_delayed_orders": 5,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20171017',
+          "delivered_delayed_orders": 10,
+          "delayhour": 28.5
+        },
+        {
+          "order_purchase_date": '20171018',
+          "delivered_delayed_orders": 2,
+          "delayhour": 59.0
+        },
+        {
+          "order_purchase_date": '20171019',
+          "delivered_delayed_orders": 3,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20171020',
+          "delivered_delayed_orders": 2,
+          "delayhour": 29.0
+        },
+        {
+          "order_purchase_date": '20171021',
+          "delivered_delayed_orders": 1,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20171022',
+          "delivered_delayed_orders": 2,
+          "delayhour": 54.5
+        },
+        {
+          "order_purchase_date": '20171023',
+          "delivered_delayed_orders": 3,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20171024',
+          "delivered_delayed_orders": 3,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20171026',
+          "delivered_delayed_orders": 3,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20171027',
+          "delivered_delayed_orders": 5,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20171029',
+          "delivered_delayed_orders": 3,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20171030',
+          "delivered_delayed_orders": 9,
+          "delayhour": 24.0
+        },
+        {
+          "order_purchase_date": '20171031',
+          "delivered_delayed_orders": 7,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20171101',
+          "delivered_delayed_orders": 3,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20171102',
+          "delivered_delayed_orders": 5,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20171103',
+          "delivered_delayed_orders": 4,
+          "delayhour": 18.5
+        },
+        {
+          "order_purchase_date": '20171104',
+          "delivered_delayed_orders": 3,
+          "delayhour": 26.0
+        },
+        {
+          "order_purchase_date": '20171105',
+          "delivered_delayed_orders": 1,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20171106',
+          "delivered_delayed_orders": 2,
+          "delayhour": 55.0
+        },
+        {
+          "order_purchase_date": '20171107',
+          "delivered_delayed_orders": 6,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20171108',
+          "delivered_delayed_orders": 7,
+          "delayhour": 25.0
+        },
+        {
+          "order_purchase_date": '20171109',
+          "delivered_delayed_orders": 3,
+          "delayhour": 95.0
+        },
+        {
+          "order_purchase_date": '20171110',
+          "delivered_delayed_orders": 6,
+          "delayhour": 38.5
+        },
+        {
+          "order_purchase_date": '20171111',
+          "delivered_delayed_orders": 4,
+          "delayhour": 16.5
+        },
+        {
+          "order_purchase_date": '20171112',
+          "delivered_delayed_orders": 8,
+          "delayhour": 30.5
+        },
+        {
+          "order_purchase_date": '20171113',
+          "delivered_delayed_orders": 9,
+          "delayhour": 47.0
+        },
+        {
+          "order_purchase_date": '20171114',
+          "delivered_delayed_orders": 6,
+          "delayhour": 63.0
+        },
+        {
+          "order_purchase_date": '20171115',
+          "delivered_delayed_orders": 4,
+          "delayhour": 18.5
+        },
+        {
+          "order_purchase_date": '20171116',
+          "delivered_delayed_orders": 6,
+          "delayhour": 22.5
+        },
+        {
+          "order_purchase_date": '20171117',
+          "delivered_delayed_orders": 9,
+          "delayhour": 26.0
+        },
+        {
+          "order_purchase_date": '20171118',
+          "delivered_delayed_orders": 9,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20171119',
+          "delivered_delayed_orders": 2,
+          "delayhour": 65.5
+        },
+        {
+          "order_purchase_date": '20171120',
+          "delivered_delayed_orders": 9,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20171121',
+          "delivered_delayed_orders": 18,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20171122',
+          "delivered_delayed_orders": 3,
+          "delayhour": 65.0
+        },
+        {
+          "order_purchase_date": '20171123',
+          "delivered_delayed_orders": 15,
+          "delayhour": 47.0
+        },
+        {
+          "order_purchase_date": '20171124',
+          "delivered_delayed_orders": 87,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20171125',
+          "delivered_delayed_orders": 30,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171126',
+          "delivered_delayed_orders": 28,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20171127',
+          "delivered_delayed_orders": 31,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171128',
+          "delivered_delayed_orders": 31,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171129',
+          "delivered_delayed_orders": 20,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171130',
+          "delivered_delayed_orders": 9,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20171201',
+          "delivered_delayed_orders": 15,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171202',
+          "delivered_delayed_orders": 8,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20171203',
+          "delivered_delayed_orders": 8,
+          "delayhour": 63.0
+        },
+        {
+          "order_purchase_date": '20171204',
+          "delivered_delayed_orders": 21,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171205',
+          "delivered_delayed_orders": 9,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20171206',
+          "delivered_delayed_orders": 15,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20171207',
+          "delivered_delayed_orders": 16,
+          "delayhour": 46.5
+        },
+        {
+          "order_purchase_date": '20171208',
+          "delivered_delayed_orders": 7,
+          "delayhour": 68.0
+        },
+        {
+          "order_purchase_date": '20171209',
+          "delivered_delayed_orders": 4,
+          "delayhour": 29.5
+        },
+        {
+          "order_purchase_date": '20171210',
+          "delivered_delayed_orders": 5,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20171211',
+          "delivered_delayed_orders": 5,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20171212',
+          "delivered_delayed_orders": 9,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20171213',
+          "delivered_delayed_orders": 5,
+          "delayhour": 62.0
+        },
+        {
+          "order_purchase_date": '20171214',
+          "delivered_delayed_orders": 3,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171215',
+          "delivered_delayed_orders": 3,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20171216',
+          "delivered_delayed_orders": 3,
+          "delayhour": 46.0
+        },
+        {
+          "order_purchase_date": '20171217',
+          "delivered_delayed_orders": 2,
+          "delayhour": 44.5
+        },
+        {
+          "order_purchase_date": '20171218',
+          "delivered_delayed_orders": 6,
+          "delayhour": 54.0
+        },
+        {
+          "order_purchase_date": '20171219',
+          "delivered_delayed_orders": 4,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20171220',
+          "delivered_delayed_orders": 3,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20171221',
+          "delivered_delayed_orders": 4,
+          "delayhour": 64.5
+        },
+        {
+          "order_purchase_date": '20171222',
+          "delivered_delayed_orders": 2,
+          "delayhour": 33.0
+        },
+        {
+          "order_purchase_date": '20171223',
+          "delivered_delayed_orders": 3,
+          "delayhour": 68.0
+        },
+        {
+          "order_purchase_date": '20171224',
+          "delivered_delayed_orders": 1,
+          "delayhour": 13.0
+        },
+        {
+          "order_purchase_date": '20171225',
+          "delivered_delayed_orders": 2,
+          "delayhour": 34.0
+        },
+        {
+          "order_purchase_date": '20171227',
+          "delivered_delayed_orders": 1,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20171228',
+          "delivered_delayed_orders": 1,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20171229',
+          "delivered_delayed_orders": 2,
+          "delayhour": 55.0
+        },
+        {
+          "order_purchase_date": '20180101',
+          "delivered_delayed_orders": 2,
+          "delayhour": 32.0
+        },
+        {
+          "order_purchase_date": '20180102',
+          "delivered_delayed_orders": 3,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180103',
+          "delivered_delayed_orders": 2,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180104',
+          "delivered_delayed_orders": 7,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20180105',
+          "delivered_delayed_orders": 3,
+          "delayhour": 67.0
+        },
+        {
+          "order_purchase_date": '20180106',
+          "delivered_delayed_orders": 2,
+          "delayhour": 53.5
+        },
+        {
+          "order_purchase_date": '20180107',
+          "delivered_delayed_orders": 3,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20180108',
+          "delivered_delayed_orders": 5,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20180109',
+          "delivered_delayed_orders": 3,
+          "delayhour": 13.0
+        },
+        {
+          "order_purchase_date": '20180110',
+          "delivered_delayed_orders": 4,
+          "delayhour": 74.0
+        },
+        {
+          "order_purchase_date": '20180111',
+          "delivered_delayed_orders": 2,
+          "delayhour": 23.5
+        },
+        {
+          "order_purchase_date": '20180112',
+          "delivered_delayed_orders": 2,
+          "delayhour": 31.0
+        },
+        {
+          "order_purchase_date": '20180113',
+          "delivered_delayed_orders": 1,
+          "delayhour": 12.0
+        },
+        {
+          "order_purchase_date": '20180114',
+          "delivered_delayed_orders": 6,
+          "delayhour": 26.5
+        },
+        {
+          "order_purchase_date": '20180115',
+          "delivered_delayed_orders": 6,
+          "delayhour": 65.0
+        },
+        {
+          "order_purchase_date": '20180116',
+          "delivered_delayed_orders": 11,
+          "delayhour": 25.0
+        },
+        {
+          "order_purchase_date": '20180117',
+          "delivered_delayed_orders": 5,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180118',
+          "delivered_delayed_orders": 4,
+          "delayhour": 75.5
+        },
+        {
+          "order_purchase_date": '20180119',
+          "delivered_delayed_orders": 5,
+          "delayhour": 66.0
+        },
+        {
+          "order_purchase_date": '20180120',
+          "delivered_delayed_orders": 6,
+          "delayhour": 35.0
+        },
+        {
+          "order_purchase_date": '20180121',
+          "delivered_delayed_orders": 3,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180122',
+          "delivered_delayed_orders": 6,
+          "delayhour": 54.0
+        },
+        {
+          "order_purchase_date": '20180123',
+          "delivered_delayed_orders": 9,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180124',
+          "delivered_delayed_orders": 15,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180125',
+          "delivered_delayed_orders": 5,
+          "delayhour": 68.0
+        },
+        {
+          "order_purchase_date": '20180126',
+          "delivered_delayed_orders": 6,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20180127',
+          "delivered_delayed_orders": 6,
+          "delayhour": 20.5
+        },
+        {
+          "order_purchase_date": '20180128',
+          "delivered_delayed_orders": 1,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20180129',
+          "delivered_delayed_orders": 14,
+          "delayhour": 22.5
+        },
+        {
+          "order_purchase_date": '20180130',
+          "delivered_delayed_orders": 13,
+          "delayhour": 65.0
+        },
+        {
+          "order_purchase_date": '20180131',
+          "delivered_delayed_orders": 2,
+          "delayhour": 33.0
+        },
+        {
+          "order_purchase_date": '20180201',
+          "delivered_delayed_orders": 6,
+          "delayhour": 23.5
+        },
+        {
+          "order_purchase_date": '20180202',
+          "delivered_delayed_orders": 7,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180203',
+          "delivered_delayed_orders": 2,
+          "delayhour": 62.0
+        },
+        {
+          "order_purchase_date": '20180204',
+          "delivered_delayed_orders": 6,
+          "delayhour": 32.0
+        },
+        {
+          "order_purchase_date": '20180205',
+          "delivered_delayed_orders": 5,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180206',
+          "delivered_delayed_orders": 5,
+          "delayhour": 19.0
+        },
+        {
+          "order_purchase_date": '20180207',
+          "delivered_delayed_orders": 5,
+          "delayhour": 67.0
+        },
+        {
+          "order_purchase_date": '20180208',
+          "delivered_delayed_orders": 9,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180209',
+          "delivered_delayed_orders": 11,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20180210',
+          "delivered_delayed_orders": 7,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20180211',
+          "delivered_delayed_orders": 10,
+          "delayhour": 39.0
+        },
+        {
+          "order_purchase_date": '20180212',
+          "delivered_delayed_orders": 15,
+          "delayhour": 60.0
+        },
+        {
+          "order_purchase_date": '20180213',
+          "delivered_delayed_orders": 5,
+          "delayhour": 61.0
+        },
+        {
+          "order_purchase_date": '20180214',
+          "delivered_delayed_orders": 15,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180215',
+          "delivered_delayed_orders": 11,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20180216',
+          "delivered_delayed_orders": 10,
+          "delayhour": 22.5
+        },
+        {
+          "order_purchase_date": '20180217',
+          "delivered_delayed_orders": 7,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180218',
+          "delivered_delayed_orders": 8,
+          "delayhour": 45.5
+        },
+        {
+          "order_purchase_date": '20180219',
+          "delivered_delayed_orders": 13,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180220',
+          "delivered_delayed_orders": 22,
+          "delayhour": 44.5
+        },
+        {
+          "order_purchase_date": '20180221',
+          "delivered_delayed_orders": 20,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20180222',
+          "delivered_delayed_orders": 13,
+          "delayhour": 46.0
+        },
+        {
+          "order_purchase_date": '20180223',
+          "delivered_delayed_orders": 15,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180224',
+          "delivered_delayed_orders": 10,
+          "delayhour": 45.5
+        },
+        {
+          "order_purchase_date": '20180225',
+          "delivered_delayed_orders": 19,
+          "delayhour": 64.0
+        },
+        {
+          "order_purchase_date": '20180226',
+          "delivered_delayed_orders": 23,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180227',
+          "delivered_delayed_orders": 18,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180228',
+          "delivered_delayed_orders": 24,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180301',
+          "delivered_delayed_orders": 20,
+          "delayhour": 64.5
+        },
+        {
+          "order_purchase_date": '20180302',
+          "delivered_delayed_orders": 24,
+          "delayhour": 46.5
+        },
+        {
+          "order_purchase_date": '20180303',
+          "delivered_delayed_orders": 21,
+          "delayhour": 26.0
+        },
+        {
+          "order_purchase_date": '20180304',
+          "delivered_delayed_orders": 10,
+          "delayhour": 25.5
+        },
+        {
+          "order_purchase_date": '20180305',
+          "delivered_delayed_orders": 20,
+          "delayhour": 55.0
+        },
+        {
+          "order_purchase_date": '20180306',
+          "delivered_delayed_orders": 21,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180307',
+          "delivered_delayed_orders": 25,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180308',
+          "delivered_delayed_orders": 20,
+          "delayhour": 33.0
+        },
+        {
+          "order_purchase_date": '20180309',
+          "delivered_delayed_orders": 10,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180310',
+          "delivered_delayed_orders": 18,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180311',
+          "delivered_delayed_orders": 15,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180312',
+          "delivered_delayed_orders": 16,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20180313',
+          "delivered_delayed_orders": 20,
+          "delayhour": 36.5
+        },
+        {
+          "order_purchase_date": '20180314',
+          "delivered_delayed_orders": 17,
+          "delayhour": 47.0
+        },
+        {
+          "order_purchase_date": '20180315',
+          "delivered_delayed_orders": 20,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180316',
+          "delivered_delayed_orders": 19,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180317',
+          "delivered_delayed_orders": 7,
+          "delayhour": 91.0
+        },
+        {
+          "order_purchase_date": '20180318',
+          "delivered_delayed_orders": 11,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180319',
+          "delivered_delayed_orders": 31,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180320',
+          "delivered_delayed_orders": 15,
+          "delayhour": 68.0
+        },
+        {
+          "order_purchase_date": '20180321',
+          "delivered_delayed_orders": 11,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20180322',
+          "delivered_delayed_orders": 14,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20180323',
+          "delivered_delayed_orders": 7,
+          "delayhour": 39.0
+        },
+        {
+          "order_purchase_date": '20180324',
+          "delivered_delayed_orders": 14,
+          "delayhour": 47.0
+        },
+        {
+          "order_purchase_date": '20180325',
+          "delivered_delayed_orders": 13,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20180326',
+          "delivered_delayed_orders": 9,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180327',
+          "delivered_delayed_orders": 19,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180328',
+          "delivered_delayed_orders": 12,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180329',
+          "delivered_delayed_orders": 10,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180330',
+          "delivered_delayed_orders": 7,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180331',
+          "delivered_delayed_orders": 7,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20180401',
+          "delivered_delayed_orders": 8,
+          "delayhour": 31.5
+        },
+        {
+          "order_purchase_date": '20180402',
+          "delivered_delayed_orders": 15,
+          "delayhour": 66.0
+        },
+        {
+          "order_purchase_date": '20180403',
+          "delivered_delayed_orders": 9,
+          "delayhour": 24.0
+        },
+        {
+          "order_purchase_date": '20180404',
+          "delivered_delayed_orders": 9,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20180405',
+          "delivered_delayed_orders": 5,
+          "delayhour": 34.0
+        },
+        {
+          "order_purchase_date": '20180406',
+          "delivered_delayed_orders": 1,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20180407',
+          "delivered_delayed_orders": 4,
+          "delayhour": 39.5
+        },
+        {
+          "order_purchase_date": '20180408',
+          "delivered_delayed_orders": 4,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180409',
+          "delivered_delayed_orders": 6,
+          "delayhour": 35.5
+        },
+        {
+          "order_purchase_date": '20180410',
+          "delivered_delayed_orders": 5,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180411',
+          "delivered_delayed_orders": 5,
+          "delayhour": 46.0
+        },
+        {
+          "order_purchase_date": '20180412',
+          "delivered_delayed_orders": 3,
+          "delayhour": 88.0
+        },
+        {
+          "order_purchase_date": '20180413',
+          "delivered_delayed_orders": 4,
+          "delayhour": 31.5
+        },
+        {
+          "order_purchase_date": '20180414',
+          "delivered_delayed_orders": 3,
+          "delayhour": 24.0
+        },
+        {
+          "order_purchase_date": '20180416',
+          "delivered_delayed_orders": 5,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180417',
+          "delivered_delayed_orders": 3,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20180418',
+          "delivered_delayed_orders": 5,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20180419',
+          "delivered_delayed_orders": 5,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180420',
+          "delivered_delayed_orders": 1,
+          "delayhour": 19.0
+        },
+        {
+          "order_purchase_date": '20180421',
+          "delivered_delayed_orders": 2,
+          "delayhour": 76.5
+        },
+        {
+          "order_purchase_date": '20180422',
+          "delivered_delayed_orders": 1,
+          "delayhour": 87.0
+        },
+        {
+          "order_purchase_date": '20180423',
+          "delivered_delayed_orders": 6,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180424',
+          "delivered_delayed_orders": 3,
+          "delayhour": 91.0
+        },
+        {
+          "order_purchase_date": '20180425',
+          "delivered_delayed_orders": 6,
+          "delayhour": 19.5
+        },
+        {
+          "order_purchase_date": '20180426',
+          "delivered_delayed_orders": 5,
+          "delayhour": 24.0
+        },
+        {
+          "order_purchase_date": '20180427',
+          "delivered_delayed_orders": 6,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20180428',
+          "delivered_delayed_orders": 1,
+          "delayhour": 35.0
+        },
+        {
+          "order_purchase_date": '20180429',
+          "delivered_delayed_orders": 4,
+          "delayhour": 45.5
+        },
+        {
+          "order_purchase_date": '20180430',
+          "delivered_delayed_orders": 1,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20180501',
+          "delivered_delayed_orders": 5,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20180502',
+          "delivered_delayed_orders": 4,
+          "delayhour": 32.5
+        },
+        {
+          "order_purchase_date": '20180503',
+          "delivered_delayed_orders": 7,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180504',
+          "delivered_delayed_orders": 3,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180505',
+          "delivered_delayed_orders": 3,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180506',
+          "delivered_delayed_orders": 3,
+          "delayhour": 85.0
+        },
+        {
+          "order_purchase_date": '20180507',
+          "delivered_delayed_orders": 5,
+          "delayhour": 36.0
+        },
+        {
+          "order_purchase_date": '20180508',
+          "delivered_delayed_orders": 11,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180509',
+          "delivered_delayed_orders": 6,
+          "delayhour": 23.5
+        },
+        {
+          "order_purchase_date": '20180510',
+          "delivered_delayed_orders": 13,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180511',
+          "delivered_delayed_orders": 14,
+          "delayhour": 46.5
+        },
+        {
+          "order_purchase_date": '20180512',
+          "delivered_delayed_orders": 2,
+          "delayhour": 63.0
+        },
+        {
+          "order_purchase_date": '20180513',
+          "delivered_delayed_orders": 7,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20180514',
+          "delivered_delayed_orders": 26,
+          "delayhour": 44.5
+        },
+        {
+          "order_purchase_date": '20180515',
+          "delivered_delayed_orders": 25,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180516',
+          "delivered_delayed_orders": 28,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180517',
+          "delivered_delayed_orders": 20,
+          "delayhour": 47.5
+        },
+        {
+          "order_purchase_date": '20180518',
+          "delivered_delayed_orders": 23,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20180519',
+          "delivered_delayed_orders": 12,
+          "delayhour": 39.5
+        },
+        {
+          "order_purchase_date": '20180520',
+          "delivered_delayed_orders": 19,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180521',
+          "delivered_delayed_orders": 17,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20180522',
+          "delivered_delayed_orders": 9,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180523',
+          "delivered_delayed_orders": 1,
+          "delayhour": 41.0
+        },
+        {
+          "order_purchase_date": '20180524',
+          "delivered_delayed_orders": 1,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180531',
+          "delivered_delayed_orders": 1,
+          "delayhour": 71.0
+        },
+        {
+          "order_purchase_date": '20180601',
+          "delivered_delayed_orders": 1,
+          "delayhour": 95.0
+        },
+        {
+          "order_purchase_date": '20180606',
+          "delivered_delayed_orders": 1,
+          "delayhour": 63.0
+        },
+        {
+          "order_purchase_date": '20180607',
+          "delivered_delayed_orders": 1,
+          "delayhour": 90.0
+        },
+        {
+          "order_purchase_date": '20180608',
+          "delivered_delayed_orders": 3,
+          "delayhour": 39.0
+        },
+        {
+          "order_purchase_date": '20180611',
+          "delivered_delayed_orders": 4,
+          "delayhour": 33.5
+        },
+        {
+          "order_purchase_date": '20180612',
+          "delivered_delayed_orders": 3,
+          "delayhour": 31.0
+        },
+        {
+          "order_purchase_date": '20180614',
+          "delivered_delayed_orders": 3,
+          "delayhour": 15.0
+        },
+        {
+          "order_purchase_date": '20180617',
+          "delivered_delayed_orders": 2,
+          "delayhour": 18.5
+        },
+        {
+          "order_purchase_date": '20180618',
+          "delivered_delayed_orders": 2,
+          "delayhour": 64.0
+        },
+        {
+          "order_purchase_date": '20180619',
+          "delivered_delayed_orders": 2,
+          "delayhour": 44.0
+        },
+        {
+          "order_purchase_date": '20180621',
+          "delivered_delayed_orders": 3,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20180623',
+          "delivered_delayed_orders": 1,
+          "delayhour": 19.0
+        },
+        {
+          "order_purchase_date": '20180624',
+          "delivered_delayed_orders": 1,
+          "delayhour": 40.0
+        },
+        {
+          "order_purchase_date": '20180628',
+          "delivered_delayed_orders": 1,
+          "delayhour": 38.0
+        },
+        {
+          "order_purchase_date": '20180629',
+          "delivered_delayed_orders": 2,
+          "delayhour": 62.0
+        },
+        {
+          "order_purchase_date": '20180705',
+          "delivered_delayed_orders": 2,
+          "delayhour": 19.5
+        },
+        {
+          "order_purchase_date": '20180706',
+          "delivered_delayed_orders": 1,
+          "delayhour": 71.0
+        },
+        {
+          "order_purchase_date": '20180709',
+          "delivered_delayed_orders": 1,
+          "delayhour": 87.0
+        },
+        {
+          "order_purchase_date": '20180710',
+          "delivered_delayed_orders": 2,
+          "delayhour": 43.5
+        },
+        {
+          "order_purchase_date": '20180711',
+          "delivered_delayed_orders": 2,
+          "delayhour": 53.0
+        },
+        {
+          "order_purchase_date": '20180712',
+          "delivered_delayed_orders": 5,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180713',
+          "delivered_delayed_orders": 1,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180714',
+          "delivered_delayed_orders": 2,
+          "delayhour": 47.0
+        },
+        {
+          "order_purchase_date": '20180715',
+          "delivered_delayed_orders": 2,
+          "delayhour": 91.0
+        },
+        {
+          "order_purchase_date": '20180716',
+          "delivered_delayed_orders": 11,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180717',
+          "delivered_delayed_orders": 9,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20180718',
+          "delivered_delayed_orders": 5,
+          "delayhour": 17.0
+        },
+        {
+          "order_purchase_date": '20180719',
+          "delivered_delayed_orders": 2,
+          "delayhour": 79.0
+        },
+        {
+          "order_purchase_date": '20180720',
+          "delivered_delayed_orders": 3,
+          "delayhour": 15.0
+        },
+        {
+          "order_purchase_date": '20180721',
+          "delivered_delayed_orders": 2,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20180722',
+          "delivered_delayed_orders": 4,
+          "delayhour": 29.0
+        },
+        {
+          "order_purchase_date": '20180723',
+          "delivered_delayed_orders": 10,
+          "delayhour": 27.0
+        },
+        {
+          "order_purchase_date": '20180724',
+          "delivered_delayed_orders": 5,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180725',
+          "delivered_delayed_orders": 1,
+          "delayhour": 45.0
+        },
+        {
+          "order_purchase_date": '20180726',
+          "delivered_delayed_orders": 5,
+          "delayhour": 42.0
+        },
+        {
+          "order_purchase_date": '20180727',
+          "delivered_delayed_orders": 2,
+          "delayhour": 18.5
+        },
+        {
+          "order_purchase_date": '20180728',
+          "delivered_delayed_orders": 2,
+          "delayhour": 17.0
+        },
+        {
+          "order_purchase_date": '20180729',
+          "delivered_delayed_orders": 7,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180730',
+          "delivered_delayed_orders": 16,
+          "delayhour": 44.5
+        },
+        {
+          "order_purchase_date": '20180731',
+          "delivered_delayed_orders": 28,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180801',
+          "delivered_delayed_orders": 24,
+          "delayhour": 33.0
+        },
+        {
+          "order_purchase_date": '20180802',
+          "delivered_delayed_orders": 26,
+          "delayhour": 37.0
+        },
+        {
+          "order_purchase_date": '20180803',
+          "delivered_delayed_orders": 32,
+          "delayhour": 22.5
+        },
+        {
+          "order_purchase_date": '20180804',
+          "delivered_delayed_orders": 12,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180805',
+          "delivered_delayed_orders": 35,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180806',
+          "delivered_delayed_orders": 43,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20180807',
+          "delivered_delayed_orders": 45,
+          "delayhour": 43.0
+        },
+        {
+          "order_purchase_date": '20180808',
+          "delivered_delayed_orders": 28,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180809',
+          "delivered_delayed_orders": 19,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180810',
+          "delivered_delayed_orders": 16,
+          "delayhour": 17.5
+        },
+        {
+          "order_purchase_date": '20180811',
+          "delivered_delayed_orders": 7,
+          "delayhour": 24.0
+        },
+        {
+          "order_purchase_date": '20180812',
+          "delivered_delayed_orders": 8,
+          "delayhour": 36.0
+        },
+        {
+          "order_purchase_date": '20180813',
+          "delivered_delayed_orders": 15,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180814',
+          "delivered_delayed_orders": 30,
+          "delayhour": 22.0
+        },
+        {
+          "order_purchase_date": '20180815',
+          "delivered_delayed_orders": 17,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180816',
+          "delivered_delayed_orders": 26,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20180817',
+          "delivered_delayed_orders": 9,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20180818',
+          "delivered_delayed_orders": 3,
+          "delayhour": 16.0
+        },
+        {
+          "order_purchase_date": '20180819',
+          "delivered_delayed_orders": 9,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180820',
+          "delivered_delayed_orders": 21,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20180821',
+          "delivered_delayed_orders": 15,
+          "delayhour": 23.0
+        },
+        {
+          "order_purchase_date": '20180822',
+          "delivered_delayed_orders": 11,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180823',
+          "delivered_delayed_orders": 7,
+          "delayhour": 18.0
+        },
+        {
+          "order_purchase_date": '20180824',
+          "delivered_delayed_orders": 7,
+          "delayhour": 17.0
+        },
+        {
+          "order_purchase_date": '20180825',
+          "delivered_delayed_orders": 1,
+          "delayhour": 1.0
+        },
+        {
+          "order_purchase_date": '20180826',
+          "delivered_delayed_orders": 1,
+          "delayhour": 21.0
+        },
+        {
+          "order_purchase_date": '20180827',
+          "delivered_delayed_orders": 6,
+          "delayhour": 20.0
+        },
+        {
+          "order_purchase_date": '20180828',
+          "delivered_delayed_orders": 1,
+          "delayhour": 2.0
+        }
+      ];
+
+      // Create axes
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+      var xAxis = chart.xAxes.push(
+        am5xy.CategoryAxis.new(root, {
+          categoryField: "order_purchase_date",
+          renderer: am5xy.AxisRendererX.new(root, {}),
+          tooltip: am5.Tooltip.new(root, {})
+        })
+      );
+
+      xAxis.data.setAll(data);
+
+      var yAxis = chart.yAxes.push(
+        am5xy.ValueAxis.new(root, {
+          min: 0,
+          extraMax: 0.1,
+          renderer: am5xy.AxisRendererY.new(root, {})
+        })
+      );
+
+
+      // Add series
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+
+      var series1 = chart.series.push(
+        am5xy.ColumnSeries.new(root, {
+          name: "delivered_delayed_orders",
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "delivered_delayed_orders",
+          categoryXField: "order_purchase_date",
+          tooltip: am5.Tooltip.new(root, {
+            pointerOrientation: "horizontal",
+            labelText: "{name} in {categoryX}: {valueY} {info}"
+          })
+        })
+      );
+
+      series1.columns.template.setAll({
+        tooltipY: am5.percent(10),
+        templateField: "columnSettings"
+      });
+
+      series1.data.setAll(data);
+
+      var series2 = chart.series.push(
+        am5xy.LineSeries.new(root, {
+          name: "delayhour",
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "delayhour",
+          categoryXField: "order_purchase_date",
+          tooltip: am5.Tooltip.new(root, {
+            pointerOrientation: "horizontal",
+            labelText: "{name} in {categoryX}: {valueY} {info}"
+          })
+        })
+      );
+
+      series2.strokes.template.setAll({
+        strokeWidth: 3,
+        templateField: "strokeSettings"
+      });
+
+
+      series2.data.setAll(data);
+
+      series2.bullets.push(function () {
+        return am5.Bullet.new(root, {
+          sprite: am5.Circle.new(root, {
+            strokeWidth: 3,
+            stroke: series2.get("stroke"),
+            radius: 5,
+            fill: root.interfaceColors.get("background")
+          })
+        });
+      });
+
+      chart.set("cursor", am5xy.XYCursor.new(root, {}));
+
+      // Add legend
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/legend-xy-series/
+      var legend = chart.children.push(
+        am5.Legend.new(root, {
+          centerX: am5.p50,
+          x: am5.p50
+        })
+      );
+      legend.data.setAll(chart.series.values);
+
+      // Make stuff animate on load
+      // https://www.amcharts.com/docs/v5/concepts/animations/
+      chart.appear(1000, 100);
+      series1.appear();
+
+    }); // end am5.ready()
+  </script>
 <% end %>
