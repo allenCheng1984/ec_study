@@ -25,9 +25,6 @@ class DashboardController < ApplicationController
   def sales_intro
   end
 
-  def sales_core_model
-  end
-
   def sales_model_training
   end
 
@@ -38,9 +35,6 @@ class DashboardController < ApplicationController
   def review_intro
   end
 
-  def review_core_model
-  end
-
   def review_model_training
   end
 
@@ -49,9 +43,6 @@ class DashboardController < ApplicationController
 
   # 物流小組頁
   def logistics_intro
-  end
-
-  def logistics_core_model
   end
 
   def logistics_model_training
