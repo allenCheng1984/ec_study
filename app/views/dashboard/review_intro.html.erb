@@ -494,7 +494,7 @@
       series1.columns.template.width = am4core.percent(80);
       series1.columns.template.tooltipText =
         "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-      series1.name = "Series 1";
+      series1.name = "Negative (1&2)";
       series1.dataFields.categoryX = "category";
       series1.dataFields.valueY = "value1";
       series1.dataFields.valueYShow = "totalPercent";
@@ -512,7 +512,7 @@
       series2.columns.template.width = am4core.percent(80);
       series2.columns.template.tooltipText =
         "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-      series2.name = "Series 2";
+      series2.name = "Nature (3)";
       series2.dataFields.categoryX = "category";
       series2.dataFields.valueY = "value2";
       series2.dataFields.valueYShow = "totalPercent";
@@ -530,7 +530,7 @@
       series3.columns.template.width = am4core.percent(80);
       series3.columns.template.tooltipText =
         "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-      series3.name = "Series 3";
+      series3.name = "Positive (4&5)";
       series3.dataFields.categoryX = "category";
       series3.dataFields.valueY = "value3";
       series3.dataFields.valueYShow = "totalPercent";
@@ -616,9 +616,8 @@
         }
       ]
 
-      createSeries('first', 'The First');
-      createSeries('second', 'The Second');
-      createSeries('third', 'The Third');
+      createSeries('first', 'Negative Reviews (1&2)');
+      createSeries('second', 'Positive Reviews (4&5)');
 
       function arrangeColumns() {
 
