@@ -979,7 +979,8 @@ class DashboardController < ApplicationController
         data << { country: column, value: value }
       end
 
-      return data.sort_by{|obj| obj[:value]}.reverse[0..9].to_json
+      filtered_data = data.sort_by{|obj| obj[:value]}.reverse[0..9]
+      return filtered_data.sort_by{|obj| obj[:value]}.to_json
     end
 
     def set_column_name(column, dimension)
