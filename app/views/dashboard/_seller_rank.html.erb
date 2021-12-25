@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body pb-0">
-    <h5 class="card-title">賣家排行</span></h5>
+    <h5 class="card-title">城市銷售排名</span></h5>
 
     <div id="sellersRank" style="width: 100%;height: 400px;" class="echart"></div>
 
@@ -153,22 +153,7 @@
     }
 
     // Set data
-    var data = [{
-      country: "USA",
-      value: 2025
-    }, {
-      country: "China",
-      value: 1882
-    }, {
-      country: "Japan",
-      value: 1809
-    }, {
-      country: "Germany",
-      value: 1322
-    }, {
-      country: "UK",
-      value: 1122
-    }];
+    var data = <%= data.html_safe %>
 
     yAxis.data.setAll(data);
     series.data.setAll(data);
