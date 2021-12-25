@@ -97,13 +97,13 @@
         </div><!-- End 客單價 -->
 
         <!-- 銷售趨勢 -->
-        <%= render "sales_trend_chart" %>
+        <%= render "sales_trend_chart", data: @sales_trend_chart_data %>
 
         <!-- 銷售額(依類別) -->
-        <%= render "sale_by_categories_chart" %>
+        <%= render "sale_by_categories_chart", data: @sale_by_categories_chart_data %>
 
         <!-- 購買頻率(依時間) -->
-        <%= render "heat_map_chart" %>
+        <%= render "heat_map_chart", data: @heat_map_chart_data %>
 
       </div>
     </div><!-- End Left side columns -->
@@ -176,11 +176,11 @@
       </div><!-- End 開發進度 -->
 
       <!-- 銷售比例 -->
-      <%= render "dount_chart" %>
+      <%= render "dount_chart", data: @dount_chart_data %>
       <!-- End 銷售比例 -->
 
       <!-- 賣家排行 -->
-      <%= render 'seller_rank' %>
+      <%= render "seller_rank", data: @seller_rank_data %>
       <!-- End 賣家排行 -->
 
     </div><!-- End Right side columns -->
