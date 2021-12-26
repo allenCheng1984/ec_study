@@ -2,7 +2,7 @@ class DashboardController < ApplicationController
   layout 'dashboard'
 
   def index
-    @dimension = params[:dimension] || 'month'
+    @dimension = params[:dimension] || 'week'
     @date_range = params[:date_range] || nil
 
     @orders = set_index_orders(@dimension, @date_range)
