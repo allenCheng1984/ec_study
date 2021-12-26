@@ -30,9 +30,6 @@ class DashboardController < ApplicationController
   def sales_intro
   end
 
-  def sales_model_training
-  end
-
   def sales_conclusion
   end
 
@@ -48,9 +45,6 @@ class DashboardController < ApplicationController
 
   # 物流小組頁
   def logistics_intro
-  end
-
-  def logistics_model_training
   end
 
   def logistics_conclusion

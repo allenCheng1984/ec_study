@@ -16,6 +16,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">User Story</h5>
+          <p>在競爭激烈的電商平台中，獲得高銷量是最終的目標。重要元素包括擁有優質賣家、多樣化品類，並隨著不同產品的銷情會受促銷方法、檔期、物流、用戶體驗及網站可靠度等所影響。抓準高銷售量因素並改善痛點，套用至各營運環節上，將會在實務上的效果帶來更大利益。</p>
         </div>
       </div>
 
@@ -26,11 +27,13 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">研究背景</h5>
+          <p>根據Marketplace Pulse數據，在 2020年亞馬遜全球銷量的90％由36萬多個頭部賣家貢獻。 60%由6萬多個頭部賣家貢獻。換句話說，大部分GMV都來自於老賣家，這意味著中尾部賣家和新賣家想要分一杯羹，就必須找到增長點，而探索高銷量的關鍵因子不失為一條有效途徑。</p>
         </div>
       </div>
 
     </div>
   </div>
+
 
   <div class="row">
     <div class="col-sm-12">
@@ -38,11 +41,16 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Dataset 結構概述</h5>
+          <img src="dashboard/assets/img/sales_dataset_info_1.png" class="img-fluid">
+          <img src="dashboard/assets/img/sales_dataset_info_2.png" class="img-fluid">
+          <img src="dashboard/assets/img/sales_dataset_info_3.png" class="img-fluid">
+          <img src="dashboard/assets/img/sales_dataset_info_4.png" class="img-fluid">
         </div>
       </div>
 
     </div>
   </div>
+
 
   <%# paretoChart1, paretoChart2 %>
   <div class="row">
@@ -80,28 +88,36 @@
     </div>
   </div>
 
-  <%# heatMap1 %>
+  <%# heatMap1, dountChart1 %>
   <div class="row">
     <div class="col-sm-12">
 
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">用戶下單時段</h5>
-          <div id="heatMap1" style="width: 100%;height: 500px;"></div>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="home2-tab" data-bs-toggle="tab" data-bs-target="#userChart1-tab" type="button" role="tab" aria-controls="userChart1-tab" aria-selected="true">用戶下單時段</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="profile2-tab" data-bs-toggle="tab" data-bs-target="#userChart2-tab" type="button" role="tab" aria-controls="userChart2-tab" aria-selected="false">用戶下單比率</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent1">
+        <div class="tab-pane fade show active" id="userChart1-tab" role="tabpanel" aria-labelledby="home2-tab">
+
+          <div class="card">
+            <div class="card-body">
+              <div id="heatMap1" style="width: 100%;height: 500px;"></div>
+            </div>
+          </div>
+
         </div>
-      </div>
+        <div class="tab-pane fade" id="userChart2-tab" role="tabpanel" aria-labelledby="profile2-tab">
 
-    </div>
-  </div>
+          <div class="card">
+            <div class="card-body">
+              <div id="dountChart1" style="width: 100%;height: 500px;"></div>
+            </div>
+          </div>
 
-  <%# dountChart1 %>
-  <div class="row">
-    <div class="col-sm-12">
-
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">用戶下單比率</h5>
-          <div id="dountChart1" style="width: 100%;height: 500px;"></div>
         </div>
       </div>
 
@@ -1643,33 +1659,29 @@
       // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
       series.data.setAll([
         {
-          category: "Home and office ware",
-          value: 31
+          category: "Homeware",
+          value: 15742
         },
         {
-          category: "Infant products, leisure,  health care, supplement ",
-          value: 24
+          category: "Health care",
+          value: 11974
         },
         {
-          category: "3C, home appliances",
-          value: 17
+          category: "Electronics",
+          value: 8087
         },
         {
           category: "Accessories",
-          value: 15
+          value: 8531
         },
         {
-          category: "Hardware tools, others",
-          value: 10
+          category: "Others",
+          value: 4697
         },
         {
-          category: "Books, Music",
-          value: 2
+          category: "Leisure",
+          value: 820
         },
-        {
-          category: "Null",
-          value: 2
-        }
       ]);
 
       // Create legend
@@ -1693,225 +1705,141 @@
 
   <!-- Chart code -->
   <script>
-    am5.ready(function () {
+    am4core.ready(function () {
 
+      // Themes begin
+      am4core.useTheme(am4themes_animated);
+      // Themes end
 
-      const data = [
+      // Create chart instance
+      var chart = am4core.create("radarChart1", am4charts.XYChart);
+
+      // Title
+      var title = chart.titles.push(new am4core.Label());
+      title.text = "Research tools used by students";
+      title.fontSize = 25;
+      title.marginBottom = 15;
+
+      // Add data
+      chart.data = [
         {
-          category: "Area CE: 3C, home appliances",
-          value: 2867
+          "category": "Electronics",
+          "positive1": 30,
+          "positive2": 54,
+          "positive3": 12,
+          "positive4": 4
         },
         {
-          category: "Area CE: Null",
-          value: 372
+          "category": "Homeware",
+          "positive1": 33,
+          "positive2": 58,
+          "positive3": 7,
+          "positive4": 2
         },
         {
-          category: "Area CE: Home and office ware",
-          value: 6556
+          "category": "Accessories",
+          "positive1": 33,
+          "positive2": 53,
+          "positive3": 11,
+          "positive4": 3
         },
         {
-          category: "Area CE: Accessories",
-          value: 3103
+          "category": "Leisure",
+          "positive1": 32,
+          "positive2": 52,
+          "positive3": 14,
+          "positive4": 2
         },
         {
-          category: "Area CE: Books, Music",
-          value: 296
+          "category": "Health care",
+          "positive1": 32,
+          "positive2": 55,
+          "positive3": 10,
+          "positive4": 3
         },
         {
-          category: "Area CE: Infant products, leisure, health care, supplement ",
-          value: 4347
+          "category": "Others",
+          "positive1": 37,
+          "positive2": 50,
+          "positive3": 10,
+          "positive4": 3
         },
         {
-          category: "Area CE: Hardware tools, others",
-          value: 2290
-        },
-        {
-          category: "Area SE: 3C, home appliances",
-          value: 5072
-        },
-        {
-          category: "Area SE: Null",
-          value: 701
-        },
-        {
-          category: "Area SE: Home and office ware",
-          value: 11741
-        },
-        {
-          category: "Area SE: Accessories",
-          value: 4960
-        },
-        {
-          category: "Area SE: Books, Music",
-          value: 486
-        },
-        {
-          category: "Area SE: Infant products, leisure, health care, supplement ",
-          value: 7517
-        },
-        {
-          category: "Area SE: Hardware tools, others",
-          value: 3068
-        },
-        {
-          category: "Area NE: 3C, home appliances",
-          value: 1127
-        },
-        {
-          category: "Area NE: Null",
-          value: 118
-        },
-        {
-          category: "Area NE: Home and office ware",
-          value: 1421
-        },
-        {
-          category: "Area NE: Accessories",
-          value: 1002
-        },
-        {
-          category: "Area NE: Books, Music",
-          value: 127
-        },
-        {
-          category: "Area NE: Infant products, leisure, health care, supplement ",
-          value: 1402
-        },
-        {
-          category: "Area NE: Hardware tools, others",
-          value: 615
-        },
-        {
-          category: "Area NW: 3C, home appliances",
-          value: 354
-        },
-        {
-          category: "Area NW: Null",
-          value: 23
-        },
-        {
-          category: "Area NW: Home and office ware",
-          value: 399
-        },
-        {
-          category: "Area NW: Accessories",
-          value: 283
-        },
-        {
-          category: "Area NW: Books, Music",
-          value: 19
-        },
-        {
-          category: "Area NW: Infant products, leisure, health care, supplement ",
-          value: 369
-        },
-        {
-          category: "Area NW: Hardware tools, others",
-          value: 194
+          "category": "Null",
+          "positive1": 31,
+          "positive2": 57,
+          "positive3": 10,
+          "positive4": 2
         }
-      ]
+      ];
 
 
-      // Create root element
-      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-      var root = am5.Root.new("radarChart1");
+      // Create axes
+      var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.dataFields.category = "category";
+      categoryAxis.renderer.grid.template.location = 0;
+      categoryAxis.renderer.inversed = true;
+      categoryAxis.renderer.minGridDistance = 20;
+      categoryAxis.renderer.axisFills.template.disabled = false;
+      categoryAxis.renderer.axisFills.template.fillOpacity = 0.05;
 
-      // Set themes
-      // https://www.amcharts.com/docs/v5/concepts/themes/
-      root.setThemes([
-        am5themes_Animated.new(root)
-      ]);
 
-      // Generate and set data
-      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Setting_data
-      var cat = -1;
-      var value = 10;
+      var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+      valueAxis.min = 0;
+      valueAxis.max = 100;
+      valueAxis.renderer.minGridDistance = 50;
+      valueAxis.renderer.ticks.template.length = 5;
+      valueAxis.renderer.ticks.template.disabled = false;
+      valueAxis.renderer.ticks.template.strokeOpacity = 0.4;
+      valueAxis.renderer.labels.template.adapter.add("text", function (text) {
+        return text + "%";
+      })
 
-      function generateData() {
-        value = Math.round(Math.random() * 10);
-        cat++;
-        return {
-          category: "cat" + cat,
-          value: value
-        };
-      }
+      // Legend
+      chart.legend = new am4charts.Legend();
+      chart.legend.position = "right";
 
-      function generateDatas(count) {
-        cat = -1;
-        var data = [];
-        for (var i = 0; i < count; ++i) {
-          data.push(generateData());
-        }
-        return data;
-      }
-
-      // Create chart
-      // https://www.amcharts.com/docs/v5/charts/radar-chart/
-      var chart = root.container.children.push(am5radar.RadarChart.new(root, {
-        panX: false,
-        panY: false,
-        wheelX: "panX",
-        wheelY: "zoomX"
-      }));
-
-      // Add cursor
-      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Cursor
-      var cursor = chart.set("cursor", am5radar.RadarCursor.new(root, {
-        behavior: "zoomX"
-      }));
-
-      cursor.lineY.set("visible", false);
-
-      // Create axes and their renderers
-      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Adding_axes
-      var xRenderer = am5radar.AxisRendererCircular.new(root, {});
-      xRenderer.labels.template.setAll({
-        radius: 10
-      });
-
-      var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-        maxDeviation: 0,
-        categoryField: "category",
-        renderer: xRenderer,
-        tooltip: am5.Tooltip.new(root, {})
-      }));
-
-      var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-        renderer: am5radar.AxisRendererRadial.new(root, {})
-      }));
+      // Use only absolute numbers
+      chart.numberFormatter.numberFormat = "#.#s";
 
       // Create series
-      // https://www.amcharts.com/docs/v5/charts/radar-chart/#Adding_series
-      for (var i = 0; i < 4; i++) {
-        var series = chart.series.push(am5radar.RadarColumnSeries.new(root, {
-          stacked: true,
-          name: "Series " + i,
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "value",
-          categoryXField: "category"
-        }));
+      function createSeries(field, name, color) {
+        var series = chart.series.push(new am4charts.ColumnSeries());
+        series.dataFields.valueX = field;
+        series.dataFields.categoryY = "category";
+        series.stacked = true;
+        series.name = name;
+        series.stroke = color;
+        series.fill = color;
 
-        series.columns.template.setAll({
-          tooltipText: "{name}: {valueY}"
-        });
-
-        series.data.setAll(data);
-
-        series.appear(1000);
+        var label = series.bullets.push(new am4charts.LabelBullet);
+        label.label.text = "{valueX}%";
+        label.label.fill = am4core.color("#fff");
+        label.label.strokeWidth = 0;
+        label.label.truncate = false;
+        label.label.hideOversized = true;
+        label.locationX = 0.5;
+        return series;
       }
 
-      // Add scrollbars
-      chart.set("scrollbarX", am5.Scrollbar.new(root, { orientation: "horizontal" }));
-      chart.set("scrollbarY", am5.Scrollbar.new(root, { orientation: "vertical" }));
+      var interfaceColors = new am4core.InterfaceColorSet();
+      var positiveColor = interfaceColors.getFor("positive");
+      var negativeColor = interfaceColors.getFor("negative");
 
-      console.log({data})
-      xAxis.data.setAll(data);
+      createSeries("positive1", "Split in CE", positiveColor.lighten(0.5));
+      createSeries("positive2", "Split in SE", positiveColor);
+      createSeries("positive3", "Split in NE", negativeColor.lighten(0.5));
+      createSeries("positive4", "Split in NW", negativeColor);
 
-      // Animate chart
-      // https://www.amcharts.com/docs/v5/concepts/animations/#Initial_animation
-      chart.appear(1000, 100);
+      chart.legend.events.on("layoutvalidated", function (event) {
+        chart.legend.itemContainers.each((container) => {
+          if (container.dataItem.dataContext.name == "Never") {
+            container.toBack();
+          }
+        })
+      })
 
-    }); // end am5.ready()
+    }); // end am4core.ready()
   </script>
+
 <% end %>
