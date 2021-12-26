@@ -167,44 +167,13 @@
     </div>
   </div>
 
-  <%# heatMap %>
+  <%# 訂單延遲比例, pieChart %>
   <div class="row">
     <div class="col-sm-12">
 
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Heat Map(待命名)</h5>
-          <p>description(待補充)</p>
-          <div id="heatMap" style="width: 100%;height: 500px;"></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <%# columnLineChart %>
-  <div class="row">
-    <div class="col-sm-12">
-
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Column Line Chart(待命名)</h5>
-          <p>description(待補充)</p>
-          <div id="columnLineChart" style="width: 100%;height: 500px;"></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <%# columnLineChart %>
-  <div class="row">
-    <div class="col-sm-12">
-
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Pie Chart(待命名)</h5>
-          <p>description(待補充)</p>
+          <h5 class="card-title">訂單延遲比例</h5>
           <div id="pieChart" style="width: 100%;height: 500px;"></div>
         </div>
       </div>
@@ -212,15 +181,29 @@
     </div>
   </div>
 
-  <%# columnLineMedian %>
+
+  <%# 每日訂單延遲次數及延遲率, orderLineChart %>
   <div class="row">
     <div class="col-sm-12">
 
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">columnLineMedian(待命名)</h5>
-          <p>description(待補充)</p>
-          <div id="columnLineMedian" style="width: 100%;height: 500px;"></div>
+          <h5 class="card-title">每日訂單延遲次數及延遲率</h5>
+          <div id="orderLineChart" style="width: 100%;height: 500px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <%# 產品分類訂單延遲次數及延遲率, productLineChart %>
+  <div class="row">
+    <div class="col-sm-12">
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">產品分類訂單延遲次數及延遲率</h5>
+          <div id="productLineChart" style="width: 100%;height: 500px;"></div>
         </div>
       </div>
 
@@ -230,380 +213,7 @@
 
 
 <%= content_for :javascript do %>
-  <!-- heatMap -->
-  <script>
-    am5.ready(function() {
-
-      // Create root element
-      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-      var root = am5.Root.new("heatMap");
-
-
-      // Set themes
-      // https://www.amcharts.com/docs/v5/concepts/themes/
-      root.setThemes([
-        am5themes_Animated.new(root)
-      ]);
-
-
-      // Create chart
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/
-      var chart = root.container.children.push(am5xy.XYChart.new(root, {
-        panX: false,
-        panY: false,
-        wheelX: "none",
-        wheelY: "none",
-        layout: root.verticalLayout
-      }));
-
-
-      // Create axes and their renderers
-      var yRenderer = am5xy.AxisRendererY.new(root, {
-        visible: false,
-        minGridDistance: 20,
-        inversed: true
-      });
-
-      yRenderer.grid.template.set("visible", false);
-
-      var yAxis = chart.yAxes.push(am5xy.CategoryAxis.new(root, {
-        maxDeviation: 0,
-        renderer: yRenderer,
-        categoryField: "seller"
-      }));
-
-      var xRenderer = am5xy.AxisRendererX.new(root, {
-        visible: false,
-        minGridDistance: 10,
-        opposite:true
-      });
-
-      xRenderer.grid.template.set("visible", false);
-
-      var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-        renderer: xRenderer,
-        categoryField: "customer"
-      }));
-
-
-      // Create series
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/#Adding_series
-      var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-        calculateAggregates: true,
-        stroke: am5.color(0xffffff),
-        clustered: false,
-        xAxis: xAxis,
-        yAxis: yAxis,
-        categoryXField: "customer",
-        categoryYField: "seller",
-        valueField: "value"
-      }));
-
-      series.columns.template.setAll({
-        tooltipText: "{value}",
-        strokeOpacity: 1,
-        strokeWidth: 2,
-        width: am5.percent(100),
-        height: am5.percent(100)
-      });
-
-      series.columns.template.events.on("pointerover", function(event) {
-        var di = event.target.dataItem;
-        if (di) {
-          heatLegend.showValue(di.get("value", 0));
-        }
-      });
-
-      series.events.on("datavalidated", function() {
-        heatLegend.set("startValue", series.getPrivate("valueHigh"));
-        heatLegend.set("endValue", series.getPrivate("valueLow"));
-      });
-
-
-      // Set up heat rules
-      // https://www.amcharts.com/docs/v5/concepts/settings/heat-rules/
-      series.set("heatRules", [{
-        target: series.columns.template,
-        min: am5.color(0xfffb77),
-        max: am5.color(0xfe131a),
-        dataField: "value",
-        key: "fill"
-      }]);
-
-
-      // Add heat legend
-      // https://www.amcharts.com/docs/v5/concepts/legend/heat-legend/
-      var heatLegend = chart.bottomAxesContainer.children.push(am5.HeatLegend.new(root, {
-        orientation: "horizontal",
-        endColor: am5.color(0xfffb77),
-        startColor: am5.color(0xfe131a)
-      }));
-
-
-      // Set data
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/#Setting_data
-      //chart.dataSource.url = "http://www.myweb.com/data.json";
-      var data = [
-          {
-              "customer": "CE",
-              "seller": "CE",
-              "value": 365
-          },
-          {
-              "customer": "CE",
-              "seller": "NE",
-              "value": 39
-          },
-          {
-              "customer": "CE",
-              "seller": "NW",
-              "value": 3
-          },
-          {
-              "customer": "CE",
-              "seller": "SE",
-              "value": 2744
-          },
-          {
-              "customer": "NE",
-              "seller": "CE",
-              "value": 105
-          },
-          {
-              "customer": "NE",
-              "seller": "NE",
-              "value": 34
-          },
-          {
-              "customer": "NE",
-              "seller": "NW",
-              "value": 6
-          },
-          {
-              "customer": "NE",
-              "seller": "SE",
-              "value": 754
-          },
-          {
-              "customer": "NW",
-              "seller": "CE",
-              "value": 38
-          },
-          {
-              "customer": "NW",
-              "seller": "NE",
-              "value": 5
-          },
-          {
-              "customer": "NW",
-              "seller": "NW",
-              "value": 1
-          },
-          {
-              "customer": "NW",
-              "seller": "SE",
-              "value": 269
-          },
-          {
-              "customer": "SE",
-              "seller": "CE",
-              "value": 352
-          },
-          {
-              "customer": "SE",
-              "seller": "NE",
-              "value": 60
-          },
-          {
-              "customer": "SE",
-              "seller": "NW",
-              "value": 3
-          },
-          {
-              "customer": "SE",
-              "seller": "SE",
-              "value": 2873
-          }
-      ]
-
-      series.data.setAll(data);
-
-      yAxis.data.setAll([
-        { seller: "SE" },
-        { seller: "CE" },
-        { seller: "NW" },
-        { seller: "NE" }
-      ]);
-
-      xAxis.data.setAll([
-        { customer: "SE" },
-        { customer: "CE" },
-        { customer: "NW" },
-        { customer: "NE" }
-      ]);
-
-      // Make stuff animate on load
-      // https://www.amcharts.com/docs/v5/concepts/animations/#Initial_animation
-      chart.appear(1000, 100);
-
-    }); // end am5.ready()
-  </script>
-
-  <!-- columnLineChart -->
-  <script>
-    am5.ready(function() {
-
-      // Create root element
-      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-      var root = am5.Root.new("columnLineChart");
-
-      // Set themes
-      // https://www.amcharts.com/docs/v5/concepts/themes/
-      root.setThemes([am5themes_Animated.new(root)]);
-
-      // Create chart
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/
-      var chart = root.container.children.push(
-        am5xy.XYChart.new(root, {
-          panX: false,
-          panY: false,
-          wheelX: "panX",
-          wheelY: "zoomX",
-          layout: root.verticalLayout
-        })
-      );
-
-      // Add scrollbar
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
-      chart.set(
-        "scrollbarX",
-        am5.Scrollbar.new(root, {
-          orientation: "horizontal"
-        })
-      );
-
-      var data = [
-          {
-              "order_purchase_time_day": "afternoon",
-              "is_delivered_delayed": 573,
-              "delayday": 13.5051802946
-          },
-          {
-              "order_purchase_time_day": "dawn",
-              "is_delivered_delayed": 54,
-              "delayday": 14.1237739374
-          },
-          {
-              "order_purchase_time_day": "morning",
-              "is_delivered_delayed": 264,
-              "delayday": 13.7880751457
-          },
-          {
-              "order_purchase_time_day": "night",
-              "is_delivered_delayed": 372,
-              "delayday": 13.4136519309
-          }
-      ];
-
-      // Create axes
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-      var xAxis = chart.xAxes.push(
-        am5xy.CategoryAxis.new(root, {
-          categoryField: "order_purchase_time_day",
-          renderer: am5xy.AxisRendererX.new(root, {}),
-          tooltip: am5.Tooltip.new(root, {})
-        })
-      );
-
-      xAxis.data.setAll(data);
-
-      var yAxis = chart.yAxes.push(
-        am5xy.ValueAxis.new(root, {
-          min: 0,
-          extraMax: 0.1,
-          renderer: am5xy.AxisRendererY.new(root, {})
-        })
-      );
-
-
-      // Add series
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-
-      var series1 = chart.series.push(
-        am5xy.ColumnSeries.new(root, {
-          name: "is_delivered_delayed",
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "is_delivered_delayed",
-          categoryXField: "order_purchase_time_day",
-          tooltip:am5.Tooltip.new(root, {
-            pointerOrientation:"horizontal",
-            labelText:"{name} in {categoryX}: {valueY} {info}"
-          })
-        })
-      );
-
-      series1.columns.template.setAll({
-        tooltipY: am5.percent(10),
-        templateField: "columnSettings"
-      });
-
-      series1.data.setAll(data);
-
-      var series2 = chart.series.push(
-        am5xy.LineSeries.new(root, {
-          name: "delayday",
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "delayday",
-          categoryXField: "order_purchase_time_day",
-          tooltip:am5.Tooltip.new(root, {
-            pointerOrientation:"horizontal",
-            labelText:"{name} in {categoryX}: {valueY} {info}"
-          })
-        })
-      );
-
-      series2.strokes.template.setAll({
-        strokeWidth: 3,
-        templateField: "strokeSettings"
-      });
-
-
-      series2.data.setAll(data);
-
-      series2.bullets.push(function () {
-        return am5.Bullet.new(root, {
-          sprite: am5.Circle.new(root, {
-            strokeWidth: 3,
-            stroke: series2.get("stroke"),
-            radius: 5,
-            fill: root.interfaceColors.get("background")
-          })
-        });
-      });
-
-      chart.set("cursor", am5xy.XYCursor.new(root, {}));
-
-      // Add legend
-      // https://www.amcharts.com/docs/v5/charts/xy-chart/legend-xy-series/
-      var legend = chart.children.push(
-        am5.Legend.new(root, {
-          centerX: am5.p50,
-          x: am5.p50
-        })
-      );
-      legend.data.setAll(chart.series.values);
-
-      // Make stuff animate on load
-      // https://www.amcharts.com/docs/v5/concepts/animations/
-      chart.appear(1000, 100);
-      series1.appear();
-
-    }); // end am5.ready()
-  </script>
-
-  <!-- pieChart -->
+  <!-- 訂單延遲比例 pieChart -->
   <script>
     am4core.ready(function() {
 
@@ -636,13 +246,13 @@
     }); // end am4core.ready()
   </script>
 
-  <!-- columnLineMedian -->
+  <!-- 每日訂單延遲次數及延遲率, orderLineChart -->
   <script>
     am5.ready(function () {
 
       // Create root element
       // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-      var root = am5.Root.new("columnLineMedian");
+      var root = am5.Root.new("orderLineChart");
 
       // Set themes
       // https://www.amcharts.com/docs/v5/concepts/themes/
@@ -671,2444 +281,3658 @@
 
       var data = [
         {
-          "order_purchase_date": '20161004',
-          "delivered_delayed_orders": 1,
-          "delayhour": 39.0
+          "Date": 20161003,
+          "Delay": 0,
+          "Ontime": 7,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20161010',
-          "delivered_delayed_orders": 1,
-          "delayhour": 8.0
+          "Date": 20161004,
+          "Delay": 2,
+          "Ontime": 52,
+          "DelyRate": 3.7
         },
         {
-          "order_purchase_date": '20170109',
-          "delivered_delayed_orders": 1,
-          "delayhour": 9.0
+          "Date": 20161005,
+          "Delay": 0,
+          "Ontime": 36,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170112',
-          "delivered_delayed_orders": 1,
-          "delayhour": 64.0
+          "Date": 20161006,
+          "Delay": 0,
+          "Ontime": 41,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170123',
-          "delivered_delayed_orders": 1,
-          "delayhour": 55.0
+          "Date": 20161007,
+          "Delay": 0,
+          "Ontime": 35,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170131',
-          "delivered_delayed_orders": 1,
-          "delayhour": 88.0
+          "Date": 20161008,
+          "Delay": 0,
+          "Ontime": 35,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170202',
-          "delivered_delayed_orders": 1,
-          "delayhour": 9.0
+          "Date": 20161009,
+          "Delay": 0,
+          "Ontime": 20,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170206',
-          "delivered_delayed_orders": 2,
-          "delayhour": 36.5
+          "Date": 20161010,
+          "Delay": 1,
+          "Ontime": 33,
+          "DelyRate": 2.94
         },
         {
-          "order_purchase_date": '20170207',
-          "delivered_delayed_orders": 1,
-          "delayhour": 8.0
+          "Date": 20161223,
+          "Delay": 0,
+          "Ontime": 1,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170211',
-          "delivered_delayed_orders": 1,
-          "delayhour": 84.0
+          "Date": 20170105,
+          "Delay": 0,
+          "Ontime": 32,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170218',
-          "delivered_delayed_orders": 1,
-          "delayhour": 8.0
+          "Date": 20170106,
+          "Delay": 0,
+          "Ontime": 4,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170222',
-          "delivered_delayed_orders": 1,
-          "delayhour": 60.0
+          "Date": 20170108,
+          "Delay": 0,
+          "Ontime": 4,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170224',
-          "delivered_delayed_orders": 1,
-          "delayhour": 40.0
+          "Date": 20170110,
+          "Delay": 0,
+          "Ontime": 6,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170226',
-          "delivered_delayed_orders": 1,
-          "delayhour": 93.0
+          "Date": 20170111,
+          "Delay": 0,
+          "Ontime": 10,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170227',
-          "delivered_delayed_orders": 1,
-          "delayhour": 29.0
+          "Date": 20170112,
+          "Delay": 2,
+          "Ontime": 10,
+          "DelyRate": 16.67
         },
         {
-          "order_purchase_date": '20170228',
-          "delivered_delayed_orders": 1,
-          "delayhour": 61.0
+          "Date": 20170113,
+          "Delay": 0,
+          "Ontime": 10,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170301',
-          "delivered_delayed_orders": 1,
-          "delayhour": 61.0
+          "Date": 20170114,
+          "Delay": 1,
+          "Ontime": 14,
+          "DelyRate": 6.67
         },
         {
-          "order_purchase_date": '20170302',
-          "delivered_delayed_orders": 3,
-          "delayhour": 15.0
+          "Date": 20170115,
+          "Delay": 0,
+          "Ontime": 14,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170303',
-          "delivered_delayed_orders": 1,
-          "delayhour": 19.0
+          "Date": 20170116,
+          "Delay": 0,
+          "Ontime": 18,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170304',
-          "delivered_delayed_orders": 1,
-          "delayhour": 13.0
+          "Date": 20170117,
+          "Delay": 0,
+          "Ontime": 32,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170305',
-          "delivered_delayed_orders": 1,
-          "delayhour": 39.0
+          "Date": 20170118,
+          "Delay": 1,
+          "Ontime": 29,
+          "DelyRate": 3.33
         },
         {
-          "order_purchase_date": '20170306',
-          "delivered_delayed_orders": 1,
-          "delayhour": 85.0
+          "Date": 20170119,
+          "Delay": 1,
+          "Ontime": 24,
+          "DelyRate": 4.0
         },
         {
-          "order_purchase_date": '20170307',
-          "delivered_delayed_orders": 3,
-          "delayhour": 15.0
+          "Date": 20170120,
+          "Delay": 0,
+          "Ontime": 28,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170309',
-          "delivered_delayed_orders": 1,
-          "delayhour": 16.0
+          "Date": 20170121,
+          "Delay": 0,
+          "Ontime": 22,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170310',
-          "delivered_delayed_orders": 1,
-          "delayhour": 14.0
+          "Date": 20170122,
+          "Delay": 0,
+          "Ontime": 30,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170312',
-          "delivered_delayed_orders": 2,
-          "delayhour": 12.5
+          "Date": 20170123,
+          "Delay": 2,
+          "Ontime": 34,
+          "DelyRate": 5.56
         },
         {
-          "order_purchase_date": '20170313',
-          "delivered_delayed_orders": 2,
-          "delayhour": 49.5
+          "Date": 20170124,
+          "Delay": 0,
+          "Ontime": 38,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170314',
-          "delivered_delayed_orders": 1,
-          "delayhour": 83.0
+          "Date": 20170125,
+          "Delay": 1,
+          "Ontime": 56,
+          "DelyRate": 1.75
         },
         {
-          "order_purchase_date": '20170315',
-          "delivered_delayed_orders": 5,
-          "delayhour": 15.0
+          "Date": 20170126,
+          "Delay": 4,
+          "Ontime": 80,
+          "DelyRate": 4.76
         },
         {
-          "order_purchase_date": '20170316',
-          "delivered_delayed_orders": 1,
-          "delayhour": 13.0
+          "Date": 20170127,
+          "Delay": 0,
+          "Ontime": 59,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170317',
-          "delivered_delayed_orders": 3,
-          "delayhour": 14.0
+          "Date": 20170128,
+          "Delay": 0,
+          "Ontime": 28,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170320',
-          "delivered_delayed_orders": 3,
-          "delayhour": 36.0
+          "Date": 20170129,
+          "Delay": 2,
+          "Ontime": 30,
+          "DelyRate": 6.25
         },
         {
-          "order_purchase_date": '20170321',
-          "delivered_delayed_orders": 3,
-          "delayhour": 38.0
+          "Date": 20170130,
+          "Delay": 0,
+          "Ontime": 48,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170322',
-          "delivered_delayed_orders": 1,
-          "delayhour": 36.0
+          "Date": 20170131,
+          "Delay": 6,
+          "Ontime": 58,
+          "DelyRate": 9.38
         },
         {
-          "order_purchase_date": '20170323',
-          "delivered_delayed_orders": 1,
-          "delayhour": 12.0
+          "Date": 20170201,
+          "Delay": 1,
+          "Ontime": 60,
+          "DelyRate": 1.64
         },
         {
-          "order_purchase_date": '20170324',
-          "delivered_delayed_orders": 2,
-          "delayhour": 27.0
+          "Date": 20170202,
+          "Delay": 3,
+          "Ontime": 64,
+          "DelyRate": 4.48
         },
         {
-          "order_purchase_date": '20170325',
-          "delivered_delayed_orders": 2,
-          "delayhour": 60.0
+          "Date": 20170203,
+          "Delay": 2,
+          "Ontime": 52,
+          "DelyRate": 3.7
         },
         {
-          "order_purchase_date": '20170326',
-          "delivered_delayed_orders": 3,
-          "delayhour": 34.0
+          "Date": 20170204,
+          "Delay": 2,
+          "Ontime": 61,
+          "DelyRate": 3.17
         },
         {
-          "order_purchase_date": '20170327',
-          "delivered_delayed_orders": 4,
-          "delayhour": 61.0
+          "Date": 20170205,
+          "Delay": 1,
+          "Ontime": 78,
+          "DelyRate": 1.27
         },
         {
-          "order_purchase_date": '20170328',
-          "delivered_delayed_orders": 2,
-          "delayhour": 44.5
+          "Date": 20170206,
+          "Delay": 3,
+          "Ontime": 76,
+          "DelyRate": 3.8
         },
         {
-          "order_purchase_date": '20170329',
-          "delivered_delayed_orders": 2,
-          "delayhour": 22.5
+          "Date": 20170207,
+          "Delay": 2,
+          "Ontime": 108,
+          "DelyRate": 1.82
         },
         {
-          "order_purchase_date": '20170330',
-          "delivered_delayed_orders": 2,
-          "delayhour": 48.5
+          "Date": 20170208,
+          "Delay": 1,
+          "Ontime": 82,
+          "DelyRate": 1.2
         },
         {
-          "order_purchase_date": '20170401',
-          "delivered_delayed_orders": 2,
-          "delayhour": 41.0
+          "Date": 20170209,
+          "Delay": 4,
+          "Ontime": 69,
+          "DelyRate": 5.48
         },
         {
-          "order_purchase_date": '20170402',
-          "delivered_delayed_orders": 1,
-          "delayhour": 85.0
+          "Date": 20170210,
+          "Delay": 2,
+          "Ontime": 60,
+          "DelyRate": 3.23
         },
         {
-          "order_purchase_date": '20170403',
-          "delivered_delayed_orders": 1,
-          "delayhour": 6.0
+          "Date": 20170211,
+          "Delay": 2,
+          "Ontime": 43,
+          "DelyRate": 4.44
         },
         {
-          "order_purchase_date": '20170407',
-          "delivered_delayed_orders": 3,
-          "delayhour": 64.0
+          "Date": 20170212,
+          "Delay": 1,
+          "Ontime": 60,
+          "DelyRate": 1.64
         },
         {
-          "order_purchase_date": '20170409',
-          "delivered_delayed_orders": 3,
-          "delayhour": 36.0
+          "Date": 20170213,
+          "Delay": 1,
+          "Ontime": 73,
+          "DelyRate": 1.35
         },
         {
-          "order_purchase_date": '20170410',
-          "delivered_delayed_orders": 3,
-          "delayhour": 37.0
+          "Date": 20170214,
+          "Delay": 2,
+          "Ontime": 64,
+          "DelyRate": 3.03
         },
         {
-          "order_purchase_date": '20170412',
-          "delivered_delayed_orders": 3,
-          "delayhour": 37.0
+          "Date": 20170215,
+          "Delay": 0,
+          "Ontime": 56,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170413',
-          "delivered_delayed_orders": 2,
-          "delayhour": 22.5
+          "Date": 20170216,
+          "Delay": 1,
+          "Ontime": 48,
+          "DelyRate": 2.04
         },
         {
-          "order_purchase_date": '20170414',
-          "delivered_delayed_orders": 4,
-          "delayhour": 9.5
+          "Date": 20170217,
+          "Delay": 2,
+          "Ontime": 44,
+          "DelyRate": 4.35
         },
         {
-          "order_purchase_date": '20170415',
-          "delivered_delayed_orders": 2,
-          "delayhour": 35.5
+          "Date": 20170218,
+          "Delay": 1,
+          "Ontime": 43,
+          "DelyRate": 2.27
         },
         {
-          "order_purchase_date": '20170416',
-          "delivered_delayed_orders": 3,
-          "delayhour": 17.0
+          "Date": 20170219,
+          "Delay": 0,
+          "Ontime": 35,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170417',
-          "delivered_delayed_orders": 3,
-          "delayhour": 34.0
+          "Date": 20170220,
+          "Delay": 5,
+          "Ontime": 57,
+          "DelyRate": 8.06
         },
         {
-          "order_purchase_date": '20170418',
-          "delivered_delayed_orders": 3,
-          "delayhour": 33.0
+          "Date": 20170221,
+          "Delay": 1,
+          "Ontime": 39,
+          "DelyRate": 2.5
         },
         {
-          "order_purchase_date": '20170419',
-          "delivered_delayed_orders": 4,
-          "delayhour": 47.5
+          "Date": 20170222,
+          "Delay": 2,
+          "Ontime": 52,
+          "DelyRate": 3.7
         },
         {
-          "order_purchase_date": '20170420',
-          "delivered_delayed_orders": 3,
-          "delayhour": 16.0
+          "Date": 20170223,
+          "Delay": 2,
+          "Ontime": 55,
+          "DelyRate": 3.51
         },
         {
-          "order_purchase_date": '20170421',
-          "delivered_delayed_orders": 1,
-          "delayhour": 9.0
+          "Date": 20170224,
+          "Delay": 3,
+          "Ontime": 57,
+          "DelyRate": 5.0
         },
         {
-          "order_purchase_date": '20170422',
-          "delivered_delayed_orders": 3,
-          "delayhour": 57.0
+          "Date": 20170225,
+          "Delay": 0,
+          "Ontime": 39,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170423',
-          "delivered_delayed_orders": 9,
-          "delayhour": 13.0
+          "Date": 20170226,
+          "Delay": 2,
+          "Ontime": 40,
+          "DelyRate": 4.76
         },
         {
-          "order_purchase_date": '20170424',
-          "delivered_delayed_orders": 9,
-          "delayhour": 44.0
+          "Date": 20170227,
+          "Delay": 3,
+          "Ontime": 38,
+          "DelyRate": 7.32
         },
         {
-          "order_purchase_date": '20170425',
-          "delivered_delayed_orders": 6,
-          "delayhour": 34.0
+          "Date": 20170228,
+          "Delay": 4,
+          "Ontime": 49,
+          "DelyRate": 7.55
         },
         {
-          "order_purchase_date": '20170426',
-          "delivered_delayed_orders": 6,
-          "delayhour": 24.0
+          "Date": 20170301,
+          "Delay": 4,
+          "Ontime": 89,
+          "DelyRate": 4.3
         },
         {
-          "order_purchase_date": '20170428',
-          "delivered_delayed_orders": 2,
-          "delayhour": 37.0
+          "Date": 20170302,
+          "Delay": 5,
+          "Ontime": 61,
+          "DelyRate": 7.58
         },
         {
-          "order_purchase_date": '20170429',
-          "delivered_delayed_orders": 1,
-          "delayhour": 31.0
+          "Date": 20170303,
+          "Delay": 4,
+          "Ontime": 68,
+          "DelyRate": 5.56
         },
         {
-          "order_purchase_date": '20170430',
-          "delivered_delayed_orders": 1,
-          "delayhour": 69.0
+          "Date": 20170304,
+          "Delay": 4,
+          "Ontime": 65,
+          "DelyRate": 5.8
         },
         {
-          "order_purchase_date": '20170501',
-          "delivered_delayed_orders": 2,
-          "delayhour": 22.0
+          "Date": 20170305,
+          "Delay": 5,
+          "Ontime": 62,
+          "DelyRate": 7.46
         },
         {
-          "order_purchase_date": '20170502',
-          "delivered_delayed_orders": 4,
-          "delayhour": 40.5
+          "Date": 20170306,
+          "Delay": 4,
+          "Ontime": 91,
+          "DelyRate": 4.21
         },
         {
-          "order_purchase_date": '20170503',
-          "delivered_delayed_orders": 3,
-          "delayhour": 57.0
+          "Date": 20170307,
+          "Delay": 5,
+          "Ontime": 73,
+          "DelyRate": 6.41
         },
         {
-          "order_purchase_date": '20170505',
-          "delivered_delayed_orders": 1,
-          "delayhour": 88.0
+          "Date": 20170308,
+          "Delay": 4,
+          "Ontime": 70,
+          "DelyRate": 5.41
         },
         {
-          "order_purchase_date": '20170507',
-          "delivered_delayed_orders": 1,
-          "delayhour": 93.0
+          "Date": 20170309,
+          "Delay": 5,
+          "Ontime": 84,
+          "DelyRate": 5.62
         },
         {
-          "order_purchase_date": '20170508',
-          "delivered_delayed_orders": 2,
-          "delayhour": 35.0
+          "Date": 20170310,
+          "Delay": 2,
+          "Ontime": 82,
+          "DelyRate": 2.38
         },
         {
-          "order_purchase_date": '20170509',
-          "delivered_delayed_orders": 3,
-          "delayhour": 32.0
+          "Date": 20170311,
+          "Delay": 2,
+          "Ontime": 66,
+          "DelyRate": 2.94
         },
         {
-          "order_purchase_date": '20170510',
-          "delivered_delayed_orders": 2,
-          "delayhour": 15.0
+          "Date": 20170312,
+          "Delay": 2,
+          "Ontime": 61,
+          "DelyRate": 3.17
         },
         {
-          "order_purchase_date": '20170511',
-          "delivered_delayed_orders": 4,
-          "delayhour": 59.0
+          "Date": 20170313,
+          "Delay": 9,
+          "Ontime": 95,
+          "DelyRate": 8.65
         },
         {
-          "order_purchase_date": '20170512',
-          "delivered_delayed_orders": 2,
-          "delayhour": 23.5
+          "Date": 20170314,
+          "Delay": 4,
+          "Ontime": 93,
+          "DelyRate": 4.12
         },
         {
-          "order_purchase_date": '20170513',
-          "delivered_delayed_orders": 2,
-          "delayhour": 12.0
+          "Date": 20170315,
+          "Delay": 8,
+          "Ontime": 93,
+          "DelyRate": 7.92
         },
         {
-          "order_purchase_date": '20170514',
-          "delivered_delayed_orders": 4,
-          "delayhour": 35.5
+          "Date": 20170316,
+          "Delay": 9,
+          "Ontime": 92,
+          "DelyRate": 8.91
         },
         {
-          "order_purchase_date": '20170515',
-          "delivered_delayed_orders": 2,
-          "delayhour": 47.5
+          "Date": 20170317,
+          "Delay": 4,
+          "Ontime": 61,
+          "DelyRate": 6.15
         },
         {
-          "order_purchase_date": '20170516',
-          "delivered_delayed_orders": 2,
-          "delayhour": 39.0
+          "Date": 20170318,
+          "Delay": 2,
+          "Ontime": 69,
+          "DelyRate": 2.82
         },
         {
-          "order_purchase_date": '20170517',
-          "delivered_delayed_orders": 1,
-          "delayhour": 84.0
+          "Date": 20170319,
+          "Delay": 1,
+          "Ontime": 55,
+          "DelyRate": 1.79
         },
         {
-          "order_purchase_date": '20170518',
-          "delivered_delayed_orders": 1,
-          "delayhour": 16.0
+          "Date": 20170320,
+          "Delay": 8,
+          "Ontime": 105,
+          "DelyRate": 7.08
         },
         {
-          "order_purchase_date": '20170519',
-          "delivered_delayed_orders": 1,
-          "delayhour": 58.0
+          "Date": 20170321,
+          "Delay": 3,
+          "Ontime": 89,
+          "DelyRate": 3.26
         },
         {
-          "order_purchase_date": '20170520',
-          "delivered_delayed_orders": 1,
-          "delayhour": 10.0
+          "Date": 20170322,
+          "Delay": 5,
+          "Ontime": 98,
+          "DelyRate": 4.85
         },
         {
-          "order_purchase_date": '20170521',
-          "delivered_delayed_orders": 1,
-          "delayhour": 54.0
+          "Date": 20170323,
+          "Delay": 4,
+          "Ontime": 101,
+          "DelyRate": 3.81
         },
         {
-          "order_purchase_date": '20170523',
-          "delivered_delayed_orders": 2,
-          "delayhour": 73.5
+          "Date": 20170324,
+          "Delay": 5,
+          "Ontime": 70,
+          "DelyRate": 6.67
         },
         {
-          "order_purchase_date": '20170524',
-          "delivered_delayed_orders": 3,
-          "delayhour": 34.0
+          "Date": 20170325,
+          "Delay": 5,
+          "Ontime": 70,
+          "DelyRate": 6.67
         },
         {
-          "order_purchase_date": '20170525',
-          "delivered_delayed_orders": 2,
-          "delayhour": 11.5
+          "Date": 20170326,
+          "Delay": 7,
+          "Ontime": 56,
+          "DelyRate": 11.11
         },
         {
-          "order_purchase_date": '20170526',
-          "delivered_delayed_orders": 1,
-          "delayhour": 38.0
+          "Date": 20170327,
+          "Delay": 5,
+          "Ontime": 102,
+          "DelyRate": 4.67
         },
         {
-          "order_purchase_date": '20170527',
-          "delivered_delayed_orders": 1,
-          "delayhour": 59.0
+          "Date": 20170328,
+          "Delay": 5,
+          "Ontime": 95,
+          "DelyRate": 5.0
         },
         {
-          "order_purchase_date": '20170528',
-          "delivered_delayed_orders": 1,
-          "delayhour": 18.0
+          "Date": 20170329,
+          "Delay": 4,
+          "Ontime": 69,
+          "DelyRate": 5.48
         },
         {
-          "order_purchase_date": '20170531',
-          "delivered_delayed_orders": 1,
-          "delayhour": 84.0
+          "Date": 20170330,
+          "Delay": 3,
+          "Ontime": 69,
+          "DelyRate": 4.17
         },
         {
-          "order_purchase_date": '20170601',
-          "delivered_delayed_orders": 1,
-          "delayhour": 17.0
+          "Date": 20170331,
+          "Delay": 5,
+          "Ontime": 64,
+          "DelyRate": 7.25
         },
         {
-          "order_purchase_date": '20170602',
-          "delivered_delayed_orders": 4,
-          "delayhour": 14.5
+          "Date": 20170401,
+          "Delay": 3,
+          "Ontime": 63,
+          "DelyRate": 4.55
         },
         {
-          "order_purchase_date": '20170603',
-          "delivered_delayed_orders": 1,
-          "delayhour": 62.0
+          "Date": 20170402,
+          "Delay": 1,
+          "Ontime": 67,
+          "DelyRate": 1.47
         },
         {
-          "order_purchase_date": '20170605',
-          "delivered_delayed_orders": 4,
-          "delayhour": 16.0
+          "Date": 20170403,
+          "Delay": 4,
+          "Ontime": 65,
+          "DelyRate": 5.8
         },
         {
-          "order_purchase_date": '20170606',
-          "delivered_delayed_orders": 1,
-          "delayhour": 13.0
+          "Date": 20170404,
+          "Delay": 7,
+          "Ontime": 92,
+          "DelyRate": 7.07
         },
         {
-          "order_purchase_date": '20170607',
-          "delivered_delayed_orders": 2,
-          "delayhour": 54.0
+          "Date": 20170405,
+          "Delay": 7,
+          "Ontime": 86,
+          "DelyRate": 7.53
         },
         {
-          "order_purchase_date": '20170608',
-          "delivered_delayed_orders": 1,
-          "delayhour": 84.0
+          "Date": 20170406,
+          "Delay": 4,
+          "Ontime": 89,
+          "DelyRate": 4.3
         },
         {
-          "order_purchase_date": '20170609',
-          "delivered_delayed_orders": 1,
-          "delayhour": 10.0
+          "Date": 20170407,
+          "Delay": 7,
+          "Ontime": 75,
+          "DelyRate": 8.54
         },
         {
-          "order_purchase_date": '20170611',
-          "delivered_delayed_orders": 1,
-          "delayhour": 37.0
+          "Date": 20170408,
+          "Delay": 5,
+          "Ontime": 59,
+          "DelyRate": 7.81
         },
         {
-          "order_purchase_date": '20170612',
-          "delivered_delayed_orders": 3,
-          "delayhour": 41.0
+          "Date": 20170409,
+          "Delay": 3,
+          "Ontime": 68,
+          "DelyRate": 4.23
         },
         {
-          "order_purchase_date": '20170613',
-          "delivered_delayed_orders": 1,
-          "delayhour": 19.0
+          "Date": 20170410,
+          "Delay": 6,
+          "Ontime": 79,
+          "DelyRate": 7.06
         },
         {
-          "order_purchase_date": '20170614',
-          "delivered_delayed_orders": 4,
-          "delayhour": 29.0
+          "Date": 20170411,
+          "Delay": 5,
+          "Ontime": 68,
+          "DelyRate": 6.85
         },
         {
-          "order_purchase_date": '20170615',
-          "delivered_delayed_orders": 3,
-          "delayhour": 19.0
+          "Date": 20170412,
+          "Delay": 7,
+          "Ontime": 54,
+          "DelyRate": 11.48
         },
         {
-          "order_purchase_date": '20170616',
-          "delivered_delayed_orders": 4,
-          "delayhour": 30.0
+          "Date": 20170413,
+          "Delay": 5,
+          "Ontime": 55,
+          "DelyRate": 8.33
         },
         {
-          "order_purchase_date": '20170619',
-          "delivered_delayed_orders": 4,
-          "delayhour": 31.5
+          "Date": 20170414,
+          "Delay": 5,
+          "Ontime": 42,
+          "DelyRate": 10.64
         },
         {
-          "order_purchase_date": '20170620',
-          "delivered_delayed_orders": 2,
-          "delayhour": 25.5
+          "Date": 20170415,
+          "Delay": 6,
+          "Ontime": 47,
+          "DelyRate": 11.32
         },
         {
-          "order_purchase_date": '20170622',
-          "delivered_delayed_orders": 1,
-          "delayhour": 69.0
+          "Date": 20170416,
+          "Delay": 5,
+          "Ontime": 42,
+          "DelyRate": 10.64
         },
         {
-          "order_purchase_date": '20170624',
-          "delivered_delayed_orders": 2,
-          "delayhour": 51.0
+          "Date": 20170417,
+          "Delay": 6,
+          "Ontime": 52,
+          "DelyRate": 10.34
         },
         {
-          "order_purchase_date": '20170625',
-          "delivered_delayed_orders": 1,
-          "delayhour": 13.0
+          "Date": 20170418,
+          "Delay": 6,
+          "Ontime": 65,
+          "DelyRate": 8.45
         },
         {
-          "order_purchase_date": '20170626',
-          "delivered_delayed_orders": 2,
-          "delayhour": 21.0
+          "Date": 20170419,
+          "Delay": 14,
+          "Ontime": 85,
+          "DelyRate": 14.14
         },
         {
-          "order_purchase_date": '20170627',
-          "delivered_delayed_orders": 2,
-          "delayhour": 51.0
+          "Date": 20170420,
+          "Delay": 14,
+          "Ontime": 81,
+          "DelyRate": 14.74
         },
         {
-          "order_purchase_date": '20170628',
-          "delivered_delayed_orders": 3,
-          "delayhour": 43.0
+          "Date": 20170421,
+          "Delay": 5,
+          "Ontime": 62,
+          "DelyRate": 7.46
         },
         {
-          "order_purchase_date": '20170629',
-          "delivered_delayed_orders": 1,
-          "delayhour": 64.0
+          "Date": 20170422,
+          "Delay": 5,
+          "Ontime": 78,
+          "DelyRate": 6.02
         },
         {
-          "order_purchase_date": '20170630',
-          "delivered_delayed_orders": 1,
-          "delayhour": 0.0
+          "Date": 20170423,
+          "Delay": 12,
+          "Ontime": 75,
+          "DelyRate": 13.79
         },
         {
-          "order_purchase_date": '20170702',
-          "delivered_delayed_orders": 1,
-          "delayhour": 12.0
+          "Date": 20170424,
+          "Delay": 12,
+          "Ontime": 99,
+          "DelyRate": 10.81
         },
         {
-          "order_purchase_date": '20170703',
-          "delivered_delayed_orders": 2,
-          "delayhour": 16.0
+          "Date": 20170425,
+          "Delay": 9,
+          "Ontime": 89,
+          "DelyRate": 9.18
         },
         {
-          "order_purchase_date": '20170704',
-          "delivered_delayed_orders": 5,
-          "delayhour": 18.0
+          "Date": 20170426,
+          "Delay": 10,
+          "Ontime": 107,
+          "DelyRate": 8.55
         },
         {
-          "order_purchase_date": '20170705',
-          "delivered_delayed_orders": 1,
-          "delayhour": 86.0
+          "Date": 20170427,
+          "Delay": 0,
+          "Ontime": 68,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170706',
-          "delivered_delayed_orders": 3,
-          "delayhour": 67.0
+          "Date": 20170428,
+          "Delay": 7,
+          "Ontime": 87,
+          "DelyRate": 7.45
         },
         {
-          "order_purchase_date": '20170707',
-          "delivered_delayed_orders": 2,
-          "delayhour": 21.0
+          "Date": 20170429,
+          "Delay": 2,
+          "Ontime": 68,
+          "DelyRate": 2.86
         },
         {
-          "order_purchase_date": '20170709',
-          "delivered_delayed_orders": 1,
-          "delayhour": 41.0
+          "Date": 20170430,
+          "Delay": 3,
+          "Ontime": 63,
+          "DelyRate": 4.55
         },
         {
-          "order_purchase_date": '20170711',
-          "delivered_delayed_orders": 3,
-          "delayhour": 21.0
+          "Date": 20170501,
+          "Delay": 5,
+          "Ontime": 108,
+          "DelyRate": 4.42
         },
         {
-          "order_purchase_date": '20170712',
-          "delivered_delayed_orders": 3,
-          "delayhour": 39.0
+          "Date": 20170502,
+          "Delay": 6,
+          "Ontime": 117,
+          "DelyRate": 4.88
         },
         {
-          "order_purchase_date": '20170713',
-          "delivered_delayed_orders": 2,
-          "delayhour": 87.0
+          "Date": 20170503,
+          "Delay": 8,
+          "Ontime": 91,
+          "DelyRate": 8.08
         },
         {
-          "order_purchase_date": '20170715',
-          "delivered_delayed_orders": 2,
-          "delayhour": 40.5
+          "Date": 20170504,
+          "Delay": 2,
+          "Ontime": 103,
+          "DelyRate": 1.9
         },
         {
-          "order_purchase_date": '20170716',
-          "delivered_delayed_orders": 4,
-          "delayhour": 78.5
+          "Date": 20170505,
+          "Delay": 2,
+          "Ontime": 101,
+          "DelyRate": 1.94
         },
         {
-          "order_purchase_date": '20170717',
-          "delivered_delayed_orders": 3,
-          "delayhour": 37.0
+          "Date": 20170506,
+          "Delay": 2,
+          "Ontime": 102,
+          "DelyRate": 1.92
         },
         {
-          "order_purchase_date": '20170718',
-          "delivered_delayed_orders": 4,
-          "delayhour": 20.5
+          "Date": 20170507,
+          "Delay": 2,
+          "Ontime": 100,
+          "DelyRate": 1.96
         },
         {
-          "order_purchase_date": '20170719',
-          "delivered_delayed_orders": 1,
-          "delayhour": 42.0
+          "Date": 20170508,
+          "Delay": 5,
+          "Ontime": 117,
+          "DelyRate": 4.1
         },
         {
-          "order_purchase_date": '20170720',
-          "delivered_delayed_orders": 1,
-          "delayhour": 40.0
+          "Date": 20170509,
+          "Delay": 6,
+          "Ontime": 114,
+          "DelyRate": 5.0
         },
         {
-          "order_purchase_date": '20170721',
-          "delivered_delayed_orders": 3,
-          "delayhour": 41.0
+          "Date": 20170510,
+          "Delay": 8,
+          "Ontime": 105,
+          "DelyRate": 7.08
         },
         {
-          "order_purchase_date": '20170723',
-          "delivered_delayed_orders": 1,
-          "delayhour": 92.0
+          "Date": 20170511,
+          "Delay": 8,
+          "Ontime": 117,
+          "DelyRate": 6.4
         },
         {
-          "order_purchase_date": '20170724',
-          "delivered_delayed_orders": 1,
-          "delayhour": 88.0
+          "Date": 20170512,
+          "Delay": 8,
+          "Ontime": 96,
+          "DelyRate": 7.69
         },
         {
-          "order_purchase_date": '20170725',
-          "delivered_delayed_orders": 3,
-          "delayhour": 20.0
+          "Date": 20170513,
+          "Delay": 2,
+          "Ontime": 66,
+          "DelyRate": 2.94
         },
         {
-          "order_purchase_date": '20170727',
-          "delivered_delayed_orders": 1,
-          "delayhour": 21.0
+          "Date": 20170514,
+          "Delay": 7,
+          "Ontime": 105,
+          "DelyRate": 6.25
         },
         {
-          "order_purchase_date": '20170728',
-          "delivered_delayed_orders": 1,
-          "delayhour": 69.0
+          "Date": 20170515,
+          "Delay": 4,
+          "Ontime": 148,
+          "DelyRate": 2.63
         },
         {
-          "order_purchase_date": '20170729',
-          "delivered_delayed_orders": 2,
-          "delayhour": 44.0
+          "Date": 20170516,
+          "Delay": 4,
+          "Ontime": 151,
+          "DelyRate": 2.58
         },
         {
-          "order_purchase_date": '20170731',
-          "delivered_delayed_orders": 4,
-          "delayhour": 31.0
+          "Date": 20170517,
+          "Delay": 4,
+          "Ontime": 139,
+          "DelyRate": 2.8
         },
         {
-          "order_purchase_date": '20170801',
-          "delivered_delayed_orders": 3,
-          "delayhour": 61.0
+          "Date": 20170518,
+          "Delay": 4,
+          "Ontime": 121,
+          "DelyRate": 3.2
         },
         {
-          "order_purchase_date": '20170803',
-          "delivered_delayed_orders": 2,
-          "delayhour": 29.5
+          "Date": 20170519,
+          "Delay": 3,
+          "Ontime": 138,
+          "DelyRate": 2.13
         },
         {
-          "order_purchase_date": '20170805',
-          "delivered_delayed_orders": 1,
-          "delayhour": 94.0
+          "Date": 20170520,
+          "Delay": 2,
+          "Ontime": 69,
+          "DelyRate": 2.82
         },
         {
-          "order_purchase_date": '20170806',
-          "delivered_delayed_orders": 2,
-          "delayhour": 34.5
+          "Date": 20170521,
+          "Delay": 3,
+          "Ontime": 140,
+          "DelyRate": 2.1
         },
         {
-          "order_purchase_date": '20170807',
-          "delivered_delayed_orders": 3,
-          "delayhour": 20.0
+          "Date": 20170522,
+          "Delay": 3,
+          "Ontime": 146,
+          "DelyRate": 2.01
         },
         {
-          "order_purchase_date": '20170808',
-          "delivered_delayed_orders": 3,
-          "delayhour": 70.0
+          "Date": 20170523,
+          "Delay": 5,
+          "Ontime": 115,
+          "DelyRate": 4.17
         },
         {
-          "order_purchase_date": '20170809',
-          "delivered_delayed_orders": 1,
-          "delayhour": 45.0
+          "Date": 20170524,
+          "Delay": 7,
+          "Ontime": 136,
+          "DelyRate": 4.9
         },
         {
-          "order_purchase_date": '20170810',
-          "delivered_delayed_orders": 1,
-          "delayhour": 37.0
+          "Date": 20170525,
+          "Delay": 4,
+          "Ontime": 98,
+          "DelyRate": 3.92
         },
         {
-          "order_purchase_date": '20170812',
-          "delivered_delayed_orders": 2,
-          "delayhour": 76.0
+          "Date": 20170526,
+          "Delay": 2,
+          "Ontime": 75,
+          "DelyRate": 2.6
         },
         {
-          "order_purchase_date": '20170814',
-          "delivered_delayed_orders": 1,
-          "delayhour": 12.0
+          "Date": 20170527,
+          "Delay": 2,
+          "Ontime": 78,
+          "DelyRate": 2.5
         },
         {
-          "order_purchase_date": '20170815',
-          "delivered_delayed_orders": 1,
-          "delayhour": 64.0
+          "Date": 20170528,
+          "Delay": 2,
+          "Ontime": 97,
+          "DelyRate": 2.02
         },
         {
-          "order_purchase_date": '20170816',
-          "delivered_delayed_orders": 7,
-          "delayhour": 44.0
+          "Date": 20170529,
+          "Delay": 3,
+          "Ontime": 152,
+          "DelyRate": 1.94
         },
         {
-          "order_purchase_date": '20170817',
-          "delivered_delayed_orders": 4,
-          "delayhour": 54.0
+          "Date": 20170530,
+          "Delay": 3,
+          "Ontime": 95,
+          "DelyRate": 3.06
         },
         {
-          "order_purchase_date": '20170821',
-          "delivered_delayed_orders": 1,
-          "delayhour": 44.0
+          "Date": 20170531,
+          "Delay": 3,
+          "Ontime": 115,
+          "DelyRate": 2.54
         },
         {
-          "order_purchase_date": '20170822',
-          "delivered_delayed_orders": 1,
-          "delayhour": 41.0
+          "Date": 20170601,
+          "Delay": 3,
+          "Ontime": 123,
+          "DelyRate": 2.38
         },
         {
-          "order_purchase_date": '20170824',
-          "delivered_delayed_orders": 4,
-          "delayhour": 53.0
+          "Date": 20170602,
+          "Delay": 5,
+          "Ontime": 118,
+          "DelyRate": 4.07
         },
         {
-          "order_purchase_date": '20170825',
-          "delivered_delayed_orders": 3,
-          "delayhour": 61.0
+          "Date": 20170603,
+          "Delay": 4,
+          "Ontime": 89,
+          "DelyRate": 4.3
         },
         {
-          "order_purchase_date": '20170826',
-          "delivered_delayed_orders": 1,
-          "delayhour": 18.0
+          "Date": 20170604,
+          "Delay": 2,
+          "Ontime": 96,
+          "DelyRate": 2.04
         },
         {
-          "order_purchase_date": '20170827',
-          "delivered_delayed_orders": 1,
-          "delayhour": 44.0
+          "Date": 20170605,
+          "Delay": 5,
+          "Ontime": 140,
+          "DelyRate": 3.45
         },
         {
-          "order_purchase_date": '20170828',
-          "delivered_delayed_orders": 5,
-          "delayhour": 84.0
+          "Date": 20170606,
+          "Delay": 3,
+          "Ontime": 126,
+          "DelyRate": 2.33
         },
         {
-          "order_purchase_date": '20170829',
-          "delivered_delayed_orders": 4,
-          "delayhour": 56.0
+          "Date": 20170607,
+          "Delay": 6,
+          "Ontime": 119,
+          "DelyRate": 4.8
         },
         {
-          "order_purchase_date": '20170830',
-          "delivered_delayed_orders": 3,
-          "delayhour": 65.0
+          "Date": 20170608,
+          "Delay": 3,
+          "Ontime": 134,
+          "DelyRate": 2.19
         },
         {
-          "order_purchase_date": '20170831',
-          "delivered_delayed_orders": 4,
-          "delayhour": 42.0
+          "Date": 20170609,
+          "Delay": 1,
+          "Ontime": 107,
+          "DelyRate": 0.93
         },
         {
-          "order_purchase_date": '20170901',
-          "delivered_delayed_orders": 2,
-          "delayhour": 55.5
+          "Date": 20170610,
+          "Delay": 0,
+          "Ontime": 73,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170902',
-          "delivered_delayed_orders": 1,
-          "delayhour": 40.0
+          "Date": 20170611,
+          "Delay": 5,
+          "Ontime": 108,
+          "DelyRate": 4.42
         },
         {
-          "order_purchase_date": '20170903',
-          "delivered_delayed_orders": 1,
-          "delayhour": 17.0
+          "Date": 20170612,
+          "Delay": 10,
+          "Ontime": 111,
+          "DelyRate": 8.26
         },
         {
-          "order_purchase_date": '20170904',
-          "delivered_delayed_orders": 1,
-          "delayhour": 21.0
+          "Date": 20170613,
+          "Delay": 3,
+          "Ontime": 118,
+          "DelyRate": 2.48
         },
         {
-          "order_purchase_date": '20170905',
-          "delivered_delayed_orders": 1,
-          "delayhour": 23.0
+          "Date": 20170614,
+          "Delay": 9,
+          "Ontime": 120,
+          "DelyRate": 6.98
         },
         {
-          "order_purchase_date": '20170906',
-          "delivered_delayed_orders": 3,
-          "delayhour": 66.0
+          "Date": 20170615,
+          "Delay": 5,
+          "Ontime": 99,
+          "DelyRate": 4.81
         },
         {
-          "order_purchase_date": '20170907',
-          "delivered_delayed_orders": 3,
-          "delayhour": 38.0
+          "Date": 20170616,
+          "Delay": 6,
+          "Ontime": 88,
+          "DelyRate": 6.38
         },
         {
-          "order_purchase_date": '20170908',
-          "delivered_delayed_orders": 2,
-          "delayhour": 31.5
+          "Date": 20170617,
+          "Delay": 3,
+          "Ontime": 70,
+          "DelyRate": 4.11
         },
         {
-          "order_purchase_date": '20170909',
-          "delivered_delayed_orders": 1,
-          "delayhour": 38.0
+          "Date": 20170618,
+          "Delay": 1,
+          "Ontime": 87,
+          "DelyRate": 1.14
         },
         {
-          "order_purchase_date": '20170910',
-          "delivered_delayed_orders": 4,
-          "delayhour": 56.0
+          "Date": 20170619,
+          "Delay": 8,
+          "Ontime": 149,
+          "DelyRate": 5.1
         },
         {
-          "order_purchase_date": '20170911',
-          "delivered_delayed_orders": 3,
-          "delayhour": 17.0
+          "Date": 20170620,
+          "Delay": 3,
+          "Ontime": 89,
+          "DelyRate": 3.26
         },
         {
-          "order_purchase_date": '20170912',
-          "delivered_delayed_orders": 7,
-          "delayhour": 41.0
+          "Date": 20170621,
+          "Delay": 2,
+          "Ontime": 32,
+          "DelyRate": 5.88
         },
         {
-          "order_purchase_date": '20170913',
-          "delivered_delayed_orders": 7,
-          "delayhour": 35.0
+          "Date": 20170622,
+          "Delay": 5,
+          "Ontime": 78,
+          "DelyRate": 6.02
         },
         {
-          "order_purchase_date": '20170914',
-          "delivered_delayed_orders": 3,
-          "delayhour": 69.0
+          "Date": 20170623,
+          "Delay": 0,
+          "Ontime": 103,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20170915',
-          "delivered_delayed_orders": 3,
-          "delayhour": 35.0
+          "Date": 20170624,
+          "Delay": 6,
+          "Ontime": 68,
+          "DelyRate": 8.11
         },
         {
-          "order_purchase_date": '20170916',
-          "delivered_delayed_orders": 6,
-          "delayhour": 53.0
+          "Date": 20170625,
+          "Delay": 2,
+          "Ontime": 97,
+          "DelyRate": 2.02
         },
         {
-          "order_purchase_date": '20170917',
-          "delivered_delayed_orders": 6,
-          "delayhour": 40.5
+          "Date": 20170626,
+          "Delay": 4,
+          "Ontime": 62,
+          "DelyRate": 6.06
         },
         {
-          "order_purchase_date": '20170918',
-          "delivered_delayed_orders": 7,
-          "delayhour": 41.0
+          "Date": 20170627,
+          "Delay": 3,
+          "Ontime": 137,
+          "DelyRate": 2.14
         },
         {
-          "order_purchase_date": '20170919',
-          "delivered_delayed_orders": 8,
-          "delayhour": 30.5
+          "Date": 20170628,
+          "Delay": 5,
+          "Ontime": 112,
+          "DelyRate": 4.27
         },
         {
-          "order_purchase_date": '20170920',
-          "delivered_delayed_orders": 5,
-          "delayhour": 64.0
+          "Date": 20170629,
+          "Delay": 4,
+          "Ontime": 106,
+          "DelyRate": 3.64
         },
         {
-          "order_purchase_date": '20170921',
-          "delivered_delayed_orders": 1,
-          "delayhour": 36.0
+          "Date": 20170630,
+          "Delay": 4,
+          "Ontime": 89,
+          "DelyRate": 4.3
         },
         {
-          "order_purchase_date": '20170922',
-          "delivered_delayed_orders": 2,
-          "delayhour": 54.0
+          "Date": 20170701,
+          "Delay": 1,
+          "Ontime": 78,
+          "DelyRate": 1.27
         },
         {
-          "order_purchase_date": '20170926',
-          "delivered_delayed_orders": 1,
-          "delayhour": 87.0
+          "Date": 20170702,
+          "Delay": 3,
+          "Ontime": 98,
+          "DelyRate": 2.97
         },
         {
-          "order_purchase_date": '20170927',
-          "delivered_delayed_orders": 1,
-          "delayhour": 91.0
+          "Date": 20170703,
+          "Delay": 3,
+          "Ontime": 109,
+          "DelyRate": 2.68
         },
         {
-          "order_purchase_date": '20170928',
-          "delivered_delayed_orders": 1,
-          "delayhour": 43.0
+          "Date": 20170704,
+          "Delay": 10,
+          "Ontime": 113,
+          "DelyRate": 8.13
         },
         {
-          "order_purchase_date": '20170929',
-          "delivered_delayed_orders": 1,
-          "delayhour": 69.0
+          "Date": 20170705,
+          "Delay": 5,
+          "Ontime": 142,
+          "DelyRate": 3.4
         },
         {
-          "order_purchase_date": '20170930',
-          "delivered_delayed_orders": 3,
-          "delayhour": 18.0
+          "Date": 20170706,
+          "Delay": 4,
+          "Ontime": 139,
+          "DelyRate": 2.8
         },
         {
-          "order_purchase_date": '20171001',
-          "delivered_delayed_orders": 1,
-          "delayhour": 89.0
+          "Date": 20170707,
+          "Delay": 2,
+          "Ontime": 114,
+          "DelyRate": 1.72
         },
         {
-          "order_purchase_date": '20171002',
-          "delivered_delayed_orders": 2,
-          "delayhour": 66.5
+          "Date": 20170708,
+          "Delay": 0,
+          "Ontime": 87,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20171003',
-          "delivered_delayed_orders": 3,
-          "delayhour": 41.0
+          "Date": 20170709,
+          "Delay": 3,
+          "Ontime": 86,
+          "DelyRate": 3.37
         },
         {
-          "order_purchase_date": '20171005',
-          "delivered_delayed_orders": 4,
-          "delayhour": 56.0
+          "Date": 20170710,
+          "Delay": 8,
+          "Ontime": 133,
+          "DelyRate": 5.67
         },
         {
-          "order_purchase_date": '20171006',
-          "delivered_delayed_orders": 6,
-          "delayhour": 19.5
+          "Date": 20170711,
+          "Delay": 5,
+          "Ontime": 158,
+          "DelyRate": 3.07
         },
         {
-          "order_purchase_date": '20171007',
-          "delivered_delayed_orders": 4,
-          "delayhour": 44.5
+          "Date": 20170712,
+          "Delay": 6,
+          "Ontime": 140,
+          "DelyRate": 4.11
         },
         {
-          "order_purchase_date": '20171008',
-          "delivered_delayed_orders": 2,
-          "delayhour": 15.0
+          "Date": 20170713,
+          "Delay": 5,
+          "Ontime": 132,
+          "DelyRate": 3.65
         },
         {
-          "order_purchase_date": '20171009',
-          "delivered_delayed_orders": 7,
-          "delayhour": 21.0
+          "Date": 20170714,
+          "Delay": 1,
+          "Ontime": 148,
+          "DelyRate": 0.67
         },
         {
-          "order_purchase_date": '20171010',
-          "delivered_delayed_orders": 4,
-          "delayhour": 33.0
+          "Date": 20170715,
+          "Delay": 3,
+          "Ontime": 98,
+          "DelyRate": 2.97
         },
         {
-          "order_purchase_date": '20171011',
-          "delivered_delayed_orders": 4,
-          "delayhour": 42.5
+          "Date": 20170716,
+          "Delay": 7,
+          "Ontime": 100,
+          "DelyRate": 6.54
         },
         {
-          "order_purchase_date": '20171012',
-          "delivered_delayed_orders": 1,
-          "delayhour": 19.0
+          "Date": 20170717,
+          "Delay": 7,
+          "Ontime": 163,
+          "DelyRate": 4.12
         },
         {
-          "order_purchase_date": '20171013',
-          "delivered_delayed_orders": 6,
-          "delayhour": 28.5
+          "Date": 20170718,
+          "Delay": 10,
+          "Ontime": 178,
+          "DelyRate": 5.32
         },
         {
-          "order_purchase_date": '20171014',
-          "delivered_delayed_orders": 2,
-          "delayhour": 54.0
+          "Date": 20170719,
+          "Delay": 3,
+          "Ontime": 145,
+          "DelyRate": 2.03
         },
         {
-          "order_purchase_date": '20171015',
-          "delivered_delayed_orders": 2,
-          "delayhour": 26.5
+          "Date": 20170720,
+          "Delay": 4,
+          "Ontime": 133,
+          "DelyRate": 2.92
         },
         {
-          "order_purchase_date": '20171016',
-          "delivered_delayed_orders": 5,
-          "delayhour": 20.0
+          "Date": 20170721,
+          "Delay": 4,
+          "Ontime": 113,
+          "DelyRate": 3.42
         },
         {
-          "order_purchase_date": '20171017',
-          "delivered_delayed_orders": 10,
-          "delayhour": 28.5
+          "Date": 20170722,
+          "Delay": 2,
+          "Ontime": 85,
+          "DelyRate": 2.3
         },
         {
-          "order_purchase_date": '20171018',
-          "delivered_delayed_orders": 2,
-          "delayhour": 59.0
+          "Date": 20170723,
+          "Delay": 1,
+          "Ontime": 99,
+          "DelyRate": 1.0
         },
         {
-          "order_purchase_date": '20171019',
-          "delivered_delayed_orders": 3,
-          "delayhour": 21.0
+          "Date": 20170724,
+          "Delay": 8,
+          "Ontime": 151,
+          "DelyRate": 5.03
         },
         {
-          "order_purchase_date": '20171020',
-          "delivered_delayed_orders": 2,
-          "delayhour": 29.0
+          "Date": 20170725,
+          "Delay": 6,
+          "Ontime": 141,
+          "DelyRate": 4.08
         },
         {
-          "order_purchase_date": '20171021',
-          "delivered_delayed_orders": 1,
-          "delayhour": 37.0
+          "Date": 20170726,
+          "Delay": 3,
+          "Ontime": 118,
+          "DelyRate": 2.48
         },
         {
-          "order_purchase_date": '20171022',
-          "delivered_delayed_orders": 2,
-          "delayhour": 54.5
+          "Date": 20170727,
+          "Delay": 4,
+          "Ontime": 121,
+          "DelyRate": 3.2
         },
         {
-          "order_purchase_date": '20171023',
-          "delivered_delayed_orders": 3,
-          "delayhour": 21.0
+          "Date": 20170728,
+          "Delay": 3,
+          "Ontime": 121,
+          "DelyRate": 2.42
         },
         {
-          "order_purchase_date": '20171024',
-          "delivered_delayed_orders": 3,
-          "delayhour": 37.0
+          "Date": 20170729,
+          "Delay": 5,
+          "Ontime": 107,
+          "DelyRate": 4.46
         },
         {
-          "order_purchase_date": '20171026',
-          "delivered_delayed_orders": 3,
-          "delayhour": 41.0
+          "Date": 20170730,
+          "Delay": 1,
+          "Ontime": 108,
+          "DelyRate": 0.92
         },
         {
-          "order_purchase_date": '20171027',
-          "delivered_delayed_orders": 5,
-          "delayhour": 22.0
+          "Date": 20170731,
+          "Delay": 6,
+          "Ontime": 138,
+          "DelyRate": 4.17
         },
         {
-          "order_purchase_date": '20171029',
-          "delivered_delayed_orders": 3,
-          "delayhour": 45.0
+          "Date": 20170801,
+          "Delay": 7,
+          "Ontime": 157,
+          "DelyRate": 4.27
         },
         {
-          "order_purchase_date": '20171030',
-          "delivered_delayed_orders": 9,
-          "delayhour": 24.0
+          "Date": 20170802,
+          "Delay": 4,
+          "Ontime": 148,
+          "DelyRate": 2.63
         },
         {
-          "order_purchase_date": '20171031',
-          "delivered_delayed_orders": 7,
-          "delayhour": 22.0
+          "Date": 20170803,
+          "Delay": 5,
+          "Ontime": 145,
+          "DelyRate": 3.33
         },
         {
-          "order_purchase_date": '20171101',
-          "delivered_delayed_orders": 3,
-          "delayhour": 18.0
+          "Date": 20170804,
+          "Delay": 4,
+          "Ontime": 139,
+          "DelyRate": 2.8
         },
         {
-          "order_purchase_date": '20171102',
-          "delivered_delayed_orders": 5,
-          "delayhour": 41.0
+          "Date": 20170805,
+          "Delay": 2,
+          "Ontime": 113,
+          "DelyRate": 1.74
         },
         {
-          "order_purchase_date": '20171103',
-          "delivered_delayed_orders": 4,
-          "delayhour": 18.5
+          "Date": 20170806,
+          "Delay": 5,
+          "Ontime": 100,
+          "DelyRate": 4.76
         },
         {
-          "order_purchase_date": '20171104',
-          "delivered_delayed_orders": 3,
-          "delayhour": 26.0
+          "Date": 20170807,
+          "Delay": 6,
+          "Ontime": 151,
+          "DelyRate": 3.82
         },
         {
-          "order_purchase_date": '20171105',
-          "delivered_delayed_orders": 1,
-          "delayhour": 16.0
+          "Date": 20170808,
+          "Delay": 7,
+          "Ontime": 140,
+          "DelyRate": 4.76
         },
         {
-          "order_purchase_date": '20171106',
-          "delivered_delayed_orders": 2,
-          "delayhour": 55.0
+          "Date": 20170809,
+          "Delay": 2,
+          "Ontime": 138,
+          "DelyRate": 1.43
         },
         {
-          "order_purchase_date": '20171107',
-          "delivered_delayed_orders": 6,
-          "delayhour": 61.0
+          "Date": 20170810,
+          "Delay": 6,
+          "Ontime": 155,
+          "DelyRate": 3.73
         },
         {
-          "order_purchase_date": '20171108',
-          "delivered_delayed_orders": 7,
-          "delayhour": 25.0
+          "Date": 20170811,
+          "Delay": 3,
+          "Ontime": 134,
+          "DelyRate": 2.19
         },
         {
-          "order_purchase_date": '20171109',
-          "delivered_delayed_orders": 3,
-          "delayhour": 95.0
+          "Date": 20170812,
+          "Delay": 3,
+          "Ontime": 91,
+          "DelyRate": 3.19
         },
         {
-          "order_purchase_date": '20171110',
-          "delivered_delayed_orders": 6,
-          "delayhour": 38.5
+          "Date": 20170813,
+          "Delay": 2,
+          "Ontime": 92,
+          "DelyRate": 2.13
         },
         {
-          "order_purchase_date": '20171111',
-          "delivered_delayed_orders": 4,
-          "delayhour": 16.5
+          "Date": 20170814,
+          "Delay": 3,
+          "Ontime": 151,
+          "DelyRate": 1.95
         },
         {
-          "order_purchase_date": '20171112',
-          "delivered_delayed_orders": 8,
-          "delayhour": 30.5
+          "Date": 20170815,
+          "Delay": 5,
+          "Ontime": 181,
+          "DelyRate": 2.69
         },
         {
-          "order_purchase_date": '20171113',
-          "delivered_delayed_orders": 9,
-          "delayhour": 47.0
+          "Date": 20170816,
+          "Delay": 9,
+          "Ontime": 158,
+          "DelyRate": 5.39
         },
         {
-          "order_purchase_date": '20171114',
-          "delivered_delayed_orders": 6,
-          "delayhour": 63.0
+          "Date": 20170817,
+          "Delay": 7,
+          "Ontime": 148,
+          "DelyRate": 4.52
         },
         {
-          "order_purchase_date": '20171115',
-          "delivered_delayed_orders": 4,
-          "delayhour": 18.5
+          "Date": 20170818,
+          "Delay": 4,
+          "Ontime": 141,
+          "DelyRate": 2.76
         },
         {
-          "order_purchase_date": '20171116',
-          "delivered_delayed_orders": 6,
-          "delayhour": 22.5
+          "Date": 20170819,
+          "Delay": 2,
+          "Ontime": 112,
+          "DelyRate": 1.75
         },
         {
-          "order_purchase_date": '20171117',
-          "delivered_delayed_orders": 9,
-          "delayhour": 26.0
+          "Date": 20170820,
+          "Delay": 1,
+          "Ontime": 109,
+          "DelyRate": 0.91
         },
         {
-          "order_purchase_date": '20171118',
-          "delivered_delayed_orders": 9,
-          "delayhour": 43.0
+          "Date": 20170821,
+          "Delay": 5,
+          "Ontime": 172,
+          "DelyRate": 2.82
         },
         {
-          "order_purchase_date": '20171119',
-          "delivered_delayed_orders": 2,
-          "delayhour": 65.5
+          "Date": 20170822,
+          "Delay": 3,
+          "Ontime": 136,
+          "DelyRate": 2.16
         },
         {
-          "order_purchase_date": '20171120',
-          "delivered_delayed_orders": 9,
-          "delayhour": 43.0
+          "Date": 20170823,
+          "Delay": 3,
+          "Ontime": 115,
+          "DelyRate": 2.54
         },
         {
-          "order_purchase_date": '20171121',
-          "delivered_delayed_orders": 18,
-          "delayhour": 45.0
+          "Date": 20170824,
+          "Delay": 4,
+          "Ontime": 124,
+          "DelyRate": 3.13
         },
         {
-          "order_purchase_date": '20171122',
-          "delivered_delayed_orders": 3,
-          "delayhour": 65.0
+          "Date": 20170825,
+          "Delay": 7,
+          "Ontime": 112,
+          "DelyRate": 5.88
         },
         {
-          "order_purchase_date": '20171123',
-          "delivered_delayed_orders": 15,
-          "delayhour": 47.0
+          "Date": 20170826,
+          "Delay": 2,
+          "Ontime": 93,
+          "DelyRate": 2.11
         },
         {
-          "order_purchase_date": '20171124',
-          "delivered_delayed_orders": 87,
-          "delayhour": 43.0
+          "Date": 20170827,
+          "Delay": 2,
+          "Ontime": 117,
+          "DelyRate": 1.68
         },
         {
-          "order_purchase_date": '20171125',
-          "delivered_delayed_orders": 30,
-          "delayhour": 42.0
+          "Date": 20170828,
+          "Delay": 6,
+          "Ontime": 147,
+          "DelyRate": 3.92
         },
         {
-          "order_purchase_date": '20171126',
-          "delivered_delayed_orders": 28,
-          "delayhour": 40.0
+          "Date": 20170829,
+          "Delay": 9,
+          "Ontime": 129,
+          "DelyRate": 6.52
         },
         {
-          "order_purchase_date": '20171127',
-          "delivered_delayed_orders": 31,
-          "delayhour": 42.0
+          "Date": 20170830,
+          "Delay": 4,
+          "Ontime": 174,
+          "DelyRate": 2.25
         },
         {
-          "order_purchase_date": '20171128',
-          "delivered_delayed_orders": 31,
-          "delayhour": 42.0
+          "Date": 20170831,
+          "Delay": 8,
+          "Ontime": 138,
+          "DelyRate": 5.48
         },
         {
-          "order_purchase_date": '20171129',
-          "delivered_delayed_orders": 20,
-          "delayhour": 42.0
+          "Date": 20170901,
+          "Delay": 7,
+          "Ontime": 138,
+          "DelyRate": 4.83
         },
         {
-          "order_purchase_date": '20171130',
-          "delivered_delayed_orders": 9,
-          "delayhour": 37.0
+          "Date": 20170902,
+          "Delay": 1,
+          "Ontime": 101,
+          "DelyRate": 0.98
         },
         {
-          "order_purchase_date": '20171201',
-          "delivered_delayed_orders": 15,
-          "delayhour": 42.0
+          "Date": 20170903,
+          "Delay": 2,
+          "Ontime": 126,
+          "DelyRate": 1.56
         },
         {
-          "order_purchase_date": '20171202',
-          "delivered_delayed_orders": 8,
-          "delayhour": 45.0
+          "Date": 20170904,
+          "Delay": 7,
+          "Ontime": 141,
+          "DelyRate": 4.73
         },
         {
-          "order_purchase_date": '20171203',
-          "delivered_delayed_orders": 8,
-          "delayhour": 63.0
+          "Date": 20170905,
+          "Delay": 3,
+          "Ontime": 154,
+          "DelyRate": 1.91
         },
         {
-          "order_purchase_date": '20171204',
-          "delivered_delayed_orders": 21,
-          "delayhour": 42.0
+          "Date": 20170906,
+          "Delay": 11,
+          "Ontime": 128,
+          "DelyRate": 7.91
         },
         {
-          "order_purchase_date": '20171205',
-          "delivered_delayed_orders": 9,
-          "delayhour": 61.0
+          "Date": 20170907,
+          "Delay": 4,
+          "Ontime": 93,
+          "DelyRate": 4.12
         },
         {
-          "order_purchase_date": '20171206',
-          "delivered_delayed_orders": 15,
-          "delayhour": 41.0
+          "Date": 20170908,
+          "Delay": 6,
+          "Ontime": 105,
+          "DelyRate": 5.41
         },
         {
-          "order_purchase_date": '20171207',
-          "delivered_delayed_orders": 16,
-          "delayhour": 46.5
+          "Date": 20170909,
+          "Delay": 3,
+          "Ontime": 101,
+          "DelyRate": 2.88
         },
         {
-          "order_purchase_date": '20171208',
-          "delivered_delayed_orders": 7,
-          "delayhour": 68.0
+          "Date": 20170910,
+          "Delay": 10,
+          "Ontime": 126,
+          "DelyRate": 7.35
         },
         {
-          "order_purchase_date": '20171209',
-          "delivered_delayed_orders": 4,
-          "delayhour": 29.5
+          "Date": 20170911,
+          "Delay": 9,
+          "Ontime": 177,
+          "DelyRate": 4.84
         },
         {
-          "order_purchase_date": '20171210',
-          "delivered_delayed_orders": 5,
-          "delayhour": 44.0
+          "Date": 20170912,
+          "Delay": 19,
+          "Ontime": 181,
+          "DelyRate": 9.5
         },
         {
-          "order_purchase_date": '20171211',
-          "delivered_delayed_orders": 5,
-          "delayhour": 23.0
+          "Date": 20170913,
+          "Delay": 18,
+          "Ontime": 185,
+          "DelyRate": 8.87
         },
         {
-          "order_purchase_date": '20171212',
-          "delivered_delayed_orders": 9,
-          "delayhour": 44.0
+          "Date": 20170914,
+          "Delay": 13,
+          "Ontime": 159,
+          "DelyRate": 7.56
         },
         {
-          "order_purchase_date": '20171213',
-          "delivered_delayed_orders": 5,
-          "delayhour": 62.0
+          "Date": 20170915,
+          "Delay": 9,
+          "Ontime": 135,
+          "DelyRate": 6.25
         },
         {
-          "order_purchase_date": '20171214',
-          "delivered_delayed_orders": 3,
-          "delayhour": 42.0
+          "Date": 20170916,
+          "Delay": 12,
+          "Ontime": 115,
+          "DelyRate": 9.45
         },
         {
-          "order_purchase_date": '20171215',
-          "delivered_delayed_orders": 3,
-          "delayhour": 44.0
+          "Date": 20170917,
+          "Delay": 9,
+          "Ontime": 123,
+          "DelyRate": 6.82
         },
         {
-          "order_purchase_date": '20171216',
-          "delivered_delayed_orders": 3,
-          "delayhour": 46.0
+          "Date": 20170918,
+          "Delay": 21,
+          "Ontime": 162,
+          "DelyRate": 11.48
         },
         {
-          "order_purchase_date": '20171217',
-          "delivered_delayed_orders": 2,
-          "delayhour": 44.5
+          "Date": 20170919,
+          "Delay": 14,
+          "Ontime": 136,
+          "DelyRate": 9.33
         },
         {
-          "order_purchase_date": '20171218',
-          "delivered_delayed_orders": 6,
-          "delayhour": 54.0
+          "Date": 20170920,
+          "Delay": 7,
+          "Ontime": 154,
+          "DelyRate": 4.35
         },
         {
-          "order_purchase_date": '20171219',
-          "delivered_delayed_orders": 4,
-          "delayhour": 42.0
+          "Date": 20170921,
+          "Delay": 3,
+          "Ontime": 145,
+          "DelyRate": 2.03
         },
         {
-          "order_purchase_date": '20171220',
-          "delivered_delayed_orders": 3,
-          "delayhour": 20.0
+          "Date": 20170922,
+          "Delay": 3,
+          "Ontime": 131,
+          "DelyRate": 2.24
         },
         {
-          "order_purchase_date": '20171221',
-          "delivered_delayed_orders": 4,
-          "delayhour": 64.5
+          "Date": 20170923,
+          "Delay": 0,
+          "Ontime": 81,
+          "DelyRate": 0.0
         },
         {
-          "order_purchase_date": '20171222',
-          "delivered_delayed_orders": 2,
-          "delayhour": 33.0
+          "Date": 20170924,
+          "Delay": 2,
+          "Ontime": 110,
+          "DelyRate": 1.79
         },
         {
-          "order_purchase_date": '20171223',
-          "delivered_delayed_orders": 3,
-          "delayhour": 68.0
+          "Date": 20170925,
+          "Delay": 1,
+          "Ontime": 132,
+          "DelyRate": 0.75
         },
         {
-          "order_purchase_date": '20171224',
-          "delivered_delayed_orders": 1,
-          "delayhour": 13.0
+          "Date": 20170926,
+          "Delay": 7,
+          "Ontime": 168,
+          "DelyRate": 4.0
         },
         {
-          "order_purchase_date": '20171225',
-          "delivered_delayed_orders": 2,
-          "delayhour": 34.0
+          "Date": 20170927,
+          "Delay": 3,
+          "Ontime": 144,
+          "DelyRate": 2.04
         },
         {
-          "order_purchase_date": '20171227',
-          "delivered_delayed_orders": 1,
-          "delayhour": 45.0
+          "Date": 20170928,
+          "Delay": 3,
+          "Ontime": 142,
+          "DelyRate": 2.07
         },
         {
-          "order_purchase_date": '20171228',
-          "delivered_delayed_orders": 1,
-          "delayhour": 40.0
+          "Date": 20170929,
+          "Delay": 4,
+          "Ontime": 104,
+          "DelyRate": 3.7
         },
         {
-          "order_purchase_date": '20171229',
-          "delivered_delayed_orders": 2,
-          "delayhour": 55.0
+          "Date": 20170930,
+          "Delay": 3,
+          "Ontime": 102,
+          "DelyRate": 2.86
         },
         {
-          "order_purchase_date": '20180101',
-          "delivered_delayed_orders": 2,
-          "delayhour": 32.0
+          "Date": 20171001,
+          "Delay": 3,
+          "Ontime": 123,
+          "DelyRate": 2.38
         },
         {
-          "order_purchase_date": '20180102',
-          "delivered_delayed_orders": 3,
-          "delayhour": 40.0
+          "Date": 20171002,
+          "Delay": 2,
+          "Ontime": 138,
+          "DelyRate": 1.43
         },
         {
-          "order_purchase_date": '20180103',
-          "delivered_delayed_orders": 2,
-          "delayhour": 41.0
+          "Date": 20171003,
+          "Delay": 6,
+          "Ontime": 189,
+          "DelyRate": 3.08
         },
         {
-          "order_purchase_date": '20180104',
-          "delivered_delayed_orders": 7,
-          "delayhour": 42.0
+          "Date": 20171004,
+          "Delay": 1,
+          "Ontime": 157,
+          "DelyRate": 0.63
         },
         {
-          "order_purchase_date": '20180105',
-          "delivered_delayed_orders": 3,
-          "delayhour": 67.0
+          "Date": 20171005,
+          "Delay": 7,
+          "Ontime": 135,
+          "DelyRate": 4.93
         },
         {
-          "order_purchase_date": '20180106',
-          "delivered_delayed_orders": 2,
-          "delayhour": 53.5
+          "Date": 20171006,
+          "Delay": 12,
+          "Ontime": 119,
+          "DelyRate": 9.16
         },
         {
-          "order_purchase_date": '20180107',
-          "delivered_delayed_orders": 3,
-          "delayhour": 20.0
+          "Date": 20171007,
+          "Delay": 6,
+          "Ontime": 96,
+          "DelyRate": 5.88
         },
         {
-          "order_purchase_date": '20180108',
-          "delivered_delayed_orders": 5,
-          "delayhour": 37.0
+          "Date": 20171008,
+          "Delay": 2,
+          "Ontime": 125,
+          "DelyRate": 1.57
         },
         {
-          "order_purchase_date": '20180109',
-          "delivered_delayed_orders": 3,
-          "delayhour": 13.0
+          "Date": 20171009,
+          "Delay": 14,
+          "Ontime": 173,
+          "DelyRate": 7.49
         },
         {
-          "order_purchase_date": '20180110',
-          "delivered_delayed_orders": 4,
-          "delayhour": 74.0
+          "Date": 20171010,
+          "Delay": 14,
+          "Ontime": 171,
+          "DelyRate": 7.57
         },
         {
-          "order_purchase_date": '20180111',
-          "delivered_delayed_orders": 2,
-          "delayhour": 23.5
+          "Date": 20171011,
+          "Delay": 7,
+          "Ontime": 152,
+          "DelyRate": 4.4
         },
         {
-          "order_purchase_date": '20180112',
-          "delivered_delayed_orders": 2,
-          "delayhour": 31.0
+          "Date": 20171012,
+          "Delay": 5,
+          "Ontime": 135,
+          "DelyRate": 3.57
         },
         {
-          "order_purchase_date": '20180113',
-          "delivered_delayed_orders": 1,
-          "delayhour": 12.0
+          "Date": 20171013,
+          "Delay": 11,
+          "Ontime": 142,
+          "DelyRate": 7.19
         },
         {
-          "order_purchase_date": '20180114',
-          "delivered_delayed_orders": 6,
-          "delayhour": 26.5
+          "Date": 20171014,
+          "Delay": 5,
+          "Ontime": 113,
+          "DelyRate": 4.24
         },
         {
-          "order_purchase_date": '20180115',
-          "delivered_delayed_orders": 6,
-          "delayhour": 65.0
+          "Date": 20171015,
+          "Delay": 5,
+          "Ontime": 114,
+          "DelyRate": 4.2
         },
         {
-          "order_purchase_date": '20180116',
-          "delivered_delayed_orders": 11,
-          "delayhour": 25.0
+          "Date": 20171016,
+          "Delay": 13,
+          "Ontime": 177,
+          "DelyRate": 6.84
         },
         {
-          "order_purchase_date": '20180117',
-          "delivered_delayed_orders": 5,
-          "delayhour": 23.0
+          "Date": 20171017,
+          "Delay": 19,
+          "Ontime": 184,
+          "DelyRate": 9.36
         },
         {
-          "order_purchase_date": '20180118',
-          "delivered_delayed_orders": 4,
-          "delayhour": 75.5
+          "Date": 20171018,
+          "Delay": 6,
+          "Ontime": 177,
+          "DelyRate": 3.28
         },
         {
-          "order_purchase_date": '20180119',
-          "delivered_delayed_orders": 5,
-          "delayhour": 66.0
+          "Date": 20171019,
+          "Delay": 8,
+          "Ontime": 167,
+          "DelyRate": 4.57
         },
         {
-          "order_purchase_date": '20180120',
-          "delivered_delayed_orders": 6,
-          "delayhour": 35.0
+          "Date": 20171020,
+          "Delay": 5,
+          "Ontime": 115,
+          "DelyRate": 4.17
         },
         {
-          "order_purchase_date": '20180121',
-          "delivered_delayed_orders": 3,
-          "delayhour": 44.0
+          "Date": 20171021,
+          "Delay": 3,
+          "Ontime": 105,
+          "DelyRate": 2.78
         },
         {
-          "order_purchase_date": '20180122',
-          "delivered_delayed_orders": 6,
-          "delayhour": 54.0
+          "Date": 20171022,
+          "Delay": 9,
+          "Ontime": 145,
+          "DelyRate": 5.84
         },
         {
-          "order_purchase_date": '20180123',
-          "delivered_delayed_orders": 9,
-          "delayhour": 41.0
+          "Date": 20171023,
+          "Delay": 6,
+          "Ontime": 149,
+          "DelyRate": 3.87
         },
         {
-          "order_purchase_date": '20180124',
-          "delivered_delayed_orders": 15,
-          "delayhour": 44.0
+          "Date": 20171024,
+          "Delay": 10,
+          "Ontime": 152,
+          "DelyRate": 6.17
         },
         {
-          "order_purchase_date": '20180125',
-          "delivered_delayed_orders": 5,
-          "delayhour": 68.0
+          "Date": 20171025,
+          "Delay": 4,
+          "Ontime": 153,
+          "DelyRate": 2.55
         },
         {
-          "order_purchase_date": '20180126',
-          "delivered_delayed_orders": 6,
-          "delayhour": 43.0
+          "Date": 20171026,
+          "Delay": 8,
+          "Ontime": 144,
+          "DelyRate": 5.26
         },
         {
-          "order_purchase_date": '20180127',
-          "delivered_delayed_orders": 6,
-          "delayhour": 20.5
+          "Date": 20171027,
+          "Delay": 10,
+          "Ontime": 120,
+          "DelyRate": 7.69
         },
         {
-          "order_purchase_date": '20180128',
-          "delivered_delayed_orders": 1,
-          "delayhour": 45.0
+          "Date": 20171028,
+          "Delay": 2,
+          "Ontime": 84,
+          "DelyRate": 2.33
         },
         {
-          "order_purchase_date": '20180129',
-          "delivered_delayed_orders": 14,
-          "delayhour": 22.5
+          "Date": 20171029,
+          "Delay": 6,
+          "Ontime": 130,
+          "DelyRate": 4.41
         },
         {
-          "order_purchase_date": '20180130',
-          "delivered_delayed_orders": 13,
-          "delayhour": 65.0
+          "Date": 20171030,
+          "Delay": 17,
+          "Ontime": 121,
+          "DelyRate": 12.32
         },
         {
-          "order_purchase_date": '20180131',
-          "delivered_delayed_orders": 2,
-          "delayhour": 33.0
+          "Date": 20171031,
+          "Delay": 12,
+          "Ontime": 146,
+          "DelyRate": 7.59
         },
         {
-          "order_purchase_date": '20180201',
-          "delivered_delayed_orders": 6,
-          "delayhour": 23.5
+          "Date": 20171101,
+          "Delay": 6,
+          "Ontime": 103,
+          "DelyRate": 5.5
         },
         {
-          "order_purchase_date": '20180202',
-          "delivered_delayed_orders": 7,
-          "delayhour": 23.0
+          "Date": 20171102,
+          "Delay": 6,
+          "Ontime": 123,
+          "DelyRate": 4.65
         },
         {
-          "order_purchase_date": '20180203',
-          "delivered_delayed_orders": 2,
-          "delayhour": 62.0
+          "Date": 20171103,
+          "Delay": 7,
+          "Ontime": 133,
+          "DelyRate": 5.0
         },
         {
-          "order_purchase_date": '20180204',
-          "delivered_delayed_orders": 6,
-          "delayhour": 32.0
+          "Date": 20171104,
+          "Delay": 5,
+          "Ontime": 103,
+          "DelyRate": 4.63
         },
         {
-          "order_purchase_date": '20180205',
-          "delivered_delayed_orders": 5,
-          "delayhour": 40.0
+          "Date": 20171105,
+          "Delay": 4,
+          "Ontime": 143,
+          "DelyRate": 2.72
         },
         {
-          "order_purchase_date": '20180206',
-          "delivered_delayed_orders": 5,
-          "delayhour": 19.0
+          "Date": 20171106,
+          "Delay": 12,
+          "Ontime": 170,
+          "DelyRate": 6.59
         },
         {
-          "order_purchase_date": '20180207',
-          "delivered_delayed_orders": 5,
-          "delayhour": 67.0
+          "Date": 20171107,
+          "Delay": 8,
+          "Ontime": 149,
+          "DelyRate": 5.1
         },
         {
-          "order_purchase_date": '20180208',
-          "delivered_delayed_orders": 9,
-          "delayhour": 40.0
+          "Date": 20171108,
+          "Delay": 11,
+          "Ontime": 161,
+          "DelyRate": 6.4
         },
         {
-          "order_purchase_date": '20180209',
-          "delivered_delayed_orders": 11,
-          "delayhour": 38.0
+          "Date": 20171109,
+          "Delay": 7,
+          "Ontime": 179,
+          "DelyRate": 3.76
         },
         {
-          "order_purchase_date": '20180210',
-          "delivered_delayed_orders": 7,
-          "delayhour": 38.0
+          "Date": 20171110,
+          "Delay": 11,
+          "Ontime": 155,
+          "DelyRate": 6.63
         },
         {
-          "order_purchase_date": '20180211',
-          "delivered_delayed_orders": 10,
-          "delayhour": 39.0
+          "Date": 20171111,
+          "Delay": 10,
+          "Ontime": 146,
+          "DelyRate": 6.41
         },
         {
-          "order_purchase_date": '20180212',
-          "delivered_delayed_orders": 15,
-          "delayhour": 60.0
+          "Date": 20171112,
+          "Delay": 11,
+          "Ontime": 161,
+          "DelyRate": 6.4
         },
         {
-          "order_purchase_date": '20180213',
-          "delivered_delayed_orders": 5,
-          "delayhour": 61.0
+          "Date": 20171113,
+          "Delay": 18,
+          "Ontime": 183,
+          "DelyRate": 8.96
         },
         {
-          "order_purchase_date": '20180214',
-          "delivered_delayed_orders": 15,
-          "delayhour": 23.0
+          "Date": 20171114,
+          "Delay": 21,
+          "Ontime": 165,
+          "DelyRate": 11.29
         },
         {
-          "order_purchase_date": '20180215',
-          "delivered_delayed_orders": 11,
-          "delayhour": 43.0
+          "Date": 20171115,
+          "Delay": 13,
+          "Ontime": 168,
+          "DelyRate": 7.18
         },
         {
-          "order_purchase_date": '20180216',
-          "delivered_delayed_orders": 10,
-          "delayhour": 22.5
+          "Date": 20171116,
+          "Delay": 20,
+          "Ontime": 202,
+          "DelyRate": 9.01
         },
         {
-          "order_purchase_date": '20180217',
-          "delivered_delayed_orders": 7,
-          "delayhour": 18.0
+          "Date": 20171117,
+          "Delay": 19,
+          "Ontime": 184,
+          "DelyRate": 9.36
         },
         {
-          "order_purchase_date": '20180218',
-          "delivered_delayed_orders": 8,
-          "delayhour": 45.5
+          "Date": 20171118,
+          "Delay": 17,
+          "Ontime": 128,
+          "DelyRate": 11.72
         },
         {
-          "order_purchase_date": '20180219',
-          "delivered_delayed_orders": 13,
-          "delayhour": 40.0
+          "Date": 20171119,
+          "Delay": 16,
+          "Ontime": 143,
+          "DelyRate": 10.06
         },
         {
-          "order_purchase_date": '20180220',
-          "delivered_delayed_orders": 22,
-          "delayhour": 44.5
+          "Date": 20171120,
+          "Delay": 32,
+          "Ontime": 191,
+          "DelyRate": 14.35
         },
         {
-          "order_purchase_date": '20180221',
-          "delivered_delayed_orders": 20,
-          "delayhour": 45.0
+          "Date": 20171121,
+          "Delay": 44,
+          "Ontime": 186,
+          "DelyRate": 19.13
         },
         {
-          "order_purchase_date": '20180222',
-          "delivered_delayed_orders": 13,
-          "delayhour": 46.0
+          "Date": 20171122,
+          "Delay": 28,
+          "Ontime": 165,
+          "DelyRate": 14.51
         },
         {
-          "order_purchase_date": '20180223',
-          "delivered_delayed_orders": 15,
-          "delayhour": 44.0
+          "Date": 20171123,
+          "Delay": 42,
+          "Ontime": 230,
+          "DelyRate": 15.44
         },
         {
-          "order_purchase_date": '20180224',
-          "delivered_delayed_orders": 10,
-          "delayhour": 45.5
+          "Date": 20171124,
+          "Delay": 230,
+          "Ontime": 932,
+          "DelyRate": 19.79
         },
         {
-          "order_purchase_date": '20180225',
-          "delivered_delayed_orders": 19,
-          "delayhour": 64.0
+          "Date": 20171125,
+          "Delay": 114,
+          "Ontime": 384,
+          "DelyRate": 22.89
         },
         {
-          "order_purchase_date": '20180226',
-          "delivered_delayed_orders": 23,
-          "delayhour": 22.0
+          "Date": 20171126,
+          "Delay": 78,
+          "Ontime": 316,
+          "DelyRate": 19.8
         },
         {
-          "order_purchase_date": '20180227',
-          "delivered_delayed_orders": 18,
-          "delayhour": 44.0
+          "Date": 20171127,
+          "Delay": 85,
+          "Ontime": 316,
+          "DelyRate": 21.2
         },
         {
-          "order_purchase_date": '20180228',
-          "delivered_delayed_orders": 24,
-          "delayhour": 44.0
+          "Date": 20171128,
+          "Delay": 78,
+          "Ontime": 300,
+          "DelyRate": 20.63
         },
         {
-          "order_purchase_date": '20180301',
-          "delivered_delayed_orders": 20,
-          "delayhour": 64.5
+          "Date": 20171129,
+          "Delay": 64,
+          "Ontime": 258,
+          "DelyRate": 19.88
         },
         {
-          "order_purchase_date": '20180302',
-          "delivered_delayed_orders": 24,
-          "delayhour": 46.5
+          "Date": 20171130,
+          "Delay": 30,
+          "Ontime": 233,
+          "DelyRate": 11.41
         },
         {
-          "order_purchase_date": '20180303',
-          "delivered_delayed_orders": 21,
-          "delayhour": 26.0
+          "Date": 20171201,
+          "Delay": 33,
+          "Ontime": 237,
+          "DelyRate": 12.22
         },
         {
-          "order_purchase_date": '20180304',
-          "delivered_delayed_orders": 10,
-          "delayhour": 25.5
+          "Date": 20171202,
+          "Delay": 25,
+          "Ontime": 193,
+          "DelyRate": 11.47
         },
         {
-          "order_purchase_date": '20180305',
-          "delivered_delayed_orders": 20,
-          "delayhour": 55.0
+          "Date": 20171203,
+          "Delay": 27,
+          "Ontime": 203,
+          "DelyRate": 11.74
         },
         {
-          "order_purchase_date": '20180306',
-          "delivered_delayed_orders": 21,
-          "delayhour": 41.0
+          "Date": 20171204,
+          "Delay": 50,
+          "Ontime": 276,
+          "DelyRate": 15.34
         },
         {
-          "order_purchase_date": '20180307',
-          "delivered_delayed_orders": 25,
-          "delayhour": 23.0
+          "Date": 20171205,
+          "Delay": 32,
+          "Ontime": 250,
+          "DelyRate": 11.35
         },
         {
-          "order_purchase_date": '20180308',
-          "delivered_delayed_orders": 20,
-          "delayhour": 33.0
+          "Date": 20171206,
+          "Delay": 34,
+          "Ontime": 237,
+          "DelyRate": 12.55
         },
         {
-          "order_purchase_date": '20180309',
-          "delivered_delayed_orders": 10,
-          "delayhour": 40.0
+          "Date": 20171207,
+          "Delay": 27,
+          "Ontime": 201,
+          "DelyRate": 11.84
         },
         {
-          "order_purchase_date": '20180310',
-          "delivered_delayed_orders": 18,
-          "delayhour": 41.0
+          "Date": 20171208,
+          "Delay": 25,
+          "Ontime": 186,
+          "DelyRate": 11.85
         },
         {
-          "order_purchase_date": '20180311',
-          "delivered_delayed_orders": 15,
-          "delayhour": 41.0
+          "Date": 20171209,
+          "Delay": 14,
+          "Ontime": 141,
+          "DelyRate": 9.03
         },
         {
-          "order_purchase_date": '20180312',
-          "delivered_delayed_orders": 16,
-          "delayhour": 42.0
+          "Date": 20171210,
+          "Delay": 15,
+          "Ontime": 178,
+          "DelyRate": 7.77
         },
         {
-          "order_purchase_date": '20180313',
-          "delivered_delayed_orders": 20,
-          "delayhour": 36.5
+          "Date": 20171211,
+          "Delay": 18,
+          "Ontime": 255,
+          "DelyRate": 6.59
         },
         {
-          "order_purchase_date": '20180314',
-          "delivered_delayed_orders": 17,
-          "delayhour": 47.0
+          "Date": 20171212,
+          "Delay": 25,
+          "Ontime": 231,
+          "DelyRate": 9.77
         },
         {
-          "order_purchase_date": '20180315',
-          "delivered_delayed_orders": 20,
-          "delayhour": 44.0
+          "Date": 20171213,
+          "Delay": 10,
+          "Ontime": 209,
+          "DelyRate": 4.57
         },
         {
-          "order_purchase_date": '20180316',
-          "delivered_delayed_orders": 19,
-          "delayhour": 40.0
+          "Date": 20171214,
+          "Delay": 11,
+          "Ontime": 184,
+          "DelyRate": 5.64
         },
         {
-          "order_purchase_date": '20180317',
-          "delivered_delayed_orders": 7,
-          "delayhour": 91.0
+          "Date": 20171215,
+          "Delay": 11,
+          "Ontime": 174,
+          "DelyRate": 5.95
         },
         {
-          "order_purchase_date": '20180318',
-          "delivered_delayed_orders": 11,
-          "delayhour": 41.0
+          "Date": 20171216,
+          "Delay": 8,
+          "Ontime": 130,
+          "DelyRate": 5.8
         },
         {
-          "order_purchase_date": '20180319',
-          "delivered_delayed_orders": 31,
-          "delayhour": 23.0
+          "Date": 20171217,
+          "Delay": 4,
+          "Ontime": 128,
+          "DelyRate": 3.03
         },
         {
-          "order_purchase_date": '20180320',
-          "delivered_delayed_orders": 15,
-          "delayhour": 68.0
+          "Date": 20171218,
+          "Delay": 14,
+          "Ontime": 192,
+          "DelyRate": 6.8
         },
         {
-          "order_purchase_date": '20180321',
-          "delivered_delayed_orders": 11,
-          "delayhour": 37.0
+          "Date": 20171219,
+          "Delay": 13,
+          "Ontime": 161,
+          "DelyRate": 7.47
         },
         {
-          "order_purchase_date": '20180322',
-          "delivered_delayed_orders": 14,
-          "delayhour": 42.0
+          "Date": 20171220,
+          "Delay": 11,
+          "Ontime": 163,
+          "DelyRate": 6.32
         },
         {
-          "order_purchase_date": '20180323',
-          "delivered_delayed_orders": 7,
-          "delayhour": 39.0
+          "Date": 20171221,
+          "Delay": 9,
+          "Ontime": 132,
+          "DelyRate": 6.38
         },
         {
-          "order_purchase_date": '20180324',
-          "delivered_delayed_orders": 14,
-          "delayhour": 47.0
+          "Date": 20171222,
+          "Delay": 5,
+          "Ontime": 103,
+          "DelyRate": 4.63
         },
         {
-          "order_purchase_date": '20180325',
-          "delivered_delayed_orders": 13,
-          "delayhour": 38.0
+          "Date": 20171223,
+          "Delay": 12,
+          "Ontime": 93,
+          "DelyRate": 11.43
         },
         {
-          "order_purchase_date": '20180326',
-          "delivered_delayed_orders": 9,
-          "delayhour": 23.0
+          "Date": 20171224,
+          "Delay": 1,
+          "Ontime": 56,
+          "DelyRate": 1.75
         },
         {
-          "order_purchase_date": '20180327',
-          "delivered_delayed_orders": 19,
-          "delayhour": 23.0
+          "Date": 20171225,
+          "Delay": 7,
+          "Ontime": 79,
+          "DelyRate": 8.14
         },
         {
-          "order_purchase_date": '20180328',
-          "delivered_delayed_orders": 12,
-          "delayhour": 21.0
+          "Date": 20171226,
+          "Delay": 4,
+          "Ontime": 163,
+          "DelyRate": 2.4
         },
         {
-          "order_purchase_date": '20180329',
-          "delivered_delayed_orders": 10,
-          "delayhour": 21.0
+          "Date": 20171227,
+          "Delay": 4,
+          "Ontime": 161,
+          "DelyRate": 2.42
         },
         {
-          "order_purchase_date": '20180330',
-          "delivered_delayed_orders": 7,
-          "delayhour": 40.0
+          "Date": 20171228,
+          "Delay": 8,
+          "Ontime": 136,
+          "DelyRate": 5.56
         },
         {
-          "order_purchase_date": '20180331',
-          "delivered_delayed_orders": 7,
-          "delayhour": 45.0
+          "Date": 20171229,
+          "Delay": 4,
+          "Ontime": 133,
+          "DelyRate": 2.92
         },
         {
-          "order_purchase_date": '20180401',
-          "delivered_delayed_orders": 8,
-          "delayhour": 31.5
+          "Date": 20171230,
+          "Delay": 3,
+          "Ontime": 96,
+          "DelyRate": 3.03
         },
         {
-          "order_purchase_date": '20180402',
-          "delivered_delayed_orders": 15,
-          "delayhour": 66.0
+          "Date": 20171231,
+          "Delay": 1,
+          "Ontime": 70,
+          "DelyRate": 1.41
         },
         {
-          "order_purchase_date": '20180403',
-          "delivered_delayed_orders": 9,
-          "delayhour": 24.0
+          "Date": 20180101,
+          "Delay": 4,
+          "Ontime": 77,
+          "DelyRate": 4.94
         },
         {
-          "order_purchase_date": '20180404',
-          "delivered_delayed_orders": 9,
-          "delayhour": 45.0
+          "Date": 20180102,
+          "Delay": 4,
+          "Ontime": 202,
+          "DelyRate": 1.94
         },
         {
-          "order_purchase_date": '20180405',
-          "delivered_delayed_orders": 5,
-          "delayhour": 34.0
+          "Date": 20180103,
+          "Delay": 9,
+          "Ontime": 213,
+          "DelyRate": 4.05
         },
         {
-          "order_purchase_date": '20180406',
-          "delivered_delayed_orders": 1,
-          "delayhour": 20.0
+          "Date": 20180104,
+          "Delay": 15,
+          "Ontime": 239,
+          "DelyRate": 5.91
         },
         {
-          "order_purchase_date": '20180407',
-          "delivered_delayed_orders": 4,
-          "delayhour": 39.5
+          "Date": 20180105,
+          "Delay": 10,
+          "Ontime": 196,
+          "DelyRate": 4.85
         },
         {
-          "order_purchase_date": '20180408',
-          "delivered_delayed_orders": 4,
-          "delayhour": 18.0
+          "Date": 20180106,
+          "Delay": 6,
+          "Ontime": 218,
+          "DelyRate": 2.68
         },
         {
-          "order_purchase_date": '20180409',
-          "delivered_delayed_orders": 6,
-          "delayhour": 35.5
+          "Date": 20180107,
+          "Delay": 6,
+          "Ontime": 186,
+          "DelyRate": 3.13
         },
         {
-          "order_purchase_date": '20180410',
-          "delivered_delayed_orders": 5,
-          "delayhour": 44.0
+          "Date": 20180108,
+          "Delay": 11,
+          "Ontime": 287,
+          "DelyRate": 3.69
         },
         {
-          "order_purchase_date": '20180411',
-          "delivered_delayed_orders": 5,
-          "delayhour": 46.0
+          "Date": 20180109,
+          "Delay": 11,
+          "Ontime": 237,
+          "DelyRate": 4.44
         },
         {
-          "order_purchase_date": '20180412',
-          "delivered_delayed_orders": 3,
-          "delayhour": 88.0
+          "Date": 20180110,
+          "Delay": 16,
+          "Ontime": 259,
+          "DelyRate": 5.82
         },
         {
-          "order_purchase_date": '20180413',
-          "delivered_delayed_orders": 4,
-          "delayhour": 31.5
+          "Date": 20180111,
+          "Delay": 8,
+          "Ontime": 259,
+          "DelyRate": 3.0
         },
         {
-          "order_purchase_date": '20180414',
-          "delivered_delayed_orders": 3,
-          "delayhour": 24.0
+          "Date": 20180112,
+          "Delay": 11,
+          "Ontime": 229,
+          "DelyRate": 4.58
         },
         {
-          "order_purchase_date": '20180416',
-          "delivered_delayed_orders": 5,
-          "delayhour": 22.0
+          "Date": 20180113,
+          "Delay": 6,
+          "Ontime": 207,
+          "DelyRate": 2.82
         },
         {
-          "order_purchase_date": '20180417',
-          "delivered_delayed_orders": 3,
-          "delayhour": 38.0
+          "Date": 20180114,
+          "Delay": 16,
+          "Ontime": 220,
+          "DelyRate": 6.78
         },
         {
-          "order_purchase_date": '20180418',
-          "delivered_delayed_orders": 5,
-          "delayhour": 16.0
+          "Date": 20180115,
+          "Delay": 16,
+          "Ontime": 287,
+          "DelyRate": 5.28
         },
         {
-          "order_purchase_date": '20180419',
-          "delivered_delayed_orders": 5,
-          "delayhour": 21.0
+          "Date": 20180116,
+          "Delay": 28,
+          "Ontime": 278,
+          "DelyRate": 9.15
         },
         {
-          "order_purchase_date": '20180420',
-          "delivered_delayed_orders": 1,
-          "delayhour": 19.0
+          "Date": 20180117,
+          "Delay": 17,
+          "Ontime": 263,
+          "DelyRate": 6.07
         },
         {
-          "order_purchase_date": '20180421',
-          "delivered_delayed_orders": 2,
-          "delayhour": 76.5
+          "Date": 20180118,
+          "Delay": 15,
+          "Ontime": 227,
+          "DelyRate": 6.2
         },
         {
-          "order_purchase_date": '20180422',
-          "delivered_delayed_orders": 1,
-          "delayhour": 87.0
+          "Date": 20180119,
+          "Delay": 19,
+          "Ontime": 211,
+          "DelyRate": 8.26
         },
         {
-          "order_purchase_date": '20180423',
-          "delivered_delayed_orders": 6,
-          "delayhour": 41.0
+          "Date": 20180120,
+          "Delay": 18,
+          "Ontime": 168,
+          "DelyRate": 9.68
         },
         {
-          "order_purchase_date": '20180424',
-          "delivered_delayed_orders": 3,
-          "delayhour": 91.0
+          "Date": 20180121,
+          "Delay": 18,
+          "Ontime": 176,
+          "DelyRate": 9.28
         },
         {
-          "order_purchase_date": '20180425',
-          "delivered_delayed_orders": 6,
-          "delayhour": 19.5
+          "Date": 20180122,
+          "Delay": 26,
+          "Ontime": 284,
+          "DelyRate": 8.39
         },
         {
-          "order_purchase_date": '20180426',
-          "delivered_delayed_orders": 5,
-          "delayhour": 24.0
+          "Date": 20180123,
+          "Delay": 25,
+          "Ontime": 237,
+          "DelyRate": 9.54
         },
         {
-          "order_purchase_date": '20180427',
-          "delivered_delayed_orders": 6,
-          "delayhour": 45.0
+          "Date": 20180124,
+          "Delay": 33,
+          "Ontime": 209,
+          "DelyRate": 13.64
         },
         {
-          "order_purchase_date": '20180428',
-          "delivered_delayed_orders": 1,
-          "delayhour": 35.0
+          "Date": 20180125,
+          "Delay": 15,
+          "Ontime": 216,
+          "DelyRate": 6.49
         },
         {
-          "order_purchase_date": '20180429',
-          "delivered_delayed_orders": 4,
-          "delayhour": 45.5
+          "Date": 20180126,
+          "Delay": 14,
+          "Ontime": 218,
+          "DelyRate": 6.03
         },
         {
-          "order_purchase_date": '20180430',
-          "delivered_delayed_orders": 1,
-          "delayhour": 43.0
+          "Date": 20180127,
+          "Delay": 11,
+          "Ontime": 147,
+          "DelyRate": 6.96
         },
         {
-          "order_purchase_date": '20180501',
-          "delivered_delayed_orders": 5,
-          "delayhour": 42.0
+          "Date": 20180128,
+          "Delay": 6,
+          "Ontime": 143,
+          "DelyRate": 4.03
         },
         {
-          "order_purchase_date": '20180502',
-          "delivered_delayed_orders": 4,
-          "delayhour": 32.5
+          "Date": 20180129,
+          "Delay": 31,
+          "Ontime": 209,
+          "DelyRate": 12.92
         },
         {
-          "order_purchase_date": '20180503',
-          "delivered_delayed_orders": 7,
-          "delayhour": 41.0
+          "Date": 20180130,
+          "Delay": 27,
+          "Ontime": 209,
+          "DelyRate": 11.44
         },
         {
-          "order_purchase_date": '20180504',
-          "delivered_delayed_orders": 3,
-          "delayhour": 21.0
+          "Date": 20180131,
+          "Delay": 12,
+          "Ontime": 241,
+          "DelyRate": 4.74
         },
         {
-          "order_purchase_date": '20180505',
-          "delivered_delayed_orders": 3,
-          "delayhour": 41.0
+          "Date": 20180201,
+          "Delay": 15,
+          "Ontime": 213,
+          "DelyRate": 6.58
         },
         {
-          "order_purchase_date": '20180506',
-          "delivered_delayed_orders": 3,
-          "delayhour": 85.0
+          "Date": 20180202,
+          "Delay": 20,
+          "Ontime": 187,
+          "DelyRate": 9.66
         },
         {
-          "order_purchase_date": '20180507',
-          "delivered_delayed_orders": 5,
-          "delayhour": 36.0
+          "Date": 20180203,
+          "Delay": 7,
+          "Ontime": 185,
+          "DelyRate": 3.65
         },
         {
-          "order_purchase_date": '20180508',
-          "delivered_delayed_orders": 11,
-          "delayhour": 22.0
+          "Date": 20180204,
+          "Delay": 10,
+          "Ontime": 196,
+          "DelyRate": 4.85
         },
         {
-          "order_purchase_date": '20180509',
-          "delivered_delayed_orders": 6,
-          "delayhour": 23.5
+          "Date": 20180205,
+          "Delay": 23,
+          "Ontime": 247,
+          "DelyRate": 8.52
         },
         {
-          "order_purchase_date": '20180510',
-          "delivered_delayed_orders": 13,
-          "delayhour": 41.0
+          "Date": 20180206,
+          "Delay": 17,
+          "Ontime": 245,
+          "DelyRate": 6.49
         },
         {
-          "order_purchase_date": '20180511',
-          "delivered_delayed_orders": 14,
-          "delayhour": 46.5
+          "Date": 20180207,
+          "Delay": 15,
+          "Ontime": 227,
+          "DelyRate": 6.2
         },
         {
-          "order_purchase_date": '20180512',
-          "delivered_delayed_orders": 2,
-          "delayhour": 63.0
+          "Date": 20180208,
+          "Delay": 25,
+          "Ontime": 197,
+          "DelyRate": 11.26
         },
         {
-          "order_purchase_date": '20180513',
-          "delivered_delayed_orders": 7,
-          "delayhour": 42.0
+          "Date": 20180209,
+          "Delay": 28,
+          "Ontime": 180,
+          "DelyRate": 13.46
         },
         {
-          "order_purchase_date": '20180514',
-          "delivered_delayed_orders": 26,
-          "delayhour": 44.5
+          "Date": 20180210,
+          "Delay": 16,
+          "Ontime": 164,
+          "DelyRate": 8.89
         },
         {
-          "order_purchase_date": '20180515',
-          "delivered_delayed_orders": 25,
-          "delayhour": 22.0
+          "Date": 20180211,
+          "Delay": 25,
+          "Ontime": 140,
+          "DelyRate": 15.15
         },
         {
-          "order_purchase_date": '20180516',
-          "delivered_delayed_orders": 28,
-          "delayhour": 22.0
+          "Date": 20180212,
+          "Delay": 36,
+          "Ontime": 179,
+          "DelyRate": 16.74
         },
         {
-          "order_purchase_date": '20180517',
-          "delivered_delayed_orders": 20,
-          "delayhour": 47.5
+          "Date": 20180213,
+          "Delay": 26,
+          "Ontime": 194,
+          "DelyRate": 11.82
         },
         {
-          "order_purchase_date": '20180518',
-          "delivered_delayed_orders": 23,
-          "delayhour": 38.0
+          "Date": 20180214,
+          "Delay": 39,
+          "Ontime": 245,
+          "DelyRate": 13.73
         },
         {
-          "order_purchase_date": '20180519',
-          "delivered_delayed_orders": 12,
-          "delayhour": 39.5
+          "Date": 20180215,
+          "Delay": 41,
+          "Ontime": 236,
+          "DelyRate": 14.8
         },
         {
-          "order_purchase_date": '20180520',
-          "delivered_delayed_orders": 19,
-          "delayhour": 22.0
+          "Date": 20180216,
+          "Delay": 33,
+          "Ontime": 178,
+          "DelyRate": 15.64
         },
         {
-          "order_purchase_date": '20180521',
-          "delivered_delayed_orders": 17,
-          "delayhour": 37.0
+          "Date": 20180217,
+          "Delay": 29,
+          "Ontime": 170,
+          "DelyRate": 14.57
         },
         {
-          "order_purchase_date": '20180522',
-          "delivered_delayed_orders": 9,
-          "delayhour": 23.0
+          "Date": 20180218,
+          "Delay": 31,
+          "Ontime": 170,
+          "DelyRate": 15.42
         },
         {
-          "order_purchase_date": '20180523',
-          "delivered_delayed_orders": 1,
-          "delayhour": 41.0
+          "Date": 20180219,
+          "Delay": 47,
+          "Ontime": 205,
+          "DelyRate": 18.65
         },
         {
-          "order_purchase_date": '20180524',
-          "delivered_delayed_orders": 1,
-          "delayhour": 18.0
+          "Date": 20180220,
+          "Delay": 41,
+          "Ontime": 252,
+          "DelyRate": 13.99
         },
         {
-          "order_purchase_date": '20180531',
-          "delivered_delayed_orders": 1,
-          "delayhour": 71.0
+          "Date": 20180221,
+          "Delay": 61,
+          "Ontime": 199,
+          "DelyRate": 23.46
         },
         {
-          "order_purchase_date": '20180601',
-          "delivered_delayed_orders": 1,
-          "delayhour": 95.0
+          "Date": 20180222,
+          "Delay": 57,
+          "Ontime": 215,
+          "DelyRate": 20.96
         },
         {
-          "order_purchase_date": '20180606',
-          "delivered_delayed_orders": 1,
-          "delayhour": 63.0
+          "Date": 20180223,
+          "Delay": 49,
+          "Ontime": 184,
+          "DelyRate": 21.03
         },
         {
-          "order_purchase_date": '20180607',
-          "delivered_delayed_orders": 1,
-          "delayhour": 90.0
+          "Date": 20180224,
+          "Delay": 51,
+          "Ontime": 138,
+          "DelyRate": 26.98
         },
         {
-          "order_purchase_date": '20180608',
-          "delivered_delayed_orders": 3,
-          "delayhour": 39.0
+          "Date": 20180225,
+          "Delay": 59,
+          "Ontime": 178,
+          "DelyRate": 24.89
         },
         {
-          "order_purchase_date": '20180611',
-          "delivered_delayed_orders": 4,
-          "delayhour": 33.5
+          "Date": 20180226,
+          "Delay": 91,
+          "Ontime": 207,
+          "DelyRate": 30.54
         },
         {
-          "order_purchase_date": '20180612',
-          "delivered_delayed_orders": 3,
-          "delayhour": 31.0
+          "Date": 20180227,
+          "Delay": 77,
+          "Ontime": 216,
+          "DelyRate": 26.28
         },
         {
-          "order_purchase_date": '20180614',
-          "delivered_delayed_orders": 3,
-          "delayhour": 15.0
+          "Date": 20180228,
+          "Delay": 81,
+          "Ontime": 226,
+          "DelyRate": 26.38
         },
         {
-          "order_purchase_date": '20180617',
-          "delivered_delayed_orders": 2,
-          "delayhour": 18.5
+          "Date": 20180301,
+          "Delay": 76,
+          "Ontime": 194,
+          "DelyRate": 28.15
         },
         {
-          "order_purchase_date": '20180618',
-          "delivered_delayed_orders": 2,
-          "delayhour": 64.0
+          "Date": 20180302,
+          "Delay": 85,
+          "Ontime": 186,
+          "DelyRate": 31.37
         },
         {
-          "order_purchase_date": '20180619',
-          "delivered_delayed_orders": 2,
-          "delayhour": 44.0
+          "Date": 20180303,
+          "Delay": 64,
+          "Ontime": 141,
+          "DelyRate": 31.22
         },
         {
-          "order_purchase_date": '20180621',
-          "delivered_delayed_orders": 3,
-          "delayhour": 38.0
+          "Date": 20180304,
+          "Delay": 65,
+          "Ontime": 167,
+          "DelyRate": 28.02
         },
         {
-          "order_purchase_date": '20180623',
-          "delivered_delayed_orders": 1,
-          "delayhour": 19.0
+          "Date": 20180305,
+          "Delay": 73,
+          "Ontime": 182,
+          "DelyRate": 28.63
         },
         {
-          "order_purchase_date": '20180624',
-          "delivered_delayed_orders": 1,
-          "delayhour": 40.0
+          "Date": 20180306,
+          "Delay": 82,
+          "Ontime": 188,
+          "DelyRate": 30.37
         },
         {
-          "order_purchase_date": '20180628',
-          "delivered_delayed_orders": 1,
-          "delayhour": 38.0
+          "Date": 20180307,
+          "Delay": 80,
+          "Ontime": 175,
+          "DelyRate": 31.37
         },
         {
-          "order_purchase_date": '20180629',
-          "delivered_delayed_orders": 2,
-          "delayhour": 62.0
+          "Date": 20180308,
+          "Delay": 57,
+          "Ontime": 178,
+          "DelyRate": 24.26
         },
         {
-          "order_purchase_date": '20180705',
-          "delivered_delayed_orders": 2,
-          "delayhour": 19.5
+          "Date": 20180309,
+          "Delay": 44,
+          "Ontime": 155,
+          "DelyRate": 22.11
         },
         {
-          "order_purchase_date": '20180706',
-          "delivered_delayed_orders": 1,
-          "delayhour": 71.0
+          "Date": 20180310,
+          "Delay": 51,
+          "Ontime": 134,
+          "DelyRate": 27.57
         },
         {
-          "order_purchase_date": '20180709',
-          "delivered_delayed_orders": 1,
-          "delayhour": 87.0
+          "Date": 20180311,
+          "Delay": 58,
+          "Ontime": 158,
+          "DelyRate": 26.85
         },
         {
-          "order_purchase_date": '20180710',
-          "delivered_delayed_orders": 2,
-          "delayhour": 43.5
+          "Date": 20180312,
+          "Delay": 69,
+          "Ontime": 161,
+          "DelyRate": 30.0
         },
         {
-          "order_purchase_date": '20180711',
-          "delivered_delayed_orders": 2,
-          "delayhour": 53.0
+          "Date": 20180313,
+          "Delay": 54,
+          "Ontime": 164,
+          "DelyRate": 24.77
         },
         {
-          "order_purchase_date": '20180712',
-          "delivered_delayed_orders": 5,
-          "delayhour": 18.0
+          "Date": 20180314,
+          "Delay": 46,
+          "Ontime": 150,
+          "DelyRate": 23.47
         },
         {
-          "order_purchase_date": '20180713',
-          "delivered_delayed_orders": 1,
-          "delayhour": 18.0
+          "Date": 20180315,
+          "Delay": 66,
+          "Ontime": 207,
+          "DelyRate": 24.18
         },
         {
-          "order_purchase_date": '20180714',
-          "delivered_delayed_orders": 2,
-          "delayhour": 47.0
+          "Date": 20180316,
+          "Delay": 53,
+          "Ontime": 200,
+          "DelyRate": 20.95
         },
         {
-          "order_purchase_date": '20180715',
-          "delivered_delayed_orders": 2,
-          "delayhour": 91.0
+          "Date": 20180317,
+          "Delay": 36,
+          "Ontime": 140,
+          "DelyRate": 20.45
         },
         {
-          "order_purchase_date": '20180716',
-          "delivered_delayed_orders": 11,
-          "delayhour": 18.0
+          "Date": 20180318,
+          "Delay": 33,
+          "Ontime": 183,
+          "DelyRate": 15.28
         },
         {
-          "order_purchase_date": '20180717',
-          "delivered_delayed_orders": 9,
-          "delayhour": 42.0
+          "Date": 20180319,
+          "Delay": 70,
+          "Ontime": 233,
+          "DelyRate": 23.1
         },
         {
-          "order_purchase_date": '20180718',
-          "delivered_delayed_orders": 5,
-          "delayhour": 17.0
+          "Date": 20180320,
+          "Delay": 43,
+          "Ontime": 256,
+          "DelyRate": 14.38
         },
         {
-          "order_purchase_date": '20180719',
-          "delivered_delayed_orders": 2,
-          "delayhour": 79.0
+          "Date": 20180321,
+          "Delay": 31,
+          "Ontime": 250,
+          "DelyRate": 11.03
         },
         {
-          "order_purchase_date": '20180720',
-          "delivered_delayed_orders": 3,
-          "delayhour": 15.0
+          "Date": 20180322,
+          "Delay": 31,
+          "Ontime": 225,
+          "DelyRate": 12.11
         },
         {
-          "order_purchase_date": '20180721',
-          "delivered_delayed_orders": 2,
-          "delayhour": 43.0
+          "Date": 20180323,
+          "Delay": 15,
+          "Ontime": 201,
+          "DelyRate": 6.94
         },
         {
-          "order_purchase_date": '20180722',
-          "delivered_delayed_orders": 4,
-          "delayhour": 29.0
+          "Date": 20180324,
+          "Delay": 21,
+          "Ontime": 153,
+          "DelyRate": 12.07
         },
         {
-          "order_purchase_date": '20180723',
-          "delivered_delayed_orders": 10,
-          "delayhour": 27.0
+          "Date": 20180325,
+          "Delay": 29,
+          "Ontime": 165,
+          "DelyRate": 14.95
         },
         {
-          "order_purchase_date": '20180724',
-          "delivered_delayed_orders": 5,
-          "delayhour": 21.0
+          "Date": 20180326,
+          "Delay": 36,
+          "Ontime": 237,
+          "DelyRate": 13.19
         },
         {
-          "order_purchase_date": '20180725',
-          "delivered_delayed_orders": 1,
-          "delayhour": 45.0
+          "Date": 20180327,
+          "Delay": 35,
+          "Ontime": 212,
+          "DelyRate": 14.17
         },
         {
-          "order_purchase_date": '20180726',
-          "delivered_delayed_orders": 5,
-          "delayhour": 42.0
+          "Date": 20180328,
+          "Delay": 27,
+          "Ontime": 186,
+          "DelyRate": 12.68
         },
         {
-          "order_purchase_date": '20180727',
-          "delivered_delayed_orders": 2,
-          "delayhour": 18.5
+          "Date": 20180329,
+          "Delay": 29,
+          "Ontime": 166,
+          "DelyRate": 14.87
         },
         {
-          "order_purchase_date": '20180728',
-          "delivered_delayed_orders": 2,
-          "delayhour": 17.0
+          "Date": 20180330,
+          "Delay": 20,
+          "Ontime": 154,
+          "DelyRate": 11.49
         },
         {
-          "order_purchase_date": '20180729',
-          "delivered_delayed_orders": 7,
-          "delayhour": 22.0
+          "Date": 20180331,
+          "Delay": 26,
+          "Ontime": 146,
+          "DelyRate": 15.12
         },
         {
-          "order_purchase_date": '20180730',
-          "delivered_delayed_orders": 16,
-          "delayhour": 44.5
+          "Date": 20180401,
+          "Delay": 20,
+          "Ontime": 187,
+          "DelyRate": 9.66
         },
         {
-          "order_purchase_date": '20180731',
-          "delivered_delayed_orders": 28,
-          "delayhour": 21.0
+          "Date": 20180402,
+          "Delay": 41,
+          "Ontime": 242,
+          "DelyRate": 14.49
         },
         {
-          "order_purchase_date": '20180801',
-          "delivered_delayed_orders": 24,
-          "delayhour": 33.0
+          "Date": 20180403,
+          "Delay": 26,
+          "Ontime": 220,
+          "DelyRate": 10.57
         },
         {
-          "order_purchase_date": '20180802',
-          "delivered_delayed_orders": 26,
-          "delayhour": 37.0
+          "Date": 20180404,
+          "Delay": 18,
+          "Ontime": 244,
+          "DelyRate": 6.87
         },
         {
-          "order_purchase_date": '20180803',
-          "delivered_delayed_orders": 32,
-          "delayhour": 22.5
+          "Date": 20180405,
+          "Delay": 13,
+          "Ontime": 249,
+          "DelyRate": 4.96
         },
         {
-          "order_purchase_date": '20180804',
-          "delivered_delayed_orders": 12,
-          "delayhour": 23.0
+          "Date": 20180406,
+          "Delay": 6,
+          "Ontime": 178,
+          "DelyRate": 3.26
         },
         {
-          "order_purchase_date": '20180805',
-          "delivered_delayed_orders": 35,
-          "delayhour": 22.0
+          "Date": 20180407,
+          "Delay": 9,
+          "Ontime": 156,
+          "DelyRate": 5.45
         },
         {
-          "order_purchase_date": '20180806',
-          "delivered_delayed_orders": 43,
-          "delayhour": 20.0
+          "Date": 20180408,
+          "Delay": 13,
+          "Ontime": 179,
+          "DelyRate": 6.77
         },
         {
-          "order_purchase_date": '20180807',
-          "delivered_delayed_orders": 45,
-          "delayhour": 43.0
+          "Date": 20180409,
+          "Delay": 12,
+          "Ontime": 241,
+          "DelyRate": 4.74
         },
         {
-          "order_purchase_date": '20180808',
-          "delivered_delayed_orders": 28,
-          "delayhour": 23.0
+          "Date": 20180410,
+          "Delay": 10,
+          "Ontime": 189,
+          "DelyRate": 5.03
         },
         {
-          "order_purchase_date": '20180809',
-          "delivered_delayed_orders": 19,
-          "delayhour": 22.0
+          "Date": 20180411,
+          "Delay": 11,
+          "Ontime": 256,
+          "DelyRate": 4.12
         },
         {
-          "order_purchase_date": '20180810',
-          "delivered_delayed_orders": 16,
-          "delayhour": 17.5
+          "Date": 20180412,
+          "Delay": 8,
+          "Ontime": 253,
+          "DelyRate": 3.07
         },
         {
-          "order_purchase_date": '20180811',
-          "delivered_delayed_orders": 7,
-          "delayhour": 24.0
+          "Date": 20180413,
+          "Delay": 6,
+          "Ontime": 201,
+          "DelyRate": 2.9
         },
         {
-          "order_purchase_date": '20180812',
-          "delivered_delayed_orders": 8,
-          "delayhour": 36.0
+          "Date": 20180414,
+          "Delay": 7,
+          "Ontime": 144,
+          "DelyRate": 4.64
         },
         {
-          "order_purchase_date": '20180813',
-          "delivered_delayed_orders": 15,
-          "delayhour": 21.0
+          "Date": 20180415,
+          "Delay": 7,
+          "Ontime": 220,
+          "DelyRate": 3.08
         },
         {
-          "order_purchase_date": '20180814',
-          "delivered_delayed_orders": 30,
-          "delayhour": 22.0
+          "Date": 20180416,
+          "Delay": 13,
+          "Ontime": 284,
+          "DelyRate": 4.38
         },
         {
-          "order_purchase_date": '20180815',
-          "delivered_delayed_orders": 17,
-          "delayhour": 21.0
+          "Date": 20180417,
+          "Delay": 12,
+          "Ontime": 257,
+          "DelyRate": 4.46
         },
         {
-          "order_purchase_date": '20180816',
-          "delivered_delayed_orders": 26,
-          "delayhour": 20.0
+          "Date": 20180418,
+          "Delay": 20,
+          "Ontime": 253,
+          "DelyRate": 7.33
         },
         {
-          "order_purchase_date": '20180817',
-          "delivered_delayed_orders": 9,
-          "delayhour": 20.0
+          "Date": 20180419,
+          "Delay": 12,
+          "Ontime": 261,
+          "DelyRate": 4.4
         },
         {
-          "order_purchase_date": '20180818',
-          "delivered_delayed_orders": 3,
-          "delayhour": 16.0
+          "Date": 20180420,
+          "Delay": 3,
+          "Ontime": 102,
+          "DelyRate": 2.86
         },
         {
-          "order_purchase_date": '20180819',
-          "delivered_delayed_orders": 9,
-          "delayhour": 18.0
+          "Date": 20180421,
+          "Delay": 4,
+          "Ontime": 65,
+          "DelyRate": 5.8
         },
         {
-          "order_purchase_date": '20180820',
-          "delivered_delayed_orders": 21,
-          "delayhour": 20.0
+          "Date": 20180422,
+          "Delay": 5,
+          "Ontime": 83,
+          "DelyRate": 5.68
         },
         {
-          "order_purchase_date": '20180821',
-          "delivered_delayed_orders": 15,
-          "delayhour": 23.0
+          "Date": 20180423,
+          "Delay": 12,
+          "Ontime": 204,
+          "DelyRate": 5.56
         },
         {
-          "order_purchase_date": '20180822',
-          "delivered_delayed_orders": 11,
-          "delayhour": 21.0
+          "Date": 20180424,
+          "Delay": 6,
+          "Ontime": 267,
+          "DelyRate": 2.2
         },
         {
-          "order_purchase_date": '20180823',
-          "delivered_delayed_orders": 7,
-          "delayhour": 18.0
+          "Date": 20180425,
+          "Delay": 12,
+          "Ontime": 271,
+          "DelyRate": 4.24
         },
         {
-          "order_purchase_date": '20180824',
-          "delivered_delayed_orders": 7,
-          "delayhour": 17.0
+          "Date": 20180426,
+          "Delay": 11,
+          "Ontime": 242,
+          "DelyRate": 4.35
         },
         {
-          "order_purchase_date": '20180825',
-          "delivered_delayed_orders": 1,
-          "delayhour": 1.0
+          "Date": 20180427,
+          "Delay": 13,
+          "Ontime": 229,
+          "DelyRate": 5.37
         },
         {
-          "order_purchase_date": '20180826',
-          "delivered_delayed_orders": 1,
-          "delayhour": 21.0
+          "Date": 20180428,
+          "Delay": 9,
+          "Ontime": 160,
+          "DelyRate": 5.33
         },
         {
-          "order_purchase_date": '20180827',
-          "delivered_delayed_orders": 6,
-          "delayhour": 20.0
+          "Date": 20180429,
+          "Delay": 10,
+          "Ontime": 166,
+          "DelyRate": 5.68
         },
         {
-          "order_purchase_date": '20180828',
-          "delivered_delayed_orders": 1,
-          "delayhour": 2.0
+          "Date": 20180430,
+          "Delay": 5,
+          "Ontime": 238,
+          "DelyRate": 2.06
+        },
+        {
+          "Date": 20180501,
+          "Delay": 9,
+          "Ontime": 243,
+          "DelyRate": 3.57
+        },
+        {
+          "Date": 20180502,
+          "Delay": 16,
+          "Ontime": 277,
+          "DelyRate": 5.46
+        },
+        {
+          "Date": 20180503,
+          "Delay": 12,
+          "Ontime": 296,
+          "DelyRate": 3.9
+        },
+        {
+          "Date": 20180504,
+          "Delay": 9,
+          "Ontime": 262,
+          "DelyRate": 3.32
+        },
+        {
+          "Date": 20180505,
+          "Delay": 11,
+          "Ontime": 184,
+          "DelyRate": 5.64
+        },
+        {
+          "Date": 20180506,
+          "Delay": 8,
+          "Ontime": 204,
+          "DelyRate": 3.77
+        },
+        {
+          "Date": 20180507,
+          "Delay": 23,
+          "Ontime": 344,
+          "DelyRate": 6.27
+        },
+        {
+          "Date": 20180508,
+          "Delay": 22,
+          "Ontime": 313,
+          "DelyRate": 6.57
+        },
+        {
+          "Date": 20180509,
+          "Delay": 27,
+          "Ontime": 317,
+          "DelyRate": 7.85
+        },
+        {
+          "Date": 20180510,
+          "Delay": 23,
+          "Ontime": 254,
+          "DelyRate": 8.3
+        },
+        {
+          "Date": 20180511,
+          "Delay": 28,
+          "Ontime": 219,
+          "DelyRate": 11.34
+        },
+        {
+          "Date": 20180512,
+          "Delay": 13,
+          "Ontime": 195,
+          "DelyRate": 6.25
+        },
+        {
+          "Date": 20180513,
+          "Delay": 13,
+          "Ontime": 208,
+          "DelyRate": 5.88
+        },
+        {
+          "Date": 20180514,
+          "Delay": 48,
+          "Ontime": 306,
+          "DelyRate": 13.56
+        },
+        {
+          "Date": 20180515,
+          "Delay": 52,
+          "Ontime": 305,
+          "DelyRate": 14.57
+        },
+        {
+          "Date": 20180516,
+          "Delay": 59,
+          "Ontime": 300,
+          "DelyRate": 16.43
+        },
+        {
+          "Date": 20180517,
+          "Delay": 41,
+          "Ontime": 183,
+          "DelyRate": 18.3
+        },
+        {
+          "Date": 20180518,
+          "Delay": 35,
+          "Ontime": 202,
+          "DelyRate": 14.77
+        },
+        {
+          "Date": 20180519,
+          "Delay": 22,
+          "Ontime": 125,
+          "DelyRate": 14.97
+        },
+        {
+          "Date": 20180520,
+          "Delay": 32,
+          "Ontime": 132,
+          "DelyRate": 19.51
+        },
+        {
+          "Date": 20180521,
+          "Delay": 27,
+          "Ontime": 171,
+          "DelyRate": 13.64
+        },
+        {
+          "Date": 20180522,
+          "Delay": 17,
+          "Ontime": 182,
+          "DelyRate": 8.54
+        },
+        {
+          "Date": 20180523,
+          "Delay": 3,
+          "Ontime": 135,
+          "DelyRate": 2.17
+        },
+        {
+          "Date": 20180524,
+          "Delay": 2,
+          "Ontime": 109,
+          "DelyRate": 1.8
+        },
+        {
+          "Date": 20180525,
+          "Delay": 1,
+          "Ontime": 107,
+          "DelyRate": 0.93
+        },
+        {
+          "Date": 20180526,
+          "Delay": 1,
+          "Ontime": 104,
+          "DelyRate": 0.95
+        },
+        {
+          "Date": 20180527,
+          "Delay": 0,
+          "Ontime": 104,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180528,
+          "Delay": 0,
+          "Ontime": 146,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180529,
+          "Delay": 0,
+          "Ontime": 153,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180530,
+          "Delay": 0,
+          "Ontime": 133,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180531,
+          "Delay": 1,
+          "Ontime": 133,
+          "DelyRate": 0.75
+        },
+        {
+          "Date": 20180601,
+          "Delay": 2,
+          "Ontime": 186,
+          "DelyRate": 1.06
+        },
+        {
+          "Date": 20180602,
+          "Delay": 1,
+          "Ontime": 144,
+          "DelyRate": 0.69
+        },
+        {
+          "Date": 20180603,
+          "Delay": 0,
+          "Ontime": 194,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180604,
+          "Delay": 0,
+          "Ontime": 232,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180605,
+          "Delay": 2,
+          "Ontime": 196,
+          "DelyRate": 1.01
+        },
+        {
+          "Date": 20180606,
+          "Delay": 3,
+          "Ontime": 223,
+          "DelyRate": 1.33
+        },
+        {
+          "Date": 20180607,
+          "Delay": 1,
+          "Ontime": 222,
+          "DelyRate": 0.45
+        },
+        {
+          "Date": 20180608,
+          "Delay": 7,
+          "Ontime": 193,
+          "DelyRate": 3.5
+        },
+        {
+          "Date": 20180609,
+          "Delay": 2,
+          "Ontime": 172,
+          "DelyRate": 1.15
+        },
+        {
+          "Date": 20180610,
+          "Delay": 4,
+          "Ontime": 195,
+          "DelyRate": 2.01
+        },
+        {
+          "Date": 20180611,
+          "Delay": 11,
+          "Ontime": 283,
+          "DelyRate": 3.74
+        },
+        {
+          "Date": 20180612,
+          "Delay": 8,
+          "Ontime": 233,
+          "DelyRate": 3.32
+        },
+        {
+          "Date": 20180613,
+          "Delay": 3,
+          "Ontime": 257,
+          "DelyRate": 1.15
+        },
+        {
+          "Date": 20180614,
+          "Delay": 4,
+          "Ontime": 215,
+          "DelyRate": 1.83
+        },
+        {
+          "Date": 20180615,
+          "Delay": 2,
+          "Ontime": 179,
+          "DelyRate": 1.1
+        },
+        {
+          "Date": 20180616,
+          "Delay": 1,
+          "Ontime": 164,
+          "DelyRate": 0.61
+        },
+        {
+          "Date": 20180617,
+          "Delay": 4,
+          "Ontime": 152,
+          "DelyRate": 2.56
+        },
+        {
+          "Date": 20180618,
+          "Delay": 2,
+          "Ontime": 237,
+          "DelyRate": 0.84
+        },
+        {
+          "Date": 20180619,
+          "Delay": 4,
+          "Ontime": 218,
+          "DelyRate": 1.8
+        },
+        {
+          "Date": 20180620,
+          "Delay": 0,
+          "Ontime": 219,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180621,
+          "Delay": 5,
+          "Ontime": 233,
+          "DelyRate": 2.1
+        },
+        {
+          "Date": 20180622,
+          "Delay": 1,
+          "Ontime": 180,
+          "DelyRate": 0.55
+        },
+        {
+          "Date": 20180623,
+          "Delay": 2,
+          "Ontime": 154,
+          "DelyRate": 1.28
+        },
+        {
+          "Date": 20180624,
+          "Delay": 3,
+          "Ontime": 206,
+          "DelyRate": 1.44
+        },
+        {
+          "Date": 20180625,
+          "Delay": 3,
+          "Ontime": 233,
+          "DelyRate": 1.27
+        },
+        {
+          "Date": 20180626,
+          "Delay": 0,
+          "Ontime": 240,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180627,
+          "Delay": 2,
+          "Ontime": 203,
+          "DelyRate": 0.98
+        },
+        {
+          "Date": 20180628,
+          "Delay": 3,
+          "Ontime": 247,
+          "DelyRate": 1.2
+        },
+        {
+          "Date": 20180629,
+          "Delay": 2,
+          "Ontime": 155,
+          "DelyRate": 1.27
+        },
+        {
+          "Date": 20180630,
+          "Delay": 0,
+          "Ontime": 118,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180701,
+          "Delay": 0,
+          "Ontime": 138,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180702,
+          "Delay": 0,
+          "Ontime": 156,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180703,
+          "Delay": 3,
+          "Ontime": 37,
+          "DelyRate": 7.5
+        },
+        {
+          "Date": 20180704,
+          "Delay": 2,
+          "Ontime": 101,
+          "DelyRate": 1.94
+        },
+        {
+          "Date": 20180705,
+          "Delay": 5,
+          "Ontime": 158,
+          "DelyRate": 3.07
+        },
+        {
+          "Date": 20180706,
+          "Delay": 2,
+          "Ontime": 119,
+          "DelyRate": 1.65
+        },
+        {
+          "Date": 20180707,
+          "Delay": 0,
+          "Ontime": 89,
+          "DelyRate": 0.0
+        },
+        {
+          "Date": 20180708,
+          "Delay": 3,
+          "Ontime": 118,
+          "DelyRate": 2.48
+        },
+        {
+          "Date": 20180709,
+          "Delay": 8,
+          "Ontime": 138,
+          "DelyRate": 5.48
+        },
+        {
+          "Date": 20180710,
+          "Delay": 8,
+          "Ontime": 117,
+          "DelyRate": 6.4
+        },
+        {
+          "Date": 20180711,
+          "Delay": 10,
+          "Ontime": 116,
+          "DelyRate": 7.94
+        },
+        {
+          "Date": 20180712,
+          "Delay": 13,
+          "Ontime": 107,
+          "DelyRate": 10.83
+        },
+        {
+          "Date": 20180713,
+          "Delay": 4,
+          "Ontime": 166,
+          "DelyRate": 2.35
+        },
+        {
+          "Date": 20180714,
+          "Delay": 8,
+          "Ontime": 135,
+          "DelyRate": 5.59
+        },
+        {
+          "Date": 20180715,
+          "Delay": 8,
+          "Ontime": 146,
+          "DelyRate": 5.19
+        },
+        {
+          "Date": 20180716,
+          "Delay": 16,
+          "Ontime": 221,
+          "DelyRate": 6.75
+        },
+        {
+          "Date": 20180717,
+          "Delay": 14,
+          "Ontime": 209,
+          "DelyRate": 6.28
+        },
+        {
+          "Date": 20180718,
+          "Delay": 9,
+          "Ontime": 287,
+          "DelyRate": 3.04
+        },
+        {
+          "Date": 20180719,
+          "Delay": 5,
+          "Ontime": 252,
+          "DelyRate": 1.95
+        },
+        {
+          "Date": 20180720,
+          "Delay": 9,
+          "Ontime": 241,
+          "DelyRate": 3.6
+        },
+        {
+          "Date": 20180721,
+          "Delay": 5,
+          "Ontime": 169,
+          "DelyRate": 2.87
+        },
+        {
+          "Date": 20180722,
+          "Delay": 6,
+          "Ontime": 186,
+          "DelyRate": 3.13
+        },
+        {
+          "Date": 20180723,
+          "Delay": 18,
+          "Ontime": 277,
+          "DelyRate": 6.1
+        },
+        {
+          "Date": 20180724,
+          "Delay": 9,
+          "Ontime": 263,
+          "DelyRate": 3.31
+        },
+        {
+          "Date": 20180725,
+          "Delay": 8,
+          "Ontime": 261,
+          "DelyRate": 2.97
+        },
+        {
+          "Date": 20180726,
+          "Delay": 7,
+          "Ontime": 235,
+          "DelyRate": 2.89
+        },
+        {
+          "Date": 20180727,
+          "Delay": 5,
+          "Ontime": 184,
+          "DelyRate": 2.65
+        },
+        {
+          "Date": 20180728,
+          "Delay": 3,
+          "Ontime": 177,
+          "DelyRate": 1.67
+        },
+        {
+          "Date": 20180729,
+          "Delay": 12,
+          "Ontime": 173,
+          "DelyRate": 6.49
+        },
+        {
+          "Date": 20180730,
+          "Delay": 30,
+          "Ontime": 238,
+          "DelyRate": 11.19
+        },
+        {
+          "Date": 20180731,
+          "Delay": 37,
+          "Ontime": 268,
+          "DelyRate": 12.13
+        },
+        {
+          "Date": 20180801,
+          "Delay": 40,
+          "Ontime": 275,
+          "DelyRate": 12.7
+        },
+        {
+          "Date": 20180802,
+          "Delay": 45,
+          "Ontime": 255,
+          "DelyRate": 15.0
+        },
+        {
+          "Date": 20180803,
+          "Delay": 47,
+          "Ontime": 265,
+          "DelyRate": 15.06
+        },
+        {
+          "Date": 20180804,
+          "Delay": 26,
+          "Ontime": 214,
+          "DelyRate": 10.83
+        },
+        {
+          "Date": 20180805,
+          "Delay": 48,
+          "Ontime": 229,
+          "DelyRate": 17.33
+        },
+        {
+          "Date": 20180806,
+          "Delay": 72,
+          "Ontime": 302,
+          "DelyRate": 19.25
+        },
+        {
+          "Date": 20180807,
+          "Delay": 63,
+          "Ontime": 309,
+          "DelyRate": 16.94
+        },
+        {
+          "Date": 20180808,
+          "Delay": 35,
+          "Ontime": 277,
+          "DelyRate": 11.22
+        },
+        {
+          "Date": 20180809,
+          "Delay": 27,
+          "Ontime": 251,
+          "DelyRate": 9.71
+        },
+        {
+          "Date": 20180810,
+          "Delay": 26,
+          "Ontime": 222,
+          "DelyRate": 10.48
+        },
+        {
+          "Date": 20180811,
+          "Delay": 8,
+          "Ontime": 183,
+          "DelyRate": 4.19
+        },
+        {
+          "Date": 20180812,
+          "Delay": 9,
+          "Ontime": 192,
+          "DelyRate": 4.48
+        },
+        {
+          "Date": 20180813,
+          "Delay": 19,
+          "Ontime": 266,
+          "DelyRate": 6.67
+        },
+        {
+          "Date": 20180814,
+          "Delay": 38,
+          "Ontime": 277,
+          "DelyRate": 12.06
+        },
+        {
+          "Date": 20180815,
+          "Delay": 24,
+          "Ontime": 262,
+          "DelyRate": 8.39
+        },
+        {
+          "Date": 20180816,
+          "Delay": 28,
+          "Ontime": 284,
+          "DelyRate": 8.97
+        },
+        {
+          "Date": 20180817,
+          "Delay": 11,
+          "Ontime": 245,
+          "DelyRate": 4.3
+        },
+        {
+          "Date": 20180818,
+          "Delay": 5,
+          "Ontime": 188,
+          "DelyRate": 2.59
+        },
+        {
+          "Date": 20180819,
+          "Delay": 11,
+          "Ontime": 199,
+          "DelyRate": 5.24
+        },
+        {
+          "Date": 20180820,
+          "Delay": 25,
+          "Ontime": 233,
+          "DelyRate": 9.69
+        },
+        {
+          "Date": 20180821,
+          "Delay": 17,
+          "Ontime": 224,
+          "DelyRate": 7.05
+        },
+        {
+          "Date": 20180822,
+          "Delay": 11,
+          "Ontime": 183,
+          "DelyRate": 5.67
+        },
+        {
+          "Date": 20180823,
+          "Delay": 7,
+          "Ontime": 131,
+          "DelyRate": 5.07
+        },
+        {
+          "Date": 20180824,
+          "Delay": 9,
+          "Ontime": 90,
+          "DelyRate": 9.09
+        },
+        {
+          "Date": 20180825,
+          "Delay": 1,
+          "Ontime": 69,
+          "DelyRate": 1.43
+        },
+        {
+          "Date": 20180826,
+          "Delay": 1,
+          "Ontime": 76,
+          "DelyRate": 1.3
+        },
+        {
+          "Date": 20180827,
+          "Delay": 6,
+          "Ontime": 63,
+          "DelyRate": 8.7
+        },
+        {
+          "Date": 20180828,
+          "Delay": 1,
+          "Ontime": 39,
+          "DelyRate": 2.5
+        },
+        {
+          "Date": 20180829,
+          "Delay": 0,
+          "Ontime": 11,
+          "DelyRate": 0.0
         }
       ];
 
@@ -3116,7 +3940,7 @@
       // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
       var xAxis = chart.xAxes.push(
         am5xy.CategoryAxis.new(root, {
-          categoryField: "order_purchase_date",
+          categoryField: "Date",
           renderer: am5xy.AxisRendererX.new(root, {}),
           tooltip: am5.Tooltip.new(root, {})
         })
@@ -3132,17 +3956,57 @@
         })
       );
 
+      var yAxis2 = chart.yAxes.push(
+        am5xy.ValueAxis.new(root, {
+          min: 0,
+          extraMax: 0.1,
+          syncWithAxis: yAxis,
+          renderer: am5xy.AxisRendererY.new(root, { opposite: true })
+        })
+      );
+
 
       // Add series
       // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
 
-      var series1 = chart.series.push(
-        am5xy.ColumnSeries.new(root, {
-          name: "delivered_delayed_orders",
+      // Add series
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+      function makeSeries(name, fieldName) {
+        var series1 = chart.series.push(am5xy.ColumnSeries.new(root, {
+          name: name,
+          stacked: true,
           xAxis: xAxis,
           yAxis: yAxis,
-          valueYField: "delivered_delayed_orders",
-          categoryXField: "order_purchase_date",
+          valueYField: fieldName,
+          categoryXField: "Date"
+        }));
+        series1.data.setAll(data);
+        series1.appear();
+
+        //   series1.bullets.push(function () {
+        //     return am5.Bullet.new(root, {
+        //       sprite: am5.Label.new(root, {
+        //         text: "{valueY}",
+        //         fill: root.interfaceColors.get("alternativeText"),
+        //         centerY: am5.p50,
+        //         centerX: am5.p50,
+        //         populateText: true
+        //       })
+        //     });
+        //   });
+      }
+
+
+      makeSeries("Ontime", "Ontime");
+      makeSeries("Delay", "Delay");
+
+      var series2 = chart.series.push(
+        am5xy.LineSeries.new(root, {
+          name: "DelyRate",
+          xAxis: xAxis,
+          yAxis: yAxis2,
+          valueYField: "DelyRate",
+          categoryXField: "Date",
           tooltip: am5.Tooltip.new(root, {
             pointerOrientation: "horizontal",
             labelText: "{name} in {categoryX}: {valueY} {info}"
@@ -3150,20 +4014,235 @@
         })
       );
 
-      series1.columns.template.setAll({
-        tooltipY: am5.percent(10),
-        templateField: "columnSettings"
+      series2.strokes.template.setAll({
+        strokeWidth: 3,
+        templateField: "strokeSettings"
       });
 
-      series1.data.setAll(data);
+
+      series2.data.setAll(data);
+
+      series2.bullets.push(function () {
+        return am5.Bullet.new(root, {
+          sprite: am5.Circle.new(root, {
+            strokeWidth: 1,
+            stroke: series2.get("stroke"),
+            radius: 3,
+            fill: root.interfaceColors.get("background")
+          })
+        });
+      });
+
+      chart.set("cursor", am5xy.XYCursor.new(root, {}));
+
+      // Add legend
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/legend-xy-series/
+      var legend = chart.children.push(
+        am5.Legend.new(root, {
+          centerX: am5.p50,
+          x: am5.p50
+        })
+      );
+      legend.data.setAll(chart.series.values);
+
+      // Make stuff animate on load
+      // https://www.amcharts.com/docs/v5/concepts/animations/
+      chart.appear(1000, 100);
+      series1.appear();
+
+    }); // end am5.ready()
+  </script>
+
+  <!-- 產品分類訂單延遲次數及延遲率, productLineChart -->
+  <script>
+    am5.ready(function () {
+
+      // Create root element
+      // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+      var root = am5.Root.new("productLineChart");
+
+      // Set themes
+      // https://www.amcharts.com/docs/v5/concepts/themes/
+      root.setThemes([am5themes_Animated.new(root)]);
+
+      // Create chart
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/
+      var chart = root.container.children.push(
+        am5xy.XYChart.new(root, {
+          panX: false,
+          panY: false,
+          wheelX: "panX",
+          wheelY: "zoomX",
+          layout: root.verticalLayout
+        })
+      );
+
+      // Add scrollbar
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+      chart.set(
+        "scrollbarX",
+        am5.Scrollbar.new(root, {
+          orientation: "horizontal"
+        })
+      );
+
+      var data = [
+        {
+          "product_category": "3electronic_appliances",
+          "Delay": 1337,
+          "Ontime": 15257,
+          "DelyRate": 8.06
+        },
+        {
+          "product_category": "art_books_music",
+          "Delay": 184,
+          "Ontime": 1834,
+          "DelyRate": 9.12
+        },
+        {
+          "product_category": "auto",
+          "Delay": 327,
+          "Ontime": 3472,
+          "DelyRate": 8.61
+        },
+        {
+          "product_category": "cool_stuff",
+          "Delay": 242,
+          "Ontime": 3334,
+          "DelyRate": 6.77
+        },
+        {
+          "product_category": "fashion_clothes_accessories",
+          "Delay": 854,
+          "Ontime": 10044,
+          "DelyRate": 7.84
+        },
+        {
+          "product_category": "food_drink",
+          "Delay": 77,
+          "Ontime": 868,
+          "DelyRate": 8.15
+        },
+        {
+          "product_category": "health_beauty",
+          "Delay": 772,
+          "Ontime": 7796,
+          "DelyRate": 9.01
+        },
+        {
+          "product_category": "homelife",
+          "Delay": 1966,
+          "Ontime": 22637,
+          "DelyRate": 7.99
+        },
+        {
+          "product_category": "kids",
+          "Delay": 539,
+          "Ontime": 6109,
+          "DelyRate": 8.11
+        },
+        {
+          "product_category": "office",
+          "Delay": 143,
+          "Ontime": 1516,
+          "DelyRate": 8.62
+        },
+        {
+          "product_category": "pet_shop",
+          "Delay": 105,
+          "Ontime": 1592,
+          "DelyRate": 6.19
+        },
+        {
+          "product_category": "sports_leisure",
+          "Delay": 584,
+          "Ontime": 6974,
+          "DelyRate": 7.73
+        },
+        {
+          "product_category": "stationery",
+          "Delay": 176,
+          "Ontime": 2091,
+          "DelyRate": 7.76
+        },
+        {
+          "product_category": "tools",
+          "Delay": 395,
+          "Ontime": 4614,
+          "DelyRate": 7.89
+        }
+      ];
+
+      // Create axes
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+      var xAxis = chart.xAxes.push(
+        am5xy.CategoryAxis.new(root, {
+          categoryField: "product_category",
+          renderer: am5xy.AxisRendererX.new(root, {}),
+          tooltip: am5.Tooltip.new(root, {})
+        })
+      );
+
+      xAxis.data.setAll(data);
+
+      var yAxis = chart.yAxes.push(
+        am5xy.ValueAxis.new(root, {
+          min: 0,
+          extraMax: 0.1,
+          renderer: am5xy.AxisRendererY.new(root, {})
+        })
+      );
+
+      var yAxis2 = chart.yAxes.push(
+        am5xy.ValueAxis.new(root, {
+          min: 0,
+          extraMax: 0.1,
+          syncWithAxis: yAxis,
+          renderer: am5xy.AxisRendererY.new(root, { opposite: true })
+        })
+      );
+
+
+      // Add series
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+
+      // Add series
+      // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+      function makeSeries(name, fieldName) {
+        var series1 = chart.series.push(am5xy.ColumnSeries.new(root, {
+          name: name,
+          stacked: true,
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: fieldName,
+          categoryXField: "product_category"
+        }));
+        series1.data.setAll(data);
+        series1.appear();
+
+        series1.bullets.push(function () {
+          return am5.Bullet.new(root, {
+            sprite: am5.Label.new(root, {
+              text: "{valueY}",
+              fill: root.interfaceColors.get("alternativeText"),
+              centerY: am5.p50,
+              centerX: am5.p50,
+              populateText: true
+            })
+          });
+        });
+      }
+
+      makeSeries("Ontime", "Ontime");
+      makeSeries("Delay", "Delay");
 
       var series2 = chart.series.push(
         am5xy.LineSeries.new(root, {
-          name: "delayhour",
+          name: "DelyRate",
           xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "delayhour",
-          categoryXField: "order_purchase_date",
+          yAxis: yAxis2,
+          valueYField: "DelyRate",
+          categoryXField: "product_category",
           tooltip: am5.Tooltip.new(root, {
             pointerOrientation: "horizontal",
             labelText: "{name} in {categoryX}: {valueY} {info}"
