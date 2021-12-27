@@ -5,13 +5,6 @@
 
     <li class="nav-item">
       <a class="nav-link <%= 'collapsed' if !current_page?(root_path) %>" href="<%= root_path %>">
-        <i class="bi bi-grid"></i>
-        <span>Dashboard</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link <%= 'collapsed' if !current_page?(about_path) %>" href="<%= about_path %>">
         <i class="bi bi-exclamation-square"></i>
         <span>關於專題</span>
       </a>
@@ -28,6 +21,13 @@
       <a class="nav-link <%= 'collapsed' if !current_page?(dataset_info_path) %>" href="<%= dataset_info_path %>">
         <i class="bi bi-server"></i>
         <span>資料背景概述</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link <%= 'collapsed' if !current_page?(dashboard_path) %>" href="<%= dashboard_path %>">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
       </a>
     </li>
 

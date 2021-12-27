@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
-  root 'dashboard#index'
+  root 'dashboard#about'
 
   get '/team_members', to: 'dashboard#team_members'
   get '/about', to: 'dashboard#about'
+  get '/dashboard', to: 'dashboard#index'
   get '/predict', to: 'dashboard#predict'
   get '/dataset_info', to: 'dashboard#dataset_info'
 
