@@ -1,15 +1,15 @@
 <% if dimension == 'week' %>
   <% year_week_selection = [201842,201840,201839,201838,201837,201836,201835,201834,201833,201832,201831,201830,201829,201828,201827,201826,201825,201824,201823,201822,201821,201820,201819,201818,201817,201816,201815,201814,201813,201812,201811,201810,201809,201808,201807,201806,201805,201804,201803,201802,201801,201752,201751,201750,201749,201748,201747,201746,201745,201744,201743,201742,201741,201740,201739,201738,201737,201736,201735,201734,201733,201732,201731,201730,201729,201728,201727,201726,201725,201724,201723,201722,201721,201720,201719,201718,201717,201716,201715,201714,201713,201712,201711,201710,201709,201708,201707,201706,201705,201704,201703,201702,201701,201651,201642,201641,201640,201639,201637,201636,201635] %>
   <% year_week_selection.each do |week| %>
-    <li><a class="dropdown-item" href="<%= root_path(dimension: dimension, date_range: week.to_s)%>"><%= week.to_s.insert(4, ' 年第 ').insert(-1, ' 週') %></a></li>
+    <li><a class="dropdown-item" href="<%= dashboard_path(dimension: dimension, date_range: week.to_s)%>"><%= week.to_s.insert(4, ' 年第 ').insert(-1, ' 週') %></a></li>
   <% end %>
 <% elsif dimension == 'month' %>
   <% year_month_selection = [201810,201809,201808,201807,201806,201805,201804,201803,201802,201801,201712,201711,201710,201709,201708,201707,201706,201705,201704,201703,201702,201701,201612,201610,201609] %>
   <% year_month_selection.each do |month| %>
-    <li><a class="dropdown-item" href="<%= root_path(dimension: dimension, date_range: month.to_s)%>"><%= month.to_s.insert(4, ' 年 ').insert(-1, ' 月') %></a></li>
+    <li><a class="dropdown-item" href="<%= dashboard_path(dimension: dimension, date_range: month.to_s)%>"><%= month.to_s.insert(4, ' 年 ').insert(-1, ' 月') %></a></li>
   <% end %>
 <% elsif dimension == 'year' %>
-  <li><a class="dropdown-item" href="<%= root_path(dimension: dimension, date_range: '2018')%>">2018</a></li>
-  <li><a class="dropdown-item" href="<%= root_path(dimension: dimension, date_range: '2017')%>">2017</a></li>
-  <li><a class="dropdown-item" href="<%= root_path(dimension: dimension, date_range: '2016')%>">2016</a></li>
+  <li><a class="dropdown-item" href="<%= dashboard_path(dimension: dimension, date_range: '2018')%>">2018</a></li>
+  <li><a class="dropdown-item" href="<%= dashboard_path(dimension: dimension, date_range: '2017')%>">2017</a></li>
+  <li><a class="dropdown-item" href="<%= dashboard_path(dimension: dimension, date_range: '2016')%>">2016</a></li>
 <% end %>
