@@ -19,9 +19,9 @@
         </ul>
       </div>
       <div class="btn-group">
-        <%= link_to '週', root_path(dimension: 'week'), class: "btn btn-outline-primary #{'active' if @dimension == 'week'}"  %>
-        <%= link_to '月', root_path(dimension: 'month'), class: "btn btn-outline-primary #{'active' if @dimension == 'month'}"  %>
-        <%= link_to '年', root_path(dimension: 'year'), class: "btn btn-outline-primary #{'active' if @dimension == 'year'}"  %>
+        <%= link_to '週', dashboard_path(dimension: 'week'), class: "btn btn-outline-primary #{'active' if @dimension == 'week'}"  %>
+        <%= link_to '月', dashboard_path(dimension: 'month'), class: "btn btn-outline-primary #{'active' if @dimension == 'month'}"  %>
+        <%= link_to '年', dashboard_path(dimension: 'year'), class: "btn btn-outline-primary #{'active' if @dimension == 'year'}"  %>
       </div>
     </div>
   </div>
